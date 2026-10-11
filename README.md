@@ -4,6 +4,8 @@ A browser-based planner for cable management on openGrid — the 28 mm tile syst
 
 Everything runs client-side. There is no backend and no account; your layout autosaves in the browser and can be exported as JSON.
 
+**Try it:** https://mars-3dprints.github.io/underware-planner/
+
 ![Underware Planner showing tiles, devices, channels and cables on the canvas, with the bill of materials on the right](docs/screenshot.png)
 
 ## What it does
@@ -70,7 +72,7 @@ Mirrored parts are different prints, so they are listed as separate BOM entries.
 
 ## Saving and sharing
 
-The layout autosaves to `localStorage` (key `underware-planner-v1`). **Export** downloads `underware-layout.json`; **Import** loads one back. **Copy** in the bill of materials puts a plain-text parts list on your clipboard.
+The layout autosaves to `localStorage` (key `underware-planner-v1`), separately for each site: a layout saved locally doesn't appear on the hosted version, so move it with Export and Import. **Export** downloads `underware-layout.json`; **Import** loads one back. **Copy** in the bill of materials puts a plain-text parts list on your clipboard.
 
 ## Changelog
 
@@ -84,12 +86,16 @@ Requires Node 22.12 or later (`.nvmrc` pins 22).
 npm install
 npm run dev           # http://localhost:5173
 npm run build         # typecheck + production build into dist/
-npm run preview       # serve the production build
+npm run preview       # serve the production build at /underware-planner/
 npm test              # unit tests (Vitest)
 npm run lint          # ESLint
 npm run format        # Prettier
 npm run check         # typecheck, lint, format check and tests
 ```
+
+### Deployment
+
+Every push to `main` runs `.github/workflows/deploy.yml`: checks, build, then publish `dist/` to GitHub Pages. Builds use the base path `/underware-planner/` (`vite.config.ts`); change it if the repo is renamed or moved to a custom domain.
 
 Stack: React 19, TypeScript, [zustand](https://github.com/pmndrs/zustand) and Vite. The canvas is plain SVG.
 

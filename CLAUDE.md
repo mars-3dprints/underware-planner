@@ -5,6 +5,7 @@ Browser app for planning openGrid cable management (28 mm tiles) on an infinite 
 ## Commands
 
 - Node 22.12+ (`.nvmrc` pins 22). `npm run dev` serves http://localhost:5173. `npm run build` runs `tsc --noEmit` then the Vite build.
+- **Deploys:** every push to `main` publishes to GitHub Pages (https://mars-3dprints.github.io/underware-planner/) via `.github/workflows/deploy.yml`, which runs `npm run check` first. Builds and `vite preview` use the base path `/underware-planner/`; the dev server uses `/`.
 - `npm run check` runs typecheck, ESLint, Prettier check and Vitest. Run it and the build before every commit.
 - Unit tests sit next to the code (`*.test.ts`) and use the fixture `src/test/fixtures/layout.json` (every part, every channel shape, cables through channels). Store tests use jsdom. Snapshots pin routing, centerlines and the BOM: an unexpected snapshot change is a behaviour change.
 - UI changes still need a browser check (Playwright with a seeded `localStorage` works well, see below), in dark and light schemes.
@@ -59,7 +60,7 @@ Pure logic (no React) lives in `domain/`, `routing/` and `bom/`; React lives in 
 - **Mirrored chiral parts** (merge/branch, offsets) are different prints, so they are separate BOM entries.
 - **Cable path** = cells from `routing/route.ts` plus centerlines from `routing/follow.ts`. Cable length (BOM) is still counted in grid steps (`steps * CELL_MM + slack`), not along the curves. Waypoint handles sit on grid cells.
 - Peek mode is just channel group opacity 0.75. Channels are drawn inset (`CHANNEL_INSET`) with their openings flush.
-- Chromium and Playwright are in the cloud sandbox: seed `localStorage` with the export JSON via `context.addInitScript`, then `vite preview` and screenshot (dark scheme: `colorScheme: 'dark'`).
+- Chromium and Playwright are in the cloud sandbox: seed `localStorage` with the export JSON via `context.addInitScript`, then `vite preview` (served at `/underware-planner/`) and screenshot (dark scheme: `colorScheme: 'dark'`).
 
 ## Git in the cloud sandbox
 
