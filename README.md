@@ -78,11 +78,17 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## Development
 
+Requires Node 20.19 or later (`.nvmrc` pins 22).
+
 ```sh
 npm install
-npm run dev      # http://localhost:5173
-npm run build    # typecheck + production build into dist/
-npm run preview  # serve the production build
+npm run dev           # http://localhost:5173
+npm run build         # typecheck + production build into dist/
+npm run preview       # serve the production build
+npm test              # unit tests (Vitest)
+npm run lint          # ESLint
+npm run format        # Prettier
+npm run check         # typecheck, lint, format check and tests
 ```
 
 Stack: React 18, TypeScript, [zustand](https://github.com/pmndrs/zustand) and Vite. The canvas is plain SVG.

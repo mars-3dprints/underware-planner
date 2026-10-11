@@ -1,3 +1,8 @@
-import { defineConfig } from 'vite';
+/// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react';
-export default defineConfig({ plugins: [react()] });
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  plugins: [react()],
+  test: { environment: 'node' },
+});
