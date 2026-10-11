@@ -340,11 +340,11 @@ export const useStore = create<EditorState>((set, get) => ({
   },
   flipSelection: () => {
     const s = get();
-    const { selection, commit } = s;
-    if (selection?.type !== 'obj' || isGroupSelected(s)) return;
-    commit((d) => ({
+    const part = selectedPart(s);
+    if (!part || !isShaped(part.sub)) return;
+    s.commit((d) => ({
       ...d,
-      objects: d.objects.map((p) => (p.id === selection.id && isShaped(p.sub) ? { ...p, flip: !p.flip } : p)),
+      objects: d.objects.map((p) => (p.id === part.id ? { ...p, flip: !p.flip } : p)),
     }));
   },
   nudgeSelection: (dx, dy) => {

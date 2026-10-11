@@ -27,6 +27,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 - Importing a file from an older version now brings it up to date (renamed and resized parts), the same way an autosaved layout is.
 - Finishing a cable now selects only that cable. Before, parts selected earlier stayed in the selection, so the colour picker painted them instead of the new cable.
 - Esc closes the layers menu and the colour popover. While one is open, Esc only closes it and keeps the selection; the next Esc clears the selection as before.
+- Pressing F on a part that can't be flipped (tiles, objects, straights, covers) no longer adds an empty undo step.
 
 ## [0.2.0] - 2026-10-12
 

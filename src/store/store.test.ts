@@ -150,6 +150,14 @@ describe('store actions', () => {
     });
   });
 
+  it('adds no undo step when flipping a part that cannot be flipped', () => {
+    s().select({ type: 'obj', id: 'o1' });
+    s().flipSelection();
+    s().select({ type: 'obj', id: 's1' });
+    s().flipSelection();
+    expect(s().past).toHaveLength(0);
+  });
+
   it('rotates, flips, swaps style and nudges the selection', () => {
     s().select({ type: 'obj', id: 'y1' });
     s().flipSelection();
