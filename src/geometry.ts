@@ -1,5 +1,5 @@
 import type { Obj } from './types';
-import { arrowsD, pieceOf, portsOf } from './types';
+import { arrowsD, isVert, pieceOf, portsOf } from './types';
 import type { Port } from './types';
 
 export type Mat = [number, number, number, number, number, number];
@@ -18,7 +18,7 @@ export const matStr = (m: Mat) => `matrix(${m.join(' ')})`;
 export function portsList(o: Obj): { ports: Port[]; m: Mat | null } {
   if (o.sub === 'straight' || o.sub === 'bridge') {
     const l = Math.max(o.w, o.h);
-    return { ports: o.w >= o.h ? [[o.x, o.y + 0.5, -1, 0], [o.x + l, o.y + 0.5, 1, 0]] : [[o.x + 0.5, o.y, 0, -1], [o.x + 0.5, o.y + l, 0, 1]], m: null };
+    return { ports: isVert(o) ? [[o.x + 0.5, o.y, 0, -1], [o.x + 0.5, o.y + l, 0, 1]] : [[o.x, o.y + 0.5, -1, 0], [o.x + l, o.y + 0.5, 1, 0]], m: null };
   }
   const p = o.sub ? pieceOf(o.sub, Math.max(o.w, o.h)) : undefined;
   return { ports: p && o.sub ? portsOf(o.sub, p.w) : [], m: p ? racewayGeom(o).m : null };

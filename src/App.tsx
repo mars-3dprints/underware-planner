@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Canvas } from './Canvas';
 import { LeftPanel, RightPanel, Swatches } from './Panels';
 import { patchCable, useStore } from './store';
-import { PLATE_DEFAULT, isShaped } from './types';
+import { PLATE_DEFAULT, counterpart, isShaped } from './types';
 import { Icon } from './icons';
 import { fitToContent, canvasSize, pointer, zoomAt } from './viewUtil';
 
@@ -11,7 +11,7 @@ function IconBtn({ icon, label, on, danger, disabled, onClick }: { icon: Paramet
 }
 
 export default function App() {
-  const { tool, setTool, undo, redo, past, future, view, doc, sel, ids, cids, cableColor, setCableColor, wp, commit } = useStore();
+  const { tool, setTool, undo, redo, past, future, view, doc, sel, ids, cids, cableColor, setCableColor, wp, commit, peek, togglePeek } = useStore();
   const oneCable = sel?.type === 'cable' && !ids.length && cids.length < 2 ? doc.cables.find((c) => c.id === sel.id) : undefined;
   const hasSel = !!sel;
   const [colorOpen, setColorOpen] = useState(false), [showBom, setShowBom] = useState(true);
@@ -22,6 +22,7 @@ export default function App() {
     const h = (e: PointerEvent) => { if (!colorRef.current?.contains(e.target as Node)) setColorOpen(false); };
     document.addEventListener('pointerdown', h); return () => document.removeEventListener('pointerdown', h);
   }, [colorOpen]);
+  const canSwap = (ids.length ? doc.objects.filter((o) => ids.includes(o.id)) : sel?.type === 'obj' ? doc.objects.filter((o) => o.id === sel.id) : []).some((o) => counterpart(o.sub, o.w));
   const selObjs = doc.objects.filter((o) => (ids.length ? ids.includes(o.id) : sel?.type === 'obj' && sel.id === o.id));
   const selCables = doc.cables.filter((c) => (cids.length ? cids.includes(c.id) : sel?.type === 'cable' && sel.id === c.id));
   const selColors = [...selObjs.map((o) => o.color), ...selCables.map((c) => c.color)];
@@ -50,6 +51,13 @@ export default function App() {
       else if (k === 'h') s.setTool('pan');
       else if (k === 'c') s.setTool('cable');
       else if (k === 'r') (s.tool === 'place' ? s.rotateStamp(e.shiftKey) : s.rotateSel(e.shiftKey));
+      else if (k.startsWith('arrow')) {
+        if (s.tool === 'place' || (!s.ids.length && !s.cids.length && !s.sel)) return;
+        e.preventDefault(); const n = e.shiftKey ? 5 : 1;
+        s.nudgeSel(k === 'arrowleft' ? -n : k === 'arrowright' ? n : 0, k === 'arrowup' ? -n : k === 'arrowdown' ? n : 0);
+      }
+      else if (k === 'p') s.togglePeek();
+      else if (k === 't') s.swapStyle();
       else if (k === 'f') (s.tool === 'place' ? s.flipStamp() : s.flipSel());
       else if (k === 'delete' || k === 'backspace') { e.preventDefault(); s.removeSel(); }
       else if (k === '0') fitToContent();
@@ -108,6 +116,7 @@ export default function App() {
               )}
             </span>
             <IconBtn icon="rotate" label="Rotate (R, Shift+R reverses)" onClick={() => useStore.getState().rotateSel()} />
+            {canSwap && <IconBtn icon="style" label="Switch rounded / angled (T)" onClick={() => useStore.getState().swapStyle()} />}
             {canFlip && <IconBtn icon="flip" label="Flip (F)" onClick={() => useStore.getState().flipSel()} />}
             <IconBtn icon="copy" label="Copy (Ctrl+C)" onClick={() => useStore.getState().copySel()} />
             <IconBtn icon="duplicate" label="Duplicate (Ctrl+D)" onClick={() => useStore.getState().duplicateSel()} />
@@ -124,6 +133,7 @@ export default function App() {
         <button className="btn sm" onClick={() => { const { w, h } = canvasSize(); zoomAt(w / 2, h / 2, 1.25); }}>+</button>
         <button className="btn sm" onClick={fitToContent} title="Fit (0)">Fit</button>
         <i className="vsep" />
+        <IconBtn icon="peek" label="See through channels (P)" on={peek} onClick={togglePeek} />
         <IconBtn icon="sidebar" label={showBom ? 'Hide sidebar' : 'Show sidebar'} on={showBom} onClick={() => setShowBom((v) => !v)} />
         <i className="vsep" />
         <button className="btn sm" onClick={exportJson}>Export</button>

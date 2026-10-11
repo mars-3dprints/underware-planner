@@ -4,7 +4,7 @@ import { computeRoutes } from './route';
 import { findOverlaps, summarize, summaryText } from './summary';
 import type { Anchor, Sub } from './types';
 import { boxOfAll } from './group';
-import { ADDON_LABEL, CELL_MM, COLORS, MAX_TURN, PLATE_DEFAULT, isShaped, isTurn, labelOf } from './types';
+import { ADDON_LABEL, CELL_MM, COLORS, MAX_TURN, PLATE_DEFAULT, counterpart, isShaped, isTurn, labelOf, lenPatch } from './types';
 import { PieceThumb } from './Thumb';
 
 function Num({ label, value, min = 1, onChange }: { label: string; value: number; min?: number; onChange: (n: number) => void }) {
@@ -67,19 +67,19 @@ export function LeftPanel() {
   const active = st.tool === 'place' ? st.stamp?.sub : undefined;
   const placing = st.tool === 'place' ? (st.block ? `${st.block.name} ${st.block.h}×${st.block.w}` : st.stamp ? ADDON_LABEL[st.stamp.sub] : '') : '';
   const tiles = (g: { tiles: TileSpec[] }) => g.tiles.flatMap(({ sub: s, flip }) => isTurn(s)
-    ? TURN_PRESETS.filter((n) => s === 'turn' || n > 1).map((n) => <Tile key={s + n} sub={s} len={n} active={active === s && st.stamp?.len === n} onClick={() => { setTurnN(n); st.setStamp(s, n); }} />)
+    ? TURN_PRESETS.filter((n) => s === 'turn' || n > 1).map((n) => <Tile key={s + n} sub={s} len={n} active={active === s && st.stamp?.len === n} onClick={() => { setTurnN(n); if (st.stamp?.sub === s) st.resizeStamp(n); else st.setStamp(s, n); }} />)
     : [<Tile key={s + (flip ? 'm' : '')} sub={s} len={len} flip={flip} active={active === s && !!st.stamp?.flip === !!flip} onClick={() => st.setStamp(s, len, !!flip)} />]);
   return (
     <aside className="panel left">
       {placing && (
         <div className="status">
           <b>Placing {placing}</b>
-          <span>Click to place · R rotate{st.stamp && fixedShape(st.stamp.sub) ? ' · F flip' : ''}{st.stamp && COVERS.includes(st.stamp.sub) ? ' · drag to paint' : ''} · Esc stop</span>
+          <span>Click to place · R rotate{st.stamp && fixedShape(st.stamp.sub) ? ' · F flip' : ''}{st.stamp && counterpart(st.stamp.sub, st.stamp.len) ? ' · T rounded/angled' : ''}{st.stamp && COVERS.includes(st.stamp.sub) ? ' · drag to paint' : ''} · Esc stop</span>
         </div>
       )}
       <section>
         <h3>Tile</h3>
-        <div className="row2"><Num label="Rows" value={rows} onChange={setRows} /><Num label="Columns" value={cols} onChange={setCols} /></div>
+        <div className="row2"><Num label="Rows" value={rows} onChange={(n) => { setRows(n); st.patchBlock('plate', { h: n }); }} /><Num label="Columns" value={cols} onChange={(n) => { setCols(n); st.patchBlock('plate', { w: n }); }} /></div>
         <p className="hint">{cols * CELL_MM} × {rows * CELL_MM} mm</p>
         <button className={'btn block' + (st.block?.kind === 'plate' ? ' on' : ' primary')} onClick={() => st.setBlock({ kind: 'plate', name: 'Tile', w: cols, h: rows, color: PLATE_DEFAULT })}>Add tile</button>
       </section>
@@ -93,8 +93,8 @@ export function LeftPanel() {
         {CHANNEL_GROUPS.map((g) => (
           <div className="group" key={g.title}>
             <span className="sub">{g.title}</span>
-            {g.title === 'Straight' && <Num label="Length (cells)" value={len} onChange={(n) => { setLen(n); if (st.stamp && (st.stamp.sub === 'straight' || st.stamp.sub === 'bridge')) st.setStamp(st.stamp.sub, n); }} />}
-            {g.title === 'Turns' && <Num label={`Size (cells, max ${MAX_TURN})`} value={turnN} onChange={(n) => { const k = Math.min(MAX_TURN, n); setTurnN(k); st.setStamp(st.stamp && isTurn(st.stamp.sub) ? st.stamp.sub : 'turn', k); }} />}
+            {g.title === 'Straight' && <Num label="Length (cells)" value={len} onChange={(n) => { setLen(n); if (st.stamp && (st.stamp.sub === 'straight' || st.stamp.sub === 'bridge')) st.resizeStamp(n); }} />}
+            {g.title === 'Turns' && <Num label={`Size (cells, max ${MAX_TURN})`} value={turnN} onChange={(n) => { const k = Math.min(MAX_TURN, n); setTurnN(k); if (st.stamp && isTurn(st.stamp.sub)) st.resizeStamp(k); else st.setStamp('turn', k); }} />}
             <div className="tiles">{tiles(g)}</div>
             {g.title === 'Straight' && <p className="hint">{len} cells = {len * CELL_MM} mm. Bridges are at least 3 cells and pass over other channels.</p>}
           </div>
@@ -102,10 +102,10 @@ export function LeftPanel() {
       </section>
       <section>
         <h3>Custom object</h3>
-        <label className="field"><span>Name</span><input value={name} onChange={(e) => setName(e.target.value)} /></label>
-        <div className="chips">{PRESETS.map(([n, pw, ph]) => <button key={n} className="chip" onClick={() => { setName(n); setW(pw); setH(ph); }}>{n}</button>)}</div>
-        <div className="row2"><Num label="Columns" value={w} onChange={setW} /><Num label="Rows" value={h} onChange={setH} /></div>
-        <Swatches value={color} onChange={setColor} />
+        <label className="field"><span>Name</span><input value={name} onChange={(e) => { setName(e.target.value); st.patchBlock('object', { name: e.target.value || 'Object' }); }} /></label>
+        <div className="chips">{PRESETS.map(([n, pw, ph]) => <button key={n} className="chip" onClick={() => { setName(n); setW(pw); setH(ph); st.patchBlock('object', { name: n, w: pw, h: ph }); }}>{n}</button>)}</div>
+        <div className="row2"><Num label="Columns" value={w} onChange={(n) => { setW(n); st.patchBlock('object', { w: n }); }} /><Num label="Rows" value={h} onChange={(n) => { setH(n); st.patchBlock('object', { h: n }); }} /></div>
+        <Swatches value={color} onChange={(c) => { setColor(c); st.patchBlock('object', { color: c }); }} />
         <button className={'btn block' + (st.block?.kind === 'object' ? ' on' : ' primary')} onClick={() => st.setBlock({ kind: 'object', name: name || 'Object', w, h, color })}>Add object</button>
       </section>
     </aside>
@@ -158,7 +158,7 @@ export function RightPanel() {
                 <Num label="Columns" value={o.w} onChange={(n) => commit((d) => patchObject(d, o.id, { w: n }), 'w' + o.id)} />
               </>}
               {turnSel && <Num label={`Size (max ${MAX_TURN})`} value={o.w} onChange={(n) => { const k = Math.min(MAX_TURN, n); commit((d) => patchObject(d, o.id, { w: k, h: k }), 'ts' + o.id); }} />}
-              {linear && <Num label="Length (cells)" min={o.sub === 'bridge' ? 3 : 1} value={Math.max(o.w, o.h)} onChange={(n) => commit((d) => patchObject(d, o.id, o.w >= o.h ? { w: n, h: 1 } : { w: 1, h: n }), 'len' + o.id)} />}
+              {linear && <Num label="Length (cells)" min={o.sub === 'bridge' ? 3 : 1} value={Math.max(o.w, o.h)} onChange={(n) => commit((d) => patchObject(d, o.id, lenPatch(o, n)), 'len' + o.id)} />}
             </div>
             {o.kind === 'cover' && <div className="tiles">{COVERS.map((s) => <Tile key={s} sub={s} active={o.sub === s} onClick={() => commit((d) => patchObject(d, o.id, { sub: s, name: ADDON_LABEL[s] }))} />)}</div>}
           </>}

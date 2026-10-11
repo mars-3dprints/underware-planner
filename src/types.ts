@@ -16,7 +16,7 @@ export interface Cable {
   a: Anchor; b: Anchor; waypoints: Cell[]; slackMm: number;
 }
 export interface Doc { objects: Obj[]; cables: Cable[] }
-export interface Block { kind: 'plate' | 'object'; name: string; w: number; h: number; color: string } // tile / custom object being placed
+export interface Block { kind: 'plate' | 'object'; name: string; w: number; h: number; color: string; swapped?: boolean } // tile / custom object being placed (swapped: w/h are rotated relative to the panel fields)
 export type Tool = 'select' | 'pan' | 'cable' | 'place';
 export interface View { x: number; y: number; k: number } // screen = world*k + (x,y); world unit = 1 cell
 export type Sel = { type: 'obj' | 'cable'; id: string } | null;
@@ -43,6 +43,9 @@ export const PIECES: Partial<Record<Sub, Piece>> = {
   cap: { label: 'Channel, short turn', w: 2, h: 1, d: 'M0 0H1A1 1 0 0 1 2 1H0Z' },
 };
 export const angledPath = (n: number) => `M0 0H1L${n} ${n - 1}V${n}H${n - 1}V${n - 1}L1 1H0Z`;
+/** Rounded <-> angled counterpart of a channel (same size and openings), or undefined if the part has none. */
+const COUNTERPART: Partial<Record<Sub, Sub>> = { turn: 'angled', angled: 'turn', y_round: 'y_angled', y_angled: 'y_round', jog_round: 'jog_angled', jog_angled: 'jog_round', fork_round: 'fork_angled', fork_angled: 'fork_round' };
+export const counterpart = (sub?: Sub, size = 2): Sub | undefined => (sub && !(sub === 'turn' && size < 2) ? COUNTERPART[sub] : undefined);
 export const MAX_TURN = 12;
 export const isTurn = (s?: Sub) => s === 'turn' || s === 'angled';
 export const isShaped = (s?: Sub) => s === 'turn' || s === 'angled' || (!!s && !!PIECES[s]);
@@ -107,3 +110,11 @@ export const arrowsD = (ports: Port[]) => ports.map(([x, y, dx, dy]) => {
   const f = (a: number, b: number) => `${+(x - dx * a - dy * b).toFixed(3)} ${+(y - dy * a + dx * b).toFixed(3)}`;
   return `M${f(0.08, 0)}L${f(0.3, 0.14)}L${f(0.3, -0.14)}Z`;
 }).join('');
+
+/** Orientation of a straight channel: from its shape, or (when 1×1) from the quarter-turn parity of `rot`. */
+export const isVert = (o: { w: number; h: number; rot?: number }) => (o.w === o.h ? (o.rot ?? 0) % 2 === 1 : o.h > o.w);
+/** Patch that sets a straight channel's length, keeping its orientation (and the parity of `rot` in step with it). */
+export const lenPatch = (o: { w: number; h: number; rot?: number }, n: number) => {
+  const v = isVert(o);
+  return { w: v ? 1 : n, h: v ? n : 1, rot: ((o.rot ?? 0) % 2 === (v ? 1 : 0) ? (o.rot ?? 0) : (o.rot ?? 0) + 1) % 4 };
+};

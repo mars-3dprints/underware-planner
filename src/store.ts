@@ -1,11 +1,10 @@
 import { create } from 'zustand';
 import type { Anchor, Block, Cable, Cell, Doc, Obj, Sel, Stamp, Sub, Tool, View } from './types';
-import { boxOfAll, carried, cloneItems, rotateGroup, uid } from './group';
-import { ADDON_DEFAULT, ADDON_LABEL, COLORS, PIECES, PLATE_DEFAULT, isShaped, isTurn, kindOf, stampDims } from './types';
+import { boxOfAll, carried, cloneItems, moveGroup, rotateGroup, uid } from './group';
+import { ADDON_DEFAULT, ADDON_LABEL, COLORS, counterpart, PIECES, PLATE_DEFAULT, isShaped, isTurn, kindOf, stampDims } from './types';
 
 const KEY = 'underware-planner-v1';
 export { uid };
-
 const clampAnchor = (a: Anchor, o: Obj): Anchor => (a.objId === undefined ? a : { ...a, dx: Math.max(0, Math.min(o.w - 1, a.dx)), dy: Math.max(0, Math.min(o.h - 1, a.dy)) });
 
 export function patchObject(d: Doc, id: string, p: Partial<Obj>): Doc {
@@ -94,7 +93,7 @@ interface Store {
   doc: Doc; past: Doc[]; future: Doc[]; sel: Sel; tool: Tool; view: View; viewRestored: boolean;
   palette: string[]; addColor(c: string): void; removeColor(c: string): void;
   wp: number | null; stamp: Stamp | null; block: Block | null; ids: string[]; cids: string[]; addonColor: string; clipboard: { objs: Obj[]; cables: Cable[] } | null; lastPaste: string;
-  selectIds(ids: string[], cids?: string[]): void; toggleId(id: string): void; toggleCable(id: string): void; selectAll(): void; setBlock(b: Block): void;
+  selectIds(ids: string[], cids?: string[]): void; toggleId(id: string): void; toggleCable(id: string): void; selectAll(): void; setBlock(b: Block): void; patchBlock(kind: Block['kind'], p: Partial<Block>): void; resizeStamp(len: number): void; peek: boolean; togglePeek(): void;
   cableColor: string; lastKey: string; lastT: number; txBase: Doc | null;
   setView(v: View): void; setTool(t: Tool): void; select(s: Sel): void; setCableColor(c: string): void;
   commit(fn: (d: Doc) => Doc, key?: string): void;
@@ -102,7 +101,7 @@ interface Store {
   undo(): void; redo(): void;
   addCable(a: Anchor, b: Anchor, wps: Cell[]): void;
   removeSel(): void; duplicateSel(): void; rotateSel(ccw?: boolean): void;
-  setWp(i: number | null): void; setStamp(sub: Sub, len?: number, flip?: boolean): void; setAddonColor(c: string): void; rotateStamp(ccw?: boolean): void; flipStamp(): void; flipSel(): void;
+  setWp(i: number | null): void; setStamp(sub: Sub, len?: number, flip?: boolean): void; setAddonColor(c: string): void; rotateStamp(ccw?: boolean): void; flipStamp(): void; flipSel(): void; swapStyle(): void; nudgeSel(dx: number, dy: number): void;
   copySel(): void; pasteAt(cell: Cell | null): void;
   load(doc: Doc): void;
 }
@@ -123,6 +122,13 @@ export const useStore = create<Store>((set, get) => ({
   toggleId: (id) => { const s = get(); const next = s.ids.includes(id) ? s.ids.filter((x) => x !== id) : [...s.ids, id]; get().selectIds(next, s.cids); },
   toggleCable: (id) => { const s = get(); const next = s.cids.includes(id) ? s.cids.filter((x) => x !== id) : [...s.cids, id]; get().selectIds(s.ids, next); },
   selectAll: () => get().selectIds(get().doc.objects.map((o) => o.id), get().doc.cables.map((c) => c.id)),
+  patchBlock: (kind, p) => set((s) => { // edits keep the rotation already applied to the ghost
+    if (!s.block || s.block.kind !== kind) return {};
+    const q = s.block.swapped ? { ...p, w: p.h, h: p.w } : p;
+    return { block: { ...s.block, ...Object.fromEntries(Object.entries(q).filter(([, v]) => v !== undefined)) } };
+  }),
+  resizeStamp: (len) => set((s) => (s.stamp ? { stamp: { ...s.stamp, len } } : {})),
+  peek: false, togglePeek: () => set((s) => ({ peek: !s.peek })),
   setBlock: (block) => set({ block, stamp: null, tool: 'place', sel: null, ids: [], cids: [], wp: null }),
   setCableColor: (cableColor) => set({ cableColor }),
   commit: (fn, key) => {
@@ -144,7 +150,7 @@ export const useStore = create<Store>((set, get) => ({
     const c: Cable = { id: uid(), name: `Cable ${s.doc.cables.length + 1}`, color: s.cableColor, a, b, waypoints: wps, slackMm: 0 };
     s.commit((d) => ({ ...d, cables: [...d.cables, c] }));
     set({ sel: { type: 'cable', id: c.id }, wp: null, cableColor: all[(idx + 1) % all.length], tool: 'select' });
-q  },
+  },
   removeSel: () => {
     const { sel, commit, wp, ids, cids } = get(); if (!sel) return;
     if (sel.type === 'cable' && wp !== null && !ids.length && cids.length < 2) { // delete just the selected cable point
@@ -165,8 +171,20 @@ q  },
   setWp: (wp) => set({ wp }),
   setStamp: (sub, len = 3, flip = false) => set((s) => ({ stamp: { sub, len, rot: 0, flip, color: s.addonColor }, block: null, tool: 'place', sel: null, ids: [], cids: [], wp: null })),
   setAddonColor: (addonColor) => set((s) => ({ addonColor, stamp: s.stamp ? { ...s.stamp, color: addonColor } : null })),
-  rotateStamp: (ccw = false) => set((s) => (s.block ? { block: { ...s.block, w: s.block.h, h: s.block.w } } : s.stamp ? { stamp: { ...s.stamp, rot: (s.stamp.rot + (ccw ? 3 : 1)) % 4 } } : {})),
+  rotateStamp: (ccw = false) => set((s) => (s.block ? { block: { ...s.block, w: s.block.h, h: s.block.w, swapped: !s.block.swapped } } : s.stamp ? { stamp: { ...s.stamp, rot: (s.stamp.rot + (ccw ? 3 : 1)) % 4 } } : {})),
   flipStamp: () => set((s) => (s.stamp ? { stamp: { ...s.stamp, flip: !s.stamp.flip } } : {})),
+  nudgeSel: (dx, dy) => {
+    const s = get(); if (s.tool === 'place') return;
+    const oi = s.ids.length ? s.ids : s.sel?.type === 'obj' ? [s.sel.id] : [], ci = s.cids.length ? s.cids : s.sel?.type === 'cable' ? [s.sel.id] : [];
+    if (oi.length + ci.length) s.commit((d) => moveGroup(d, oi, ci, dx, dy), 'nudge');
+  },
+  swapStyle: () => {
+    const s = get();
+    if (s.tool === 'place' && s.stamp) { const ns = counterpart(s.stamp.sub, s.stamp.len); if (ns) set({ stamp: { ...s.stamp, sub: ns } }); return; }
+    const sel = new Set(s.ids.length ? s.ids : s.sel?.type === 'obj' ? [s.sel.id] : []);
+    if (!s.doc.objects.some((o) => sel.has(o.id) && counterpart(o.sub, o.w))) return;
+    s.commit((d) => ({ ...d, objects: d.objects.map((o) => { const ns = sel.has(o.id) ? counterpart(o.sub, o.w) : undefined; return ns ? { ...o, sub: ns, name: ADDON_LABEL[ns] ?? o.name } : o; }) }));
+  },
   flipSel: () => { const { sel, commit, ids, cids } = get(); if (sel?.type === 'obj' && ids.length + cids.length < 2) commit((d) => ({ ...d, objects: d.objects.map((o) => (o.id === sel.id && isShaped(o.sub) ? { ...o, flip: !o.flip } : o)) })); },
   copySel: () => {
     const { sel, doc, ids, cids } = get(); if (!sel) return;

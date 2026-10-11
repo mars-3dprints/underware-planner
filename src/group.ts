@@ -76,7 +76,7 @@ export function rotateGroup(d: Doc, ids: string[], cids: string[] = []): Doc {
   };
   return {
     objects: d.objects.map((o) => (set.has(o.id)
-      ? { ...o, x: b.x + b.h - (o.y - b.y) - o.h, y: b.y + (o.x - b.x), w: o.h, h: o.w, rot: isShaped(o.sub) ? ((o.rot ?? 0) + 1) % 4 : o.rot }
+      ? { ...o, x: b.x + b.h - (o.y - b.y) - o.h, y: b.y + (o.x - b.x), w: o.h, h: o.w, rot: isShaped(o.sub) || o.sub === 'straight' || o.sub === 'bridge' ? ((o.rot ?? 0) + 1) % 4 : o.rot }
       : o)),
     cables: d.cables.map((c) => {
       const free = inner.has(c.id);

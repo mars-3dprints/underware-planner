@@ -1,5 +1,5 @@
 import type { Doc, Obj, Sub } from './types';
-import { ADDON_ORDER, CELL_MM, isMirrored, isTurn, labelOf, pieceOf } from './types';
+import { ADDON_ORDER, CELL_MM, isMirrored, isTurn, isVert, labelOf, pieceOf } from './types';
 import { racewayGeom } from './geometry';
 import type { Route } from './route';
 
@@ -17,7 +17,7 @@ function samples(o: Obj) {
     for (let j = 0; j < o.h * S; j++) for (let i = 0; i < o.w * S; i++) {
       const X = o.x * S + i, Y = o.y * S + j;
       if (!ctx.isPointInPath(path, X + 0.37, Y + 0.61)) continue;
-      const idx = Math.floor((o.w >= o.h ? i : j) / S);
+      const idx = Math.floor((isVert(o) ? j : i) / S);
       out.set(`${X},${Y}`, o.sub === 'bridge' && idx > 0 && idx < len - 1); // true = passes over the ground
     }
   }

@@ -3,7 +3,7 @@ import { blockFn, patchObject, stampFn, useStore } from './store';
 import { boxOfAll, moveGroup } from './group';
 import { anchorCell, computeRoutes, routeCells, simplify } from './route';
 import type { Anchor, Cell, Doc, Obj, Sel } from './types';
-import { ADDON_LABEL, MAX_TURN, isTurn, kindOf, restoreD, stampDims } from './types';
+import { ADDON_LABEL, MAX_TURN, isTurn, isVert, kindOf, lenPatch, restoreD, stampDims } from './types';
 import { matStr, portsList, racewayGeom } from './geometry';
 import { findOverlaps, textColor } from './summary';
 import { fitToContent, pointer, zoomAt } from './viewUtil';
@@ -67,7 +67,7 @@ function wrap(name: string, max: number): string[] {
 
 const OCT = 'M.36 .2H.64L.8 .36V.64L.64 .8H.36L.2 .64V.36Z';
 export function Canvas() {
-  const { doc, sel, tool, view: v, stamp, block, wp, ids, cids } = useStore();
+  const { doc, sel, tool, view: v, stamp, block, wp, ids, cids, peek } = useStore();
   const svgRef = useRef<SVGSVGElement>(null);
   const routes = useMemo(() => computeRoutes(doc), [doc]);
   const routesRef = useRef(routes); routesRef.current = routes;
@@ -226,7 +226,7 @@ export function Canvas() {
         const o = doc.objects.find((q) => q.id === d.id); if (!o) return doc;
         if (o.sub === 'straight' || o.sub === 'bridge') {
           const min = o.sub === 'bridge' ? 3 : 1;
-          return o.w >= o.h ? patchObject(doc, d.id, { w: Math.max(min, cell.x - o.x + 1), h: 1 }) : patchObject(doc, d.id, { h: Math.max(min, cell.y - o.y + 1), w: 1 });
+          return patchObject(doc, d.id, lenPatch(o, Math.max(min, isVert(o) ? cell.y - o.y + 1 : cell.x - o.x + 1)));
         }
         if (isTurn(o.sub)) { const n = Math.max(1, Math.min(MAX_TURN, Math.max(cell.x - o.x + 1, cell.y - o.y + 1))); return patchObject(doc, d.id, { w: n, h: n }); }
         return patchObject(doc, d.id, { w: Math.max(1, cell.x - o.x + 1), h: Math.max(1, cell.y - o.y + 1) });
@@ -309,7 +309,7 @@ export function Canvas() {
       </g>
     );
     if (o.kind === 'raceway') {
-      const g = racewayGeom(o), d = g.d, tf = g.m ? matStr(g.m) : undefined, len = Math.max(o.w, o.h), horiz = o.w >= o.h;
+      const g = racewayGeom(o), d = g.d, tf = g.m ? matStr(g.m) : undefined, len = Math.max(o.w, o.h), horiz = !isVert(o);
       return (
         <g key={o.id} {...props}>
           {o.sub === 'bridge' && <path d={racewayGeom({ ...o, x: o.x + 0.05, y: o.y + 0.07 }).d} fill="rgba(0,0,0,.28)" />}
@@ -386,7 +386,7 @@ export function Canvas() {
         {doc.objects.filter((o) => o.kind === 'object').map((o) => renderObj(o))}
 
         {doc.cables.map((c) => {
-          const r = routes.get(c.id); if (!r) return null; const d = pathD(r.draw); const s = cids.includes(c.id);
+          const r = routes.get(c.id); if (!r) return null; const d = r.d || pathD(r.draw); const s = cids.includes(c.id);
           const ends = [{ p: r.pts[0], free: c.a.objId === undefined }, { p: r.pts[r.pts.length - 1], free: c.b.objId === undefined }];
           return (
             <g key={c.id}>
@@ -400,9 +400,11 @@ export function Canvas() {
         })}
 
         {/* raceways sit above cables and hide them */}
-        {raceways.filter((o) => o.sub !== 'bridge').map((o) => renderObj(o))}
-        {raceways.filter((o) => o.sub === 'bridge').map((o) => renderObj(o))}
-        {selCable && routes.get(selCable.id) && <path d={pathD(routes.get(selCable.id)!.draw)} fill="none" stroke="var(--accent)" strokeWidth={2} strokeDasharray="5 4" vectorEffect="non-scaling-stroke" strokeLinecap="round" pointerEvents="none" />}
+        <g opacity={peek ? 0.75 : 1}>
+          {raceways.filter((o) => o.sub !== 'bridge').map((o) => renderObj(o))}
+          {raceways.filter((o) => o.sub === 'bridge').map((o) => renderObj(o))}
+        </g>
+        {selCable && routes.get(selCable.id) && <path d={routes.get(selCable.id)!.d || pathD(routes.get(selCable.id)!.draw)} fill="none" stroke="var(--accent)" strokeWidth={2} strokeDasharray="5 4" vectorEffect="non-scaling-stroke" strokeLinecap="round" pointerEvents="none" />}
         {multi && <g pointerEvents="none">
           {selObjs.map((o) => <rect key={o.id} x={o.x} y={o.y} width={o.w} height={o.h} fill="none" stroke="var(--accent)" strokeWidth={1.5} vectorEffect="non-scaling-stroke" />)}
           {(() => { const b = boxOfAll(selObjs, selCables); return <rect x={b.x - 0.08} y={b.y - 0.08} width={b.w + 0.16} height={b.h + 0.16} fill="none" stroke="var(--accent)" strokeWidth={1.5} strokeDasharray="6 4" vectorEffect="non-scaling-stroke" />; })()}
