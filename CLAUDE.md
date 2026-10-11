@@ -49,7 +49,7 @@ Pure logic (no React) lives in `domain/`, `routing/` and `bom/`; React lives in 
 | `features/panels/` | `LibraryPanel` (left), `InspectorPanel` (right: selection, BOM, cables) |
 | `app/` | `App`, `Toolbar`, `SelectionTools`, `LayersMenu`, `useShortcuts`, import/export |
 | `ui/` | Shared components: `Icon`, `IconButton`, `PieceThumb`, `Swatches`, `useDismiss` |
-| `styles/index.css` | All styles; theme tokens on `:root` |
+| `styles/` | `tokens.css` (light/dark theme variables), `base.css` (type scale, fields, buttons), then layout, toolbar, panels and canvas styles; `index.css` imports them in that order |
 
 ## Gotchas
 

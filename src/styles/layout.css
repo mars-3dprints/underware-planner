@@ -1,0 +1,38 @@
+.app {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 46px 1fr;
+  grid-template-columns: 248px 1fr 316px;
+  grid-template-areas: 'top top top' 'left stage right';
+}
+.app.noright {
+  grid-template-columns: 248px 1fr;
+  grid-template-areas: 'top top' 'left stage';
+}
+.panel {
+  background: var(--panel);
+  overflow-y: auto;
+}
+.panel.left {
+  grid-area: left;
+  border-right: 1px solid var(--line);
+}
+.panel.right {
+  grid-area: right;
+  border-left: 1px solid var(--line);
+}
+.stage {
+  grid-area: stage;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 200px 1fr 250px;
+  }
+  .app.noright {
+    grid-template-columns: 200px 1fr;
+  }
+}

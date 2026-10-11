@@ -1,0 +1,44 @@
+/* Theme tokens. Dark applies with the system scheme unless data-theme="light", or always with data-theme="dark". */
+:root {
+  --bg: #f6f5f2;
+  --panel: #ffffff;
+  --line: #e2e0da;
+  --text: #1f2421;
+  --muted: #6b716d;
+  --canvas: #fbfaf8;
+  --grid-minor: rgba(0, 0, 0, 0.07);
+  --grid-major: rgba(0, 0, 0, 0.14);
+  --accent: #2563eb;
+  --danger: #d6372b;
+  --field: #f2f1ed;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #17191a;
+    --panel: #1f2224;
+    --line: #2e3234;
+    --text: #e8e9e6;
+    --muted: #959b97;
+    --canvas: #181a1b;
+    --grid-minor: rgba(255, 255, 255, 0.06);
+    --grid-major: rgba(255, 255, 255, 0.13);
+    --accent: #5b9bff;
+    --danger: #ff6b5e;
+    --field: #2a2d2f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --bg: #17191a;
+  --panel: #1f2224;
+  --line: #2e3234;
+  --text: #e8e9e6;
+  --muted: #959b97;
+  --canvas: #181a1b;
+  --grid-minor: rgba(255, 255, 255, 0.06);
+  --grid-major: rgba(255, 255, 255, 0.13);
+  --accent: #5b9bff;
+  --danger: #ff6b5e;
+  --field: #2a2d2f;
+  color-scheme: dark;
+}
