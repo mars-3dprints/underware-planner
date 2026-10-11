@@ -8,7 +8,12 @@ describe('group helpers', () => {
   it('measures bounds', () => {
     const d = fixture();
     expect(boxOf(d.objects.filter((o) => o.kind === 'plate'))).toEqual({ x: 0, y: 0, w: 16, h: 11 });
-    expect(boxOfAll([], d.cables.filter((c) => c.id === 'k6'))).toEqual({ x: 2, y: 17, w: 11, h: 4 });
+    expect(
+      boxOfAll(
+        [],
+        d.cables.filter((c) => c.id === 'k6'),
+      ),
+    ).toEqual({ x: 2, y: 17, w: 11, h: 4 });
   });
 
   it('finds cables that travel with a selection', () => {
@@ -48,8 +53,16 @@ describe('group helpers', () => {
   it('clones with fresh ids and remapped anchors', () => {
     const d = fixture();
     const objs = d.objects.filter((o) => o.id === 'o1' || o.id === 'o2');
-    const c = cloneItems(objs, d.cables.filter((x) => x.id === 'k1' || x.id === 'k6'), 1, 2);
-    expect(c.objs.map((o) => [o.x, o.y])).toEqual([[2, 3], [8, 3]]);
+    const c = cloneItems(
+      objs,
+      d.cables.filter((x) => x.id === 'k1' || x.id === 'k6'),
+      1,
+      2,
+    );
+    expect(c.objs.map((o) => [o.x, o.y])).toEqual([
+      [2, 3],
+      [8, 3],
+    ]);
     expect(new Set(ids(c.objs)).has('o1')).toBe(false);
     expect(c.cables[0].a).toEqual({ objId: c.objs[0].id, dx: 1, dy: 0 });
     expect(c.cables[1].a).toEqual({ x: 3, y: 20 });

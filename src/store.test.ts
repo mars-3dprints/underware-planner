@@ -34,13 +34,23 @@ describe('doc operations', () => {
     const { blockFn, stampFn } = await freshStore();
     const d = fixture();
     const st = { sub: 'turn' as const, len: 3, rot: 1, flip: false, color: '#000000' };
-    expect(stampFn(st, { x: 40, y: 40 })(d).objects.at(-1)).toMatchObject({ kind: 'raceway', sub: 'turn', w: 3, h: 3, rot: 1, x: 40 });
+    expect(stampFn(st, { x: 40, y: 40 })(d).objects.at(-1)).toMatchObject({
+      kind: 'raceway',
+      sub: 'turn',
+      w: 3,
+      h: 3,
+      rot: 1,
+      x: 40,
+    });
     const cover = { sub: 'wall' as const, len: 1, rot: 0, flip: false, color: '#343a40' };
     const replaced = stampFn(cover, { x: 0, y: 0 })(d);
     expect(replaced.objects).toHaveLength(d.objects.length);
     expect(replaced.objects.find((o) => o.id === 'h1')).toMatchObject({ sub: 'wall', name: 'Wall mount' });
     expect(stampFn({ ...cover, sub: 'hole' }, { x: 0, y: 0 })(d)).toBe(d);
-    const b = blockFn({ kind: 'object', name: 'PC', w: 2, h: 4, color: '#fff' }, { x: 10, y: 10 })(d).objects.at(-1);
+    const b = blockFn(
+      { kind: 'object', name: 'PC', w: 2, h: 4, color: '#fff' },
+      { x: 10, y: 10 },
+    )(d).objects.at(-1);
     expect(b).toMatchObject({ kind: 'object', name: 'PC', x: 9, y: 8, w: 2, h: 4 });
   });
 });
@@ -59,14 +69,39 @@ describe('persistence', () => {
         { id: 'a', kind: 'plate', name: 'Plate', x: 0, y: 0, w: 2, h: 2, color: '#fff' },
         { id: 'b', kind: 'cover', name: 'Hole cover', sub: 'hole', x: 0, y: 0, w: 1, h: 1, color: '#000' },
         { id: 'c', kind: 'raceway', name: 'x', sub: 'turn2' as never, x: 0, y: 0, w: 1, h: 1, color: '#000' },
-        { id: 'd', kind: 'raceway', name: 'Channel, branch (rounded)', sub: 'branch_round' as never, x: 0, y: 0, w: 2, h: 3, color: '#000', rot: 1 },
-        { id: 'e', kind: 'raceway', name: 'x', sub: 'jog_angled_s' as never, x: 0, y: 0, w: 2, h: 3, color: '#000' },
+        {
+          id: 'd',
+          kind: 'raceway',
+          name: 'Channel, branch (rounded)',
+          sub: 'branch_round' as never,
+          x: 0,
+          y: 0,
+          w: 2,
+          h: 3,
+          color: '#000',
+          rot: 1,
+        },
+        {
+          id: 'e',
+          kind: 'raceway',
+          name: 'x',
+          sub: 'jog_angled_s' as never,
+          x: 0,
+          y: 0,
+          w: 2,
+          h: 3,
+          color: '#000',
+        },
         { id: 'f', kind: 'raceway', name: 'x', sub: 't', x: 0, y: 0, w: 1, h: 1, color: '#000' },
         { id: 'g', kind: 'raceway', name: 'x', sub: 'turn', x: 0, y: 0, w: 2, h: 4, color: '#000' },
       ],
       cables: [],
     };
-    const { useStore } = await freshStore({ doc: legacy, view: { x: 1, y: 2, k: 30 }, palette: ['#e76f51', '#abcdef'] });
+    const { useStore } = await freshStore({
+      doc: legacy,
+      view: { x: 1, y: 2, k: 30 },
+      palette: ['#e76f51', '#abcdef'],
+    });
     const s = useStore.getState();
     expect(s.doc.objects).toMatchSnapshot();
     expect(s.view).toEqual({ x: 1, y: 2, k: 30 });
@@ -152,7 +187,10 @@ describe('store actions', () => {
     s().flipSel();
     expect(s().doc.objects.find((o) => o.id === 'y1')!.flip).toBe(true);
     s().swapStyle();
-    expect(s().doc.objects.find((o) => o.id === 'y1')).toMatchObject({ sub: 'y_angled', name: 'Channel, merge/branch (angled)' });
+    expect(s().doc.objects.find((o) => o.id === 'y1')).toMatchObject({
+      sub: 'y_angled',
+      name: 'Channel, merge/branch (angled)',
+    });
     s().rotateSel();
     expect(s().doc.objects.find((o) => o.id === 'y1')).toMatchObject({ rot: 1, w: 3, h: 2 });
     s().rotateSel(true);
@@ -169,7 +207,11 @@ describe('store actions', () => {
   it('places stamps and blocks', () => {
     s().toggleLayer('channels');
     s().setStamp('turn', 3);
-    expect(s()).toMatchObject({ tool: 'place', hidden: { channels: false }, stamp: { sub: 'turn', len: 3, rot: 0 } });
+    expect(s()).toMatchObject({
+      tool: 'place',
+      hidden: { channels: false },
+      stamp: { sub: 'turn', len: 3, rot: 0 },
+    });
     s().rotateStamp(true);
     s().flipStamp();
     s().swapStyle();

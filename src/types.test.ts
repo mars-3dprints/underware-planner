@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { ADDON_LABEL, ADDON_ORDER, counterpart, isVert, labelOf, lenPatch, pieceOf, portsOf, stampDims } from './types';
+import {
+  ADDON_LABEL,
+  ADDON_ORDER,
+  counterpart,
+  isVert,
+  labelOf,
+  lenPatch,
+  pieceOf,
+  portsOf,
+  stampDims,
+} from './types';
 
 describe('part catalogue', () => {
   it('has a shape and openings for every channel', () => {

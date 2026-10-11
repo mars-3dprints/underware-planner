@@ -21,16 +21,35 @@ describe('routeCells', () => {
   it('falls back to an L route when boxed in', () => {
     const wall = { x: -20, y: 1, w: 40, h: 1 };
     expect(routeCells({ x: 0, y: 0 }, { x: 1, y: 2 }, [wall, { x: -20, y: -1, w: 40, h: 1 }], 1)).toEqual([
-      { x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 1, y: 2 },
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 1, y: 1 },
+      { x: 1, y: 2 },
     ]);
   });
 });
 
 describe('simplify', () => {
   it('keeps bends and U-turns only', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 2, y: 1 }, { x: 2, y: 2 }];
-    expect(simplify(pts)).toEqual([{ x: 0, y: 0 }, { x: 2, y: 0 }, { x: 2, y: 2 }]);
-    expect(simplify([{ x: 0, y: 0 }, { x: 2, y: 0 }, { x: 1, y: 0 }])).toHaveLength(3);
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 0 },
+      { x: 2, y: 1 },
+      { x: 2, y: 2 },
+    ];
+    expect(simplify(pts)).toEqual([
+      { x: 0, y: 0 },
+      { x: 2, y: 0 },
+      { x: 2, y: 2 },
+    ]);
+    expect(
+      simplify([
+        { x: 0, y: 0 },
+        { x: 2, y: 0 },
+        { x: 1, y: 0 },
+      ]),
+    ).toHaveLength(3);
   });
 });
 
