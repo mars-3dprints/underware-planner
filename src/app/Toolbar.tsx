@@ -116,7 +116,10 @@ export function Toolbar({
   );
   return (
     <header className="top">
-      <b className="brand">Underware Planner</b>
+      <b className="brand">
+        <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="" width={22} height={22} />
+        Underware Planner
+      </b>
       <ToolButtons />
       <i className="vsep" />
       <div className="tools">
