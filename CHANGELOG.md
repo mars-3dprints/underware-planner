@@ -25,6 +25,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 ### Fixed
 
 - Importing a file from an older version now brings it up to date (renamed and resized parts), the same way an autosaved layout is.
+- Finishing a cable now selects only that cable. Before, parts selected earlier stayed in the selection, so the colour picker painted them instead of the new cable.
 
 ## [0.2.0] - 2026-10-12
 

@@ -410,8 +410,7 @@ export const useStore = create<EditorState>((set, get) => ({
     };
     s.commit((d) => ({ ...d, cables: [...d.cables, cable] }));
     set({
-      selection: { type: 'cable', id: cable.id },
-      activeWaypoint: null,
+      ...selectionOf([], [cable.id]),
       cableColor: colors[(colors.indexOf(s.cableColor) + 1) % colors.length],
       tool: 'select',
     });
