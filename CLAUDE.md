@@ -5,7 +5,8 @@ Browser app for planning openGrid cable management (28 mm tiles) on an infinite 
 ## Commands
 
 - Node 22.12+ (`.nvmrc` pins 22). `npm run dev` serves http://localhost:5173. `npm run build` runs `tsc --noEmit` then the Vite build.
-- **Deploys:** every push to `main` publishes to GitHub Pages (https://mars-3dprints.github.io/underware-planner/) via `.github/workflows/deploy.yml`, which runs `npm run check` first. Builds and `vite preview` use the base path `/underware-planner/`; the dev server uses `/`.
+- **Releases:** to release X.Y.Z, move the `[Unreleased]` entries under `## [X.Y.Z] - <today>` (leave an empty `[Unreleased]`), run `npm version X.Y.Z --no-git-tag-version`, and commit `chore: bump version to X.Y.Z`. Don't tag by hand: on `main`, `scripts/release.sh` (run by `.github/workflows/release.yml`) tags the commit that set the version and publishes the release from the changelog section. Preview with `DRY_RUN=1 scripts/release.sh`.
+- **Deploys:** GitHub Pages (https://mars-3dprints.github.io/underware-planner/) shows the latest release, not `main`: the Release workflow calls `.github/workflows/deploy.yml` (checks, build, publish) only when it published a new release. Merged but unreleased work isn't live until the next version bump. Builds and `vite preview` use the base path `/underware-planner/`; the dev server uses `/`.
 - `npm run check` runs typecheck, ESLint, Prettier check and Vitest. Run it and the build before every commit.
 - Unit tests sit next to the code (`*.test.ts`) and use the fixture `src/test/fixtures/layout.json` (every part, every channel shape, cables through channels). Store tests use jsdom. Snapshots pin routing, centerlines and the BOM: an unexpected snapshot change is a behaviour change.
 - UI changes still need a browser check (Playwright with a seeded `localStorage` works well, see below), in dark and light schemes.

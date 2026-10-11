@@ -1,8 +1,14 @@
 name: Deploy to GitHub Pages
 
+# Deploys a release to GitHub Pages. Called by the Release workflow for each new release;
+# run it by hand to redeploy the latest release.
 on:
-  push:
-    branches: [main]
+  workflow_call:
+    inputs:
+      ref:
+        description: Release tag to deploy
+        type: string
+        required: true
   workflow_dispatch:
 
 permissions:
@@ -10,16 +16,19 @@ permissions:
   pages: write
   id-token: write
 
-# One deployment at a time; a newer push waits rather than cancelling one in progress.
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - id: ref
+        name: Pick the release to deploy
+        run: echo "ref=${INPUT_REF:-$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)}" >>"$GITHUB_OUTPUT"
+        env:
+          INPUT_REF: ${{ inputs.ref }}
+          GH_TOKEN: ${{ github.token }}
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ steps.ref.outputs.ref }}
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
@@ -34,6 +43,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # One deployment at a time; a newer one waits rather than cancelling one in progress.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
