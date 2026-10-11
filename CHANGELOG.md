@@ -7,6 +7,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 ### Added
 
 - **Tooling:** ESLint (typescript-eslint, React hooks), Prettier and Vitest, with `lint`, `format`, `test`, `typecheck` and `check` scripts. `.nvmrc` pins Node 22.
+- **Unit tests** for routing, channel centerlines, group move/rotate/clone, bill of materials, part catalogue, store actions, undo/redo and saved-layout migration, against a fixture layout with every part (`src/test/fixtures/layout.json`).
 - **Layers:** show or hide tiles (with covers and wall mounts), objects, channels and cables from the layers button in the top bar, or with **1–4**. Hidden layers can't be selected, boxed, nudged or copied, and hiding a layer drops its parts from the current selection. Picking or pasting a part, or starting a cable, shows its layer again. Layer visibility is a view setting: it isn't saved in the layout, exported or part of undo, and the bill of materials still counts everything.
 
 ## [0.2.0] - 2026-10-12
