@@ -1,8 +1,9 @@
+import { cablePathD } from './follow';
 import type { Anchor, Cell, Doc, Obj } from './types';
 import { CELL_MM } from './types';
 
 export interface Rect { x: number; y: number; w: number; h: number }
-export interface Route { segs: Cell[][]; pts: Cell[]; draw: Cell[]; steps: number; bends: number; mm: number }
+export interface Route { segs: Cell[][]; pts: Cell[]; draw: Cell[]; d: string; steps: number; bends: number; mm: number }
 
 const DIRS = [[1, 0], [0, 1], [-1, 0], [0, -1]];
 const TURN = 1.2; // penalty per bend -> prefers straight runs
@@ -115,7 +116,7 @@ export function computeRoutes(doc: Doc): Map<string, Route> {
     }
     const draw = simplify(all);
     const steps = all.length - 1;
-    res.set(c.id, { segs, pts, draw, steps, bends: Math.max(0, draw.length - 2), mm: steps * CELL_MM + c.slackMm });
+    res.set(c.id, { segs, pts, draw, d: cablePathD(all, doc.objects), steps, bends: Math.max(0, draw.length - 2), mm: steps * CELL_MM + c.slackMm });
   }
   return res;
 }
