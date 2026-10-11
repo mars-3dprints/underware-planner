@@ -1,0 +1,26 @@
+name: Release
+
+# Publishes a GitHub Release for each version in CHANGELOG.md that doesn't have one yet
+# (see scripts/release.sh). A version bump reaching main is what creates its release.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - run: bash scripts/release.sh
+        env:
+          GH_TOKEN: ${{ github.token }}

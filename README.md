@@ -99,6 +99,10 @@ npm run check         # typecheck, lint, format check and tests
 
 Every push to `main` runs `.github/workflows/deploy.yml`: checks, build, then publish `dist/` to GitHub Pages. Builds use the base path `/underware-planner/` (`vite.config.ts`); change it if the repo is renamed or moved to a custom domain.
 
+### Releases
+
+Versions are released by bumping them on `main`: move the `[Unreleased]` changelog entries under `## [X.Y.Z] - YYYY-MM-DD`, run `npm version X.Y.Z --no-git-tag-version`, and commit `chore: bump version to X.Y.Z`. When that reaches `main`, `.github/workflows/release.yml` tags the bump commit `vX.Y.Z` and publishes a GitHub Release with that changelog section as its notes.
+
 Stack: React 19, TypeScript, [zustand](https://github.com/pmndrs/zustand) and Vite. The canvas is plain SVG.
 
 ### Project layout
