@@ -3,7 +3,7 @@ import { blockFn, patchObject, stampFn, useStore } from './store';
 import { boxOfAll, moveGroup } from './group';
 import { anchorCell, computeRoutes, routeCells, simplify } from './route';
 import type { Anchor, Cell, Doc, Obj, Sel } from './types';
-import { ADDON_LABEL, MAX_TURN, isTurn, isVert, kindOf, lenPatch, restoreD, stampDims } from './types';
+import { ADDON_LABEL, MAX_TURN, isTurn, isVert, kindOf, layerOf, lenPatch, restoreD, stampDims } from './types';
 import { matStr, portsList, racewayGeom } from './geometry';
 import { findOverlaps, textColor } from './summary';
 import { fitToContent, pointer, zoomAt } from './viewUtil';
@@ -42,14 +42,15 @@ function pathD(pts: Cell[]) {
   return d + ` L${l.x} ${l.y}`;
 }
 
-function objectAt(doc: Doc, c: Cell): Obj | undefined {
+function objectAt(doc: Doc, c: Cell, hidden?: Record<string, boolean>): Obj | undefined {
+  if (hidden?.objects) return undefined;
   for (let i = doc.objects.length - 1; i >= 0; i--) {
     const o = doc.objects[i];
     if (o.kind === 'object' && c.x >= o.x && c.x < o.x + o.w && c.y >= o.y && c.y < o.y + o.h) return o;
   }
 }
-function anchorFrom(doc: Doc, c: Cell): Anchor {
-  const o = objectAt(doc, c);
+function anchorFrom(doc: Doc, c: Cell, hidden?: Record<string, boolean>): Anchor {
+  const o = objectAt(doc, c, hidden);
   return o ? { objId: o.id, dx: c.x - o.x, dy: c.y - o.y } : { x: c.x, y: c.y };
 }
 const sameAnchor = (a: Anchor, b: Anchor) => JSON.stringify(a) === JSON.stringify(b);
@@ -67,7 +68,7 @@ function wrap(name: string, max: number): string[] {
 
 const OCT = 'M.36 .2H.64L.8 .36V.64L.64 .8H.36L.2 .64V.36Z';
 export function Canvas() {
-  const { doc, sel, tool, view: v, stamp, block, wp, ids, cids, peek } = useStore();
+  const { doc, sel, tool, view: v, stamp, block, wp, ids, cids, peek, hidden } = useStore();
   const svgRef = useRef<SVGSVGElement>(null);
   const routes = useMemo(() => computeRoutes(doc), [doc]);
   const routesRef = useRef(routes); routesRef.current = routes;
@@ -107,7 +108,7 @@ export function Canvas() {
       if (/INPUT|TEXTAREA|SELECT/.test((e.target as HTMLElement).tagName)) return;
       if (e.code === 'Space') { setSpace(true); e.preventDefault(); }
       if (e.key === 'Escape') { setPending(null); const s0 = useStore.getState(); if (s0.tool === 'select') s0.select(null); else s0.setTool('select'); }
-      if (e.key === 'Enter' && pending && hover) finish(anchorFrom(useStore.getState().doc, hover), pending.wps);
+      if (e.key === 'Enter' && pending && hover) finish(anchorFrom(useStore.getState().doc, hover, useStore.getState().hidden), pending.wps);
     };
     const ku = (e: KeyboardEvent) => { if (e.code === 'Space') setSpace(false); };
     window.addEventListener('keydown', kd); window.addEventListener('keyup', ku);
@@ -121,9 +122,9 @@ export function Canvas() {
   const cellOf = (w: { x: number; y: number }): Cell => ({ x: Math.floor(w.x), y: Math.floor(w.y) });
 
   const cableClick = (cell: Cell) => {
-    const st = useStore.getState(); const o = objectAt(st.doc, cell);
-    if (!pending) { setPending({ a: anchorFrom(st.doc, cell), wps: [] }); return; }
-    if (o) { finish(anchorFrom(st.doc, cell), pending.wps); return; }
+    const st = useStore.getState(); const o = objectAt(st.doc, cell, st.hidden);
+    if (!pending) { setPending({ a: anchorFrom(st.doc, cell, st.hidden), wps: [] }); return; }
+    if (o) { finish(anchorFrom(st.doc, cell, st.hidden), pending.wps); return; }
     const byId = new Map(st.doc.objects.map((q) => [q.id, q]));
     const last = pending.wps[pending.wps.length - 1] ?? anchorCell(pending.a, byId);
     if (last && last.x === cell.x && last.y === cell.y) { // click the same empty cell again: stop the cable here
@@ -205,8 +206,8 @@ export function Canvas() {
       d.moved = true;
       const x0 = Math.min(w.x, d.sx), x1 = Math.max(w.x, d.sx), y0 = Math.min(w.y, d.sy), y1 = Math.max(w.y, d.sy);
       setMarq({ x0, y0, x1, y1 });
-      const hit = st.doc.objects.filter((o) => o.x < x1 && o.x + o.w > x0 && o.y < y1 && o.y + o.h > y0).map((o) => o.id);
-      const hitC = st.doc.cables.filter((c) => { const r = routesRef.current.get(c.id); if (!r) return false;
+      const hit = st.doc.objects.filter((o) => !st.hidden[layerOf(o)] && o.x < x1 && o.x + o.w > x0 && o.y < y1 && o.y + o.h > y0).map((o) => o.id);
+      const hitC = st.hidden.cables ? [] : st.doc.cables.filter((c) => { const r = routesRef.current.get(c.id); if (!r) return false;
         const P = r.draw.map((p) => ({ x: p.x + 0.5, y: p.y + 0.5 }));
         return P.some((p, i) => { const q = P[i + 1] ?? p; return Math.max(p.x, q.x) >= x0 && Math.min(p.x, q.x) <= x1 && Math.max(p.y, q.y) >= y0 && Math.min(p.y, q.y) <= y1; }); }).map((c) => c.id);
       st.selectIds(d.add ? [...new Set([...d.base, ...hit])] : hit, d.add ? [...new Set([...d.baseC, ...hitC])] : hitC);
@@ -218,7 +219,7 @@ export function Canvas() {
       }) }));
     } else if (d.t === 'end') {
       st.live((doc) => ({ ...doc, cables: doc.cables.map((c) => {
-        if (c.id !== d.cableId) return c; const na = anchorFrom(doc, cell);
+        if (c.id !== d.cableId) return c; const na = anchorFrom(doc, cell, st.hidden);
         return sameAnchor(c[d.end], na) ? c : { ...c, [d.end]: na };
       }) }));
     } else if (d.t === 'resize') {
@@ -265,7 +266,7 @@ export function Canvas() {
     if (!pending || !hover) return null;
     const byId = new Map(doc.objects.map((o) => [o.id, o]));
     const a0 = anchorCell(pending.a, byId); if (!a0) return null;
-    const ho = objectAt(doc, hover);
+    const ho = objectAt(doc, hover, hidden);
     const pts = [a0, ...pending.wps, hover];
     const obst = doc.objects.filter((o) => o.kind === 'object' && o.id !== pending.a.objId && o.id !== ho?.id);
     const all: Cell[] = [];
@@ -280,7 +281,7 @@ export function Canvas() {
   const selCable = !multi && sel?.type === 'cable' ? doc.cables.find((c) => c.id === sel.id) : undefined;
   const cableW = Math.max(0.16, 3 / v.k);
   const showLabels = v.k >= 14;
-  const hoverObj = hover && tool === 'cable' ? objectAt(doc, hover) : undefined;
+  const hoverObj = hover && tool === 'cable' ? objectAt(doc, hover, hidden) : undefined;
   const cursor = space || tool === 'pan' || drag.current?.t === 'pan' ? 'grab' : tool === 'select' ? 'default' : 'crosshair';
   const noPtr = { pointerEvents: 'none', userSelect: 'none' } as const;
 
@@ -381,11 +382,11 @@ export function Canvas() {
       <rect width="100%" height="100%" fill="url(#g-minor)" opacity={v.k >= 9 ? 1 : 0} />
       <rect width="100%" height="100%" fill="url(#g-major)" opacity={v.k >= 3 ? 1 : 0} />
       <g transform={`translate(${v.x} ${v.y}) scale(${v.k})`}>
-        {doc.objects.filter((o) => o.kind === 'plate').map((o) => renderObj(o))}
-        {doc.objects.filter((o) => o.kind === 'cover').map((o) => renderObj(o))}
-        {doc.objects.filter((o) => o.kind === 'object').map((o) => renderObj(o))}
+        {!hidden.tiles && doc.objects.filter((o) => o.kind === 'plate').map((o) => renderObj(o))}
+        {!hidden.tiles && doc.objects.filter((o) => o.kind === 'cover').map((o) => renderObj(o))}
+        {!hidden.objects && doc.objects.filter((o) => o.kind === 'object').map((o) => renderObj(o))}
 
-        {doc.cables.map((c) => {
+        {!hidden.cables && doc.cables.map((c) => {
           const r = routes.get(c.id); if (!r) return null; const d = r.d || pathD(r.draw); const s = cids.includes(c.id);
           const ends = [{ p: r.pts[0], free: c.a.objId === undefined }, { p: r.pts[r.pts.length - 1], free: c.b.objId === undefined }];
           return (
@@ -400,7 +401,7 @@ export function Canvas() {
         })}
 
         {/* raceways sit above cables and hide them */}
-        <g opacity={peek ? 0.75 : 1}>
+        <g opacity={peek ? 0.75 : 1} display={hidden.channels ? 'none' : undefined}>
           {raceways.filter((o) => o.sub !== 'bridge').map((o) => renderObj(o))}
           {raceways.filter((o) => o.sub === 'bridge').map((o) => renderObj(o))}
         </g>

@@ -143,3 +143,12 @@ h3 .btn.sm { text-transform: none; letter-spacing: 0; }
 .tools[hidden], .vsep[hidden] { display: none; }
 .app.noright { grid-template-columns: 248px 1fr; grid-template-areas: 'top top' 'left stage'; }
 @media (max-width: 900px) { .app.noright { grid-template-columns: 200px 1fr; } }
+
+.pop.right { left: auto; right: 0; width: 232px; }
+.layerrow { display: grid; grid-template-columns: 18px 1fr auto auto; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 7px; border: 0; background: transparent; color: var(--text); font: inherit; cursor: pointer; text-align: left; }
+.layerrow:hover { background: var(--hover, rgba(127,127,127,.12)); }
+.layerrow svg { width: 16px; height: 16px; }
+.layerrow .n { color: var(--muted, #8a8f98); font-size: 12px; }
+.layerrow kbd { font: 11px/1 ui-monospace, monospace; color: var(--muted, #8a8f98); border: 1px solid var(--line); border-radius: 4px; padding: 2px 5px; }
+.layerrow.off { opacity: .5; }
+.layerrow.off span:nth-child(2) { text-decoration: line-through; }

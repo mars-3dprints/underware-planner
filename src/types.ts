@@ -118,3 +118,8 @@ export const lenPatch = (o: { w: number; h: number; rot?: number }, n: number) =
   const v = isVert(o);
   return { w: v ? 1 : n, h: v ? n : 1, rot: ((o.rot ?? 0) % 2 === (v ? 1 : 0) ? (o.rot ?? 0) : (o.rot ?? 0) + 1) % 4 };
 };
+
+/** View layers that can be shown or hidden. Tile covers and wall mounts belong to `tiles`. */
+export type Layer = 'tiles' | 'objects' | 'channels' | 'cables';
+export const LAYERS: { id: Layer; label: string }[] = [{ id: 'tiles', label: 'Tiles' }, { id: 'objects', label: 'Objects' }, { id: 'channels', label: 'Channels' }, { id: 'cables', label: 'Cables' }];
+export const layerOf = (o: { kind: string }): Layer => (o.kind === 'object' ? 'objects' : o.kind === 'raceway' ? 'channels' : 'tiles');

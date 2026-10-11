@@ -11,6 +11,8 @@ const P: Record<string, JSX.Element> = {
   delpoint: <><circle cx="10" cy="10" r="3" /><path d="M3 10h4M13 10h4" strokeDasharray="0" /><path d="M14.5 3.5l3 3M17.5 3.5l-3 3" /></>,
   reset: <><path d="M3 16h4V9h6V4h4" strokeDasharray="1.5 2.5" opacity=".55" /><circle cx="3.5" cy="16" r="1.6" /><circle cx="16.5" cy="4" r="1.6" /><path d="M5 14.8L15 5.2" /></>,
   style: <><path d="M3 16V9a4 4 0 0 1 4-4h2" /><path d="M11 16l6-6" /><path d="M11 16v-3M11 16h3" /></>,
+  layers: <><path d="M10 3l7 3.5-7 3.5-7-3.5z" /><path d="M3 10l7 3.5 7-3.5" /><path d="M3 13.5L10 17l7-3.5" /></>,
+  eyeoff: <><path d="M2 10s3-5.5 8-5.5S18 10 18 10s-3 5.5-8 5.5S2 10 2 10z" /><circle cx="10" cy="10" r="2.3" /><path d="M3 17L17 3" /></>,
   peek: <><path d="M2 10s3-5.5 8-5.5S18 10 18 10s-3 5.5-8 5.5S2 10 2 10z" /><circle cx="10" cy="10" r="2.3" /></>,
   sidebar: <><rect x="2.5" y="3.5" width="15" height="13" rx="2" /><path d="M12 3.5v13" /></>,
   trash: <path d="M4 6h12M8 6V4h4v2M6 6l.8 10.5h6.4L14 6M8.5 9v5M11.5 9v5" />,

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import type { Anchor, Block, Cable, Cell, Doc, Obj, Sel, Stamp, Sub, Tool, View } from './types';
+import type { Anchor, Block, Cable, Cell, Doc, Layer, Obj, Sel, Stamp, Sub, Tool, View } from './types';
 import { boxOfAll, carried, cloneItems, moveGroup, rotateGroup, uid } from './group';
-import { ADDON_DEFAULT, ADDON_LABEL, COLORS, counterpart, PIECES, PLATE_DEFAULT, isShaped, isTurn, kindOf, stampDims } from './types';
+import { ADDON_DEFAULT, ADDON_LABEL, COLORS, counterpart, PIECES, PLATE_DEFAULT, isShaped, isTurn, kindOf, layerOf, stampDims } from './types';
 
 const KEY = 'underware-planner-v1';
 export { uid };
@@ -63,9 +63,9 @@ function migrate(doc: Doc): Doc {
 }
 
 /** Ids of objects/cables in `to` that were added or changed relative to `from` (what an undo/redo touched). */
-function changedIn(from: Doc, to: Doc) {
-  const diff = <T extends { id: string }>(a: T[], b: T[]) => { const m = new Map(a.map((x) => [x.id, x])); return b.filter((x) => { const y = m.get(x.id); return !y || (y !== x && JSON.stringify(y) !== JSON.stringify(x)); }).map((x) => x.id); };
-  const ids = diff(from.objects, to.objects), cids = diff(from.cables, to.cables);
+function changedIn(from: Doc, to: Doc, hidden?: Record<Layer, boolean>) {
+  const diff = <T extends { id: string }>(a: T[], b: T[]) => { const m = new Map(a.map((x) => [x.id, x])); return b.filter((x) => { const y = m.get(x.id); return !y || (y !== x && JSON.stringify(y) !== JSON.stringify(x)); }); };
+  const ids = diff(from.objects, to.objects).filter((o) => !hidden?.[layerOf(o)]).map((o) => o.id), cids = hidden?.cables ? [] : diff(from.cables, to.cables).map((c) => c.id);
   return { ids, cids, sel: ids.length ? { type: 'obj' as const, id: ids[0] } : cids.length ? { type: 'cable' as const, id: cids[0] } : null, wp: null };
 }
 const plate = (x: number, y: number, rows: number, cols: number): Obj => ({ id: uid(), kind: 'plate', name: 'Tile', x, y, w: cols, h: rows, color: PLATE_DEFAULT });
@@ -95,6 +95,7 @@ interface Store {
   wp: number | null; stamp: Stamp | null; block: Block | null; ids: string[]; cids: string[]; addonColor: string; clipboard: { objs: Obj[]; cables: Cable[] } | null; lastPaste: string;
   selectIds(ids: string[], cids?: string[]): void; toggleId(id: string): void; toggleCable(id: string): void; selectAll(): void; setBlock(b: Block): void; patchBlock(kind: Block['kind'], p: Partial<Block>): void; resizeStamp(len: number): void; peek: boolean; togglePeek(): void;
   cableColor: string; lastKey: string; lastT: number; txBase: Doc | null;
+  hidden: Record<Layer, boolean>; toggleLayer(l: Layer): void; showLayers(...l: Layer[]): void;
   setView(v: View): void; setTool(t: Tool): void; select(s: Sel): void; setCableColor(c: string): void;
   commit(fn: (d: Doc) => Doc, key?: string): void;
   begin(): void; live(fn: (d: Doc) => Doc): void; end(): void;
@@ -116,20 +117,31 @@ export const useStore = create<Store>((set, get) => ({
   removeColor: (c) => set((s) => ({ palette: s.palette.filter((x) => x !== c) })),
   wp: null, stamp: null, block: null, ids: [], cids: [], addonColor: ADDON_DEFAULT, clipboard: null, lastPaste: '',
   setView: (view) => set({ view }),
-  setTool: (tool) => set((s) => ({ tool, stamp: tool === 'place' ? s.stamp : null, block: tool === 'place' ? s.block : null })),
+  setTool: (tool) => set((s) => ({ tool, ...(tool === 'cable' && s.hidden.cables ? { hidden: { ...s.hidden, cables: false } } : {}), stamp: tool === 'place' ? s.stamp : null, block: tool === 'place' ? s.block : null })),
   select: (sel) => set({ sel, ids: sel?.type === 'obj' ? [sel.id] : [], cids: sel?.type === 'cable' ? [sel.id] : [], wp: null }),
   selectIds: (ids, cids = []) => set({ ids, cids, sel: ids.length ? { type: 'obj', id: ids[0] } : cids.length ? { type: 'cable', id: cids[0] } : null, wp: null }),
   toggleId: (id) => { const s = get(); const next = s.ids.includes(id) ? s.ids.filter((x) => x !== id) : [...s.ids, id]; get().selectIds(next, s.cids); },
   toggleCable: (id) => { const s = get(); const next = s.cids.includes(id) ? s.cids.filter((x) => x !== id) : [...s.cids, id]; get().selectIds(s.ids, next); },
-  selectAll: () => get().selectIds(get().doc.objects.map((o) => o.id), get().doc.cables.map((c) => c.id)),
+  selectAll: () => { const { doc, hidden } = get(); get().selectIds(doc.objects.filter((o) => !hidden[layerOf(o)]).map((o) => o.id), hidden.cables ? [] : doc.cables.map((c) => c.id)); },
   patchBlock: (kind, p) => set((s) => { // edits keep the rotation already applied to the ghost
     if (!s.block || s.block.kind !== kind) return {};
     const q = s.block.swapped ? { ...p, w: p.h, h: p.w } : p;
     return { block: { ...s.block, ...Object.fromEntries(Object.entries(q).filter(([, v]) => v !== undefined)) } };
   }),
   resizeStamp: (len) => set((s) => (s.stamp ? { stamp: { ...s.stamp, len } } : {})),
+  hidden: { tiles: false, objects: false, channels: false, cables: false },
+  toggleLayer: (l) => set((s) => {
+    const hidden = { ...s.hidden, [l]: !s.hidden[l] };
+    if (!hidden[l]) return { hidden };
+    const byId = new Map(s.doc.objects.map((o) => [o.id, o]));
+    const ids = s.ids.filter((id) => { const o = byId.get(id); return o && !hidden[layerOf(o)]; }), cids = hidden.cables ? [] : s.cids;
+    const one = s.sel?.type === 'obj' ? byId.get(s.sel.id) : undefined;
+    const gone = !ids.length && !cids.length && (s.sel?.type === 'cable' ? hidden.cables : one ? hidden[layerOf(one)] : false);
+    return { hidden, ids, cids, ...(ids.length || cids.length ? { sel: ids.length ? { type: 'obj' as const, id: ids[0] } : { type: 'cable' as const, id: cids[0] } } : gone ? { sel: null } : {}), wp: null };
+  }),
+  showLayers: (...ls) => set((s) => (ls.some((l) => s.hidden[l]) ? { hidden: { ...s.hidden, ...Object.fromEntries(ls.map((l) => [l, false])) } } : {})),
   peek: false, togglePeek: () => set((s) => ({ peek: !s.peek })),
-  setBlock: (block) => set({ block, stamp: null, tool: 'place', sel: null, ids: [], cids: [], wp: null }),
+  setBlock: (block) => set((s) => ({ hidden: { ...s.hidden, [block.kind === 'plate' ? 'tiles' : 'objects']: false }, block, stamp: null, tool: 'place', sel: null, ids: [], cids: [], wp: null })),
   setCableColor: (cableColor) => set({ cableColor }),
   commit: (fn, key) => {
     const s = get(); const next = fn(s.doc); if (next === s.doc) return;
@@ -143,8 +155,8 @@ export const useStore = create<Store>((set, get) => ({
     if (s.txBase && s.txBase !== s.doc) set({ past: [...s.past.slice(-99), s.txBase], future: [], txBase: null, lastKey: '' });
     else set({ txBase: null });
   },
-  undo: () => { const s = get(); if (!s.past.length) return; const doc = s.past[s.past.length - 1]; set({ doc, past: s.past.slice(0, -1), future: [s.doc, ...s.future], ...changedIn(s.doc, doc), lastKey: '' }); },
-  redo: () => { const s = get(); if (!s.future.length) return; const doc = s.future[0]; set({ doc, future: s.future.slice(1), past: [...s.past, s.doc], ...changedIn(s.doc, doc), lastKey: '' }); },
+  undo: () => { const s = get(); if (!s.past.length) return; const doc = s.past[s.past.length - 1]; set({ doc, past: s.past.slice(0, -1), future: [s.doc, ...s.future], ...changedIn(s.doc, doc, s.hidden), lastKey: '' }); },
+  redo: () => { const s = get(); if (!s.future.length) return; const doc = s.future[0]; set({ doc, future: s.future.slice(1), past: [...s.past, s.doc], ...changedIn(s.doc, doc, s.hidden), lastKey: '' }); },
   addCable: (a, b, wps) => {
     const s = get(); const all = [...COLORS, ...s.palette]; const idx = all.indexOf(s.cableColor);
     const c: Cable = { id: uid(), name: `Cable ${s.doc.cables.length + 1}`, color: s.cableColor, a, b, waypoints: wps, slackMm: 0 };
@@ -165,11 +177,12 @@ export const useStore = create<Store>((set, get) => ({
     const { sel, doc, commit, ids, cids } = get(); if (!sel) return;
     const oi = new Set(ids.length ? ids : sel.type === 'obj' ? [sel.id] : []), ci = new Set(cids.length ? cids : sel.type === 'cable' ? [sel.id] : []);
     const n = cloneItems(doc.objects.filter((o) => oi.has(o.id)), carried(doc.cables, oi, ci), 1, 1);
-    commit((d) => ({ objects: [...d.objects, ...n.objs], cables: [...d.cables, ...n.cables] })); get().selectIds(n.objs.map((o) => o.id), n.cables.map((c) => c.id));
+    commit((d) => ({ objects: [...d.objects, ...n.objs], cables: [...d.cables, ...n.cables] })); get().showLayers(...n.objs.map(layerOf), ...(n.cables.length ? ['cables' as Layer] : []));
+    get().selectIds(n.objs.map((o) => o.id), n.cables.map((c) => c.id));
   },
   rotateSel: (ccw = false) => { const { sel, commit, ids, cids } = get(); if (sel) { const oi = ids.length ? ids : sel.type === 'obj' ? [sel.id] : [], ci = cids.length ? cids : sel.type === 'cable' ? [sel.id] : []; commit((d) => { let n = rotateGroup(d, oi, ci); if (ccw) n = rotateGroup(rotateGroup(n, oi, ci), oi, ci); return n; }); } },
   setWp: (wp) => set({ wp }),
-  setStamp: (sub, len = 3, flip = false) => set((s) => ({ stamp: { sub, len, rot: 0, flip, color: s.addonColor }, block: null, tool: 'place', sel: null, ids: [], cids: [], wp: null })),
+  setStamp: (sub, len = 3, flip = false) => set((s) => ({ hidden: { ...s.hidden, [layerOf({ kind: kindOf(sub) })]: false }, stamp: { sub, len, rot: 0, flip, color: s.addonColor }, block: null, tool: 'place', sel: null, ids: [], cids: [], wp: null })),
   setAddonColor: (addonColor) => set((s) => ({ addonColor, stamp: s.stamp ? { ...s.stamp, color: addonColor } : null })),
   rotateStamp: (ccw = false) => set((s) => (s.block ? { block: { ...s.block, w: s.block.h, h: s.block.w, swapped: !s.block.swapped } } : s.stamp ? { stamp: { ...s.stamp, rot: (s.stamp.rot + (ccw ? 3 : 1)) % 4 } } : {})),
   flipStamp: () => set((s) => (s.stamp ? { stamp: { ...s.stamp, flip: !s.stamp.flip } } : {})),
@@ -198,6 +211,7 @@ export const useStore = create<Store>((set, get) => ({
     if (`${x},${y}` === lastPaste) { x++; y++; }
     const n = cloneItems(c.objs, c.cables, x - b.x, y - b.y);
     commit((d) => ({ objects: [...d.objects, ...n.objs], cables: [...d.cables, ...n.cables] }));
+    get().showLayers(...n.objs.map(layerOf), ...(n.cables.length ? ['cables' as Layer] : []));
     get().selectIds(n.objs.map((o) => o.id), n.cables.map((q) => q.id)); set({ lastPaste: `${x},${y}` });
   },
   load: (doc) => { get().commit(() => doc); set({ sel: null, ids: [], cids: [] }); },

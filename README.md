@@ -12,6 +12,7 @@ Everything runs client-side. There is no backend and no account; your layout aut
 - **Route cables.** Draw a cable between two objects and it auto-routes orthogonally around obstacles on the grid, using the fewest bends. Add waypoints to steer it, or leave an end loose.
 - **Cover cables with channels.** Channels are drawn over the cables they carry, so you can see exactly where cables are hidden and where they are exposed. Turn on see-through mode (**P**) to look at the cables underneath.
 - **Cables follow the channels.** Where a cable runs inside a shaped channel it follows that piece's real centerline (turn radius, diagonal, S-curve, junction arc). Outside channels it keeps the orthogonal look, and it falls back on its own if the channel is moved or removed.
+- **Focus with layers.** Show or hide tiles, objects, channels and cables independently, for example to look at just the tile plan.
 - **Count the parts.** A live bill of materials tracks tiles by size, connectors, each channel type, tile covers, objects and total cable length.
 
 ## Parts
@@ -44,6 +45,7 @@ Mirrored parts are different prints, so they are listed as separate BOM entries.
 - **Colour:** the toolbar colour button recolours the current selection. A default palette is always available, and you can add your own colours.
 - **Undo and redo** select the parts they changed.
 - **Nudge:** arrow keys move the selection by one cell (Shift: five).
+- **Layers:** the layers button (or **1–4**) shows or hides tiles, objects, channels and cables. Hidden layers can't be selected, and placing a part shows its layer again. The bill of materials still counts everything.
 - **See through:** the eye button (or **P**) draws channels at 75 % opacity.
 - **Sidebar:** the toolbar button hides or shows the bill-of-materials panel.
 
@@ -59,6 +61,7 @@ Mirrored parts are different prints, so they are listed as separate BOM entries.
 | F | Flip (shaped channels) |
 | T | Switch rounded / angled |
 | P | See through channels |
+| 1 / 2 / 3 / 4 | Toggle layers: tiles / objects / channels / cables |
 | Arrow keys / Shift+arrows | Nudge selection by 1 / 5 cells |
 | Ctrl+A / C / V / D | Select all / copy / paste / duplicate |
 | Del | Delete (or delete the selected cable point) |
