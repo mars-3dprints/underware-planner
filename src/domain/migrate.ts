@@ -1,3 +1,4 @@
+import { isDoc } from './doc';
 import { isTurn, PIECE_LABELS, PIECE_SHAPES, stampSize } from './pieces';
 import type { Doc, Part, PieceType } from './types';
 
@@ -43,3 +44,6 @@ function migratePart(part: Part): Part {
 
 /** Brings a layout from an older save up to date. */
 export const migrateDoc = (doc: Doc): Doc => ({ ...doc, objects: doc.objects.map(migratePart) });
+
+/** A layout read from a save or an exported file, brought up to date, or null when it is not a layout. */
+export const readLayout = (value: unknown): Doc | null => (isDoc(value) ? migrateDoc(value) : null);

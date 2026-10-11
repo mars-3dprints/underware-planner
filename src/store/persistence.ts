@@ -1,6 +1,5 @@
 import { DEFAULT_COLORS } from '../domain/constants';
-import { isDoc } from '../domain/doc';
-import { migrateDoc } from '../domain/migrate';
+import { readLayout } from '../domain/migrate';
 import { sampleDoc } from '../domain/sample';
 import type { Doc, View } from '../domain/types';
 
@@ -18,9 +17,10 @@ interface Saved {
 export function loadSaved(): Saved {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-    if (saved && isDoc(saved.doc)) {
+    const doc = readLayout(saved?.doc);
+    if (doc) {
       return {
-        doc: migrateDoc(saved.doc),
+        doc,
         view: saved.view ?? null,
         palette: Array.isArray(saved.palette)
           ? saved.palette.filter((c: string) => !DEFAULT_COLORS.includes(c))

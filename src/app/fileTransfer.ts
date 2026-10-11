@@ -1,5 +1,5 @@
 import type { Doc } from '../domain/types';
-import { isDoc } from '../domain/doc';
+import { readLayout } from '../domain/migrate';
 import { useStore } from '../store/store';
 import { fitToContent } from '../store/view';
 
@@ -16,13 +16,13 @@ export function exportLayout(doc: Doc) {
   URL.revokeObjectURL(link.href);
 }
 
-/** Replaces the layout with an exported file (undoable) and frames it. Invalid files are ignored. */
+/** Replaces the layout with an exported file (undoable, migrated like a save) and frames it. Invalid files are ignored. */
 export async function importLayout(file?: File) {
   if (!file) return;
   try {
-    const data = JSON.parse(await file.text());
-    if (!isDoc(data.doc)) return;
-    useStore.getState().replaceDoc(data.doc);
+    const doc = readLayout(JSON.parse(await file.text())?.doc);
+    if (!doc) return;
+    useStore.getState().replaceDoc(doc);
     fitToContent();
   } catch {
     // not a layout file

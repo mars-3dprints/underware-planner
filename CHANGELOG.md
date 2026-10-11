@@ -22,6 +22,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 - Unused code: opening-arrow paths (`channelArrows`, `openingArrowsPath`) and the unused `addonCount` and per-cable `bends` fields of the bill-of-materials data.
 
+### Fixed
+
+- Importing a file from an older version now brings it up to date (renamed and resized parts), the same way an autosaved layout is.
+
 ## [0.2.0] - 2026-10-12
 
 ### Added
