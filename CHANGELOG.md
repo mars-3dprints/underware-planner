@@ -4,6 +4,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Fixed
+
+- The release workflow stopped after publishing the first missing release.
+
 ## [0.4.0] - 2026-10-12
 
 ### Added
