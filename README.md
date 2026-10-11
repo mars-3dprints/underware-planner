@@ -95,17 +95,17 @@ Stack: React 18, TypeScript, [zustand](https://github.com/pmndrs/zustand) and Vi
 
 ### Project layout
 
-| File | Responsibility |
+Pure logic (no React) is in `domain/`, `routing/` and `bom/`, with unit tests next to it. React code is in `features/`, `app/` and `ui/`.
+
+| Path | Responsibility |
 | --- | --- |
-| `src/types.ts` | Part definitions: shapes, openings, labels, constants |
-| `src/store.ts` | App state, undo/redo history, autosave, legacy-layout migration |
-| `src/Canvas.tsx` | Infinite canvas: rendering, pan/zoom, selection, drags |
-| `src/Panels.tsx` | Left and right panels, bill of materials, colour swatches |
-| `src/App.tsx` | Toolbar, keyboard shortcuts, import/export |
-| `src/route.ts` | Cable auto-routing (A* on the grid) |
-| `src/follow.ts` | Makes cables follow channel shapes (centerlines per piece) |
-| `src/group.ts` | Group move, rotate, duplicate for multi-selections |
-| `src/geometry.ts` | Channel orientation, flipping and opening geometry |
-| `src/summary.ts` | Bill of materials and overlap detection |
-| `src/Thumb.tsx`, `src/icons.tsx` | Part thumbnails and toolbar icons |
-| `src/viewUtil.ts` | View helpers (fit, zoom, coordinates) |
+| `src/domain/` | Part model: types, piece catalogue (shapes, openings, labels), geometry, layout edits, group move/rotate/clone, save migration |
+| `src/routing/` | Cable auto-routing (A* on the grid) and cables following channel shapes |
+| `src/bom/` | Bill of materials and overlap detection |
+| `src/store/` | App state (zustand), undo/redo history, autosave, view helpers (fit, zoom) |
+| `src/features/canvas/` | Infinite canvas: part and cable rendering, selection overlay, pointer and keyboard input |
+| `src/features/panels/` | Left panel (parts to place) and right panel (selection, bill of materials, cables) |
+| `src/app/` | App shell, toolbar, layers menu, keyboard shortcuts, import/export |
+| `src/ui/` | Shared components: icons, buttons, part thumbnails, colour swatches |
+| `src/styles/` | Styles and light/dark theme tokens |
+| `src/test/` | Test fixture layout |

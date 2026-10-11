@@ -13,6 +13,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 ### Changed
 
 - Source formatted with Prettier (ES2022 target).
+- **Project structure:** `src/` split by responsibility into `domain/`, `routing/`, `bom/`, `store/`, `features/canvas/`, `features/panels/`, `app/` and `ui/`. The 450-line canvas component is now a set of shape components and input hooks; the panels and toolbar are split into sections. Identifiers are descriptive (`Part`, `PieceType`, `pieceShape`, `selectedIds`, …), shared helpers replace duplicated code (rounded cable paths, the selection targets of an action, outside-click dismiss), and the app renders in React `StrictMode`. Behaviour is unchanged: the saved and exported layout format is the same, unit-test snapshots are unchanged, and screenshots of 10 interaction states match pixel for pixel in light and dark themes.
 
 ## [0.2.0] - 2026-10-12
 
