@@ -8,3 +8,8 @@ export const IS_RELEASE = import.meta.env.MODE === 'release';
 /** `v0.4.0` for a release; `v0.4.0+dev` for any other build, which may include unreleased changes. */
 export const VERSION_LABEL = `v${version}${IS_RELEASE ? '' : '+dev'}`;
 export const RELEASE_NOTES_URL = IS_RELEASE ? `${REPO_URL}/releases/tag/v${version}` : `${REPO_URL}/releases`;
+
+/** MakerWorld pages for the openGrid system and its Underware channels, which this app plans for. */
+export const OPENGRID_URL =
+  'https://makerworld.com/en/models/1179191-opengrid-wall-desk-mounting-framework-ecosystem#profileId-1190225';
+export const UNDERWARE_URL = 'https://makerworld.com/en/models/1175037-underware-for-opengrid';

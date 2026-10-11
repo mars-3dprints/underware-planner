@@ -76,6 +76,13 @@ Mirrored parts are different prints, so they are listed as separate BOM entries.
 
 The layout autosaves to `localStorage` (key `underware-planner-v1`), separately for each site: a layout saved locally doesn't appear on the hosted version, so move it with Export and Import. **Export** downloads `underware-layout.json`; **Import** loads one back. **Copy** in the bill of materials puts a plain-text parts list on your clipboard.
 
+## Related projects
+
+This planner is an unofficial companion to these MakerWorld models:
+
+- [openGrid](https://makerworld.com/en/models/1179191-opengrid-wall-desk-mounting-framework-ecosystem#profileId-1190225): the wall and desk mounting framework the tiles come from.
+- [Underware for openGrid](https://makerworld.com/en/models/1175037-underware-for-opengrid): the cable channels this planner lays out.
+
 ## Contributing
 
 Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).

@@ -1,6 +1,14 @@
 import { useCallback, useRef, useState } from 'react';
 import { useDismiss } from '../ui/useDismiss';
-import { IS_RELEASE, NEW_ISSUE_URL, RELEASE_NOTES_URL, REPO_URL, VERSION_LABEL } from './about';
+import {
+  IS_RELEASE,
+  NEW_ISSUE_URL,
+  OPENGRID_URL,
+  RELEASE_NOTES_URL,
+  REPO_URL,
+  UNDERWARE_URL,
+  VERSION_LABEL,
+} from './about';
 
 const external = { target: '_blank', rel: 'noreferrer' } as const;
 
@@ -39,6 +47,15 @@ export function VersionMenu() {
             </a>
             <a href={NEW_ISSUE_URL} {...external}>
               Report a bug or idea
+            </a>
+          </nav>
+          <span className="sub menusub">Related</span>
+          <nav className="menulinks">
+            <a href={OPENGRID_URL} {...external}>
+              openGrid on MakerWorld
+            </a>
+            <a href={UNDERWARE_URL} {...external}>
+              Underware for openGrid
             </a>
           </nav>
         </div>

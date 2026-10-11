@@ -4,6 +4,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Links to openGrid and Underware for openGrid on MakerWorld, in the README and a "Related" group in the version menu.
+
 ## [0.5.0] - 2026-10-12
 
 ### Added
