@@ -91,7 +91,7 @@ npm run format        # Prettier
 npm run check         # typecheck, lint, format check and tests
 ```
 
-Stack: React 18, TypeScript, [zustand](https://github.com/pmndrs/zustand) and Vite. The canvas is plain SVG.
+Stack: React 19, TypeScript, [zustand](https://github.com/pmndrs/zustand) and Vite. The canvas is plain SVG.
 
 ### Project layout
 
