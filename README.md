@@ -97,7 +97,7 @@ npm run check         # typecheck, lint, format check and tests
 
 ### Deployment
 
-Every push to `main` runs `.github/workflows/deploy.yml`: checks, build, then publish `dist/` to GitHub Pages. Builds use the base path `/underware-planner/` (`vite.config.ts`); change it if the repo is renamed or moved to a custom domain.
+The site always shows the latest release, not `main`. When a release is published (see below), the Release workflow deploys it with `.github/workflows/deploy.yml`: checks, build, then publish `dist/` to GitHub Pages. To redeploy the latest release, run the Deploy workflow by hand. Builds use the base path `/underware-planner/` (`vite.config.ts`); change it if the repo is renamed or moved to a custom domain.
 
 ### Releases
 

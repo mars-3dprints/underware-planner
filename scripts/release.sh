@@ -4,6 +4,7 @@
 # that version's changelog section. Versions without such a commit are skipped with a warning.
 #
 # Needs: full git history, the gh CLI with GH_TOKEN. DRY_RUN=1 prints what it would do instead.
+# In GitHub Actions it writes `released=true|false` and `tag=<latest release>` to $GITHUB_OUTPUT.
 set -euo pipefail
 
 # Prints the body of the `## [version]` section, without surrounding blank lines.
@@ -43,4 +44,12 @@ for version in $versions; do
   fi
   notes_for "$version" | gh release create "$tag" --target "$commit" --title "$tag" --notes-file -
   echo "$tag: released at ${commit:0:7}"
+  released=true
 done
+
+if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+  echo "released=${released:-false}" >>"$GITHUB_OUTPUT"
+  if [[ -n "${released:-}" ]]; then
+    echo "tag=$(gh release view --json tagName --jq .tagName)" >>"$GITHUB_OUTPUT"
+  fi
+fi

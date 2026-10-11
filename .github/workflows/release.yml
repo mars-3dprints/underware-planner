@@ -1,14 +1,12 @@
 name: Release
 
 # Publishes a GitHub Release for each version in CHANGELOG.md that doesn't have one yet
-# (see scripts/release.sh). A version bump reaching main is what creates its release.
+# (see scripts/release.sh), then deploys the latest release to GitHub Pages.
+# A version bump reaching main is what releases and deploys; other pushes do nothing.
 on:
   push:
     branches: [main]
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 concurrency:
   group: release
@@ -17,10 +15,28 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      released: ${{ steps.release.outputs.released }}
+      tag: ${{ steps.release.outputs.tag }}
     steps:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - run: bash scripts/release.sh
+      - id: release
+        run: bash scripts/release.sh
         env:
           GH_TOKEN: ${{ github.token }}
+
+  # Runs here rather than on a `release` event: releases created with the workflow token don't trigger workflows.
+  deploy:
+    needs: release
+    if: needs.release.outputs.released == 'true'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy.yml
+    with:
+      ref: ${{ needs.release.outputs.tag }}
