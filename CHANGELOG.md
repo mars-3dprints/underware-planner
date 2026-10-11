@@ -4,6 +4,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- MIT license.
+
 ### Fixed
 
 - The release workflow stopped after publishing the first missing release.

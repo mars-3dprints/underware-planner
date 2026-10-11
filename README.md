@@ -121,3 +121,7 @@ Pure logic (no React) is in `domain/`, `routing/` and `bom/`, with unit tests ne
 | `src/ui/` | Shared components: icons, buttons, part thumbnails, colour swatches |
 | `src/styles/` | Styles and light/dark theme tokens |
 | `src/test/` | Test fixture layout |
+
+## License
+
+[MIT](LICENSE)
