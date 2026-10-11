@@ -13,6 +13,7 @@ Browser app for planning openGrid cable management (28 mm tiles) on an infinite 
 
 - Be precise and token-efficient. Use bullets, not paragraphs. Don't call tools unnecessarily.
 - **Before every commit, update `CHANGELOG.md` (add to `## [Unreleased]`) and `README.md` when the change affects what it describes.**
+- Changelog entries are concise: one line each where possible, saying what changed for the user. No implementation detail, file lists or how it was verified.
 - Commits: Conventional Commits (commitlint), one short line subject, several small commits rather than one big one. Trailer: `Co-Authored-By: Claude <noreply@anthropic.com>` only. **Never add a `Claude-Session` line.**
 - Rewrite files in place; don't leave zips or copies around. Dates are YYYY-MM-DD.
 
