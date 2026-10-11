@@ -7,13 +7,48 @@
   background: var(--panel);
   border-bottom: 1px solid var(--line);
 }
+.brandwrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 12px;
+}
 .brand {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-right: 12px;
   font-size: 14px;
   font-weight: 600;
+}
+/* Version label: a quiet pill that opens the About popover. */
+.version {
+  padding: 1px 7px;
+  font: inherit;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  background: var(--field);
+  border: 1px solid transparent;
+  border-radius: 99px;
+  cursor: pointer;
+}
+.version:hover,
+.version.on {
+  color: var(--text);
+  border-color: var(--line);
+}
+.menulinks {
+  display: flex;
+  flex-direction: column;
+}
+.menulinks a {
+  text-decoration: none;
+}
+@media (max-width: 900px) {
+  /* The top bar is tight here: keep the logo and version, drop the name (it's in the tab title). */
+  .brandname {
+    display: none;
+  }
 }
 .brand img {
   display: block;
@@ -73,7 +108,8 @@
   opacity: 0.35;
   cursor: default;
 }
-.ibtn:focus-visible {
+.ibtn:focus-visible,
+.version:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
@@ -129,22 +165,31 @@
 }
 
 /* Layers menu */
+/* Menu rows: layer toggles and About links. */
+.layerrow,
+.menulinks a {
+  padding: 6px 8px;
+  border-radius: 7px;
+  color: var(--text);
+}
+.layerrow:hover,
+.menulinks a:hover,
+.menulinks a:focus-visible {
+  background: rgba(127, 127, 127, 0.12);
+}
+.menulinks a:focus-visible {
+  outline: none;
+}
 .layerrow {
   display: grid;
   grid-template-columns: 18px 1fr auto auto;
   align-items: center;
   gap: 8px;
-  padding: 6px 8px;
   border: 0;
-  border-radius: 7px;
   background: transparent;
-  color: var(--text);
   font: inherit;
   text-align: left;
   cursor: pointer;
-}
-.layerrow:hover {
-  background: rgba(127, 127, 127, 0.12);
 }
 .layerrow svg {
   width: 16px;

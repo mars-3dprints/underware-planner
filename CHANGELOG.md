@@ -6,6 +6,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ### Added
 
+- Version shown next to the app name, with links to its release notes, the source and bug reports.
 - MIT license.
 - Contributing guide, and issue and pull request templates.
 

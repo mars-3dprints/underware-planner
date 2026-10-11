@@ -8,6 +8,7 @@ import { Swatches } from '../ui/Swatches';
 import { exportLayout, importLayout } from './fileTransfer';
 import { LayersMenu } from './LayersMenu';
 import { SelectionTools } from './SelectionTools';
+import { VersionMenu } from './VersionMenu';
 
 const CONFIRM_MS = 2500;
 
@@ -116,10 +117,13 @@ export function Toolbar({
   );
   return (
     <header className="top">
-      <b className="brand">
-        <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="" width={22} height={22} />
-        Underware Planner
-      </b>
+      <div className="brandwrap">
+        <b className="brand">
+          <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="" width={22} height={22} />
+          <span className="brandname">Underware Planner</span>
+        </b>
+        <VersionMenu />
+      </div>
       <ToolButtons />
       <i className="vsep" />
       <div className="tools">

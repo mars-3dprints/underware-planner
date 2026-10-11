@@ -105,7 +105,7 @@ The site always shows the latest release, not `main`. When a release is publishe
 
 ### Releases
 
-Versions are released by bumping them on `main`: move the `[Unreleased]` changelog entries under `## [X.Y.Z] - YYYY-MM-DD`, run `npm version X.Y.Z --no-git-tag-version`, and commit `chore: bump version to X.Y.Z`. When that reaches `main`, `.github/workflows/release.yml` tags the bump commit `vX.Y.Z` and publishes a GitHub Release with that changelog section as its notes.
+Versions are released by bumping them on `main`: move the `[Unreleased]` changelog entries under `## [X.Y.Z] - YYYY-MM-DD`, run `npm version X.Y.Z --no-git-tag-version`, and commit `chore: bump version to X.Y.Z`. When that reaches `main`, `.github/workflows/release.yml` tags the bump commit `vX.Y.Z` and publishes a GitHub Release with that changelog section as its notes. The app shows its version next to its name: `vX.Y.Z` on the site (built with `--mode release`), `vX.Y.Z+dev` in any other build.
 
 Stack: React 19, TypeScript, [zustand](https://github.com/pmndrs/zustand) and Vite. The canvas is plain SVG.
 
