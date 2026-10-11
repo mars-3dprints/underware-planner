@@ -32,7 +32,9 @@ for version in $versions; do
     echo "$tag: release exists, skipping"
     continue
   fi
-  commit=$(git log --reverse --format=%H -S"\"version\": \"$version\"" -- package.json | head -n 1)
+  # Read all of git log's output: `| head -n 1` can kill it with SIGPIPE, which fails the script under pipefail.
+  commits=$(git log --reverse --format=%H -S"\"version\": \"$version\"" -- package.json)
+  commit=${commits%%$'\n'*}
   if [[ -z "$commit" ]]; then
     echo "::warning::$tag: no commit sets package.json to $version, skipping"
     continue
