@@ -4,6 +4,8 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-12
+
 ### Added
 
 - **Layers:** show or hide tiles, objects, channels and cables (layers button or **1–4**). Hidden layers can't be selected or edited; placing a part shows its layer again. A view setting only: not saved, exported or undone, and the bill of materials still counts everything.
