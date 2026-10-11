@@ -7,6 +7,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 ### Added
 
 - Hosted on GitHub Pages: https://mars-3dprints.github.io/underware-planner/
+- Logo, favicon and app icons, shown in the README and the top bar.
 
 ## [0.3.0] - 2026-10-12
 

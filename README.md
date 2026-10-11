@@ -1,3 +1,5 @@
+<p align="center"><img src="public/logo.svg" alt="Underware Planner logo" width="128" /></p>
+
 # Underware Planner
 
 A browser-based planner for cable management on openGrid — the 28 mm tile system for wall and desk organisation. Lay out your tiles, devices, channels and cables on an infinite canvas, and get a bill of materials of every part you need to print or buy.
