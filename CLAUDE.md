@@ -17,6 +17,7 @@ Browser app for planning openGrid cable management (28 mm tiles) on an infinite 
 - **Before every commit, update `CHANGELOG.md` (add to `## [Unreleased]`) and `README.md` when the change affects what it describes.**
 - Changelog entries are concise: one line each where possible, saying what changed for the user. No implementation detail, file lists or how it was verified.
 - Commits: Conventional Commits (commitlint), one short line subject, several small commits rather than one big one. Trailer: `Co-Authored-By: Claude <noreply@anthropic.com>` only. **Never add a `Claude-Session` line.**
+- `CONTRIBUTING.md` and `.github/pull_request_template.md` restate these rules for human contributors: keep them in sync when the workflow changes.
 - Rewrite files in place; don't leave zips or copies around. Dates are YYYY-MM-DD.
 
 ## Concepts
