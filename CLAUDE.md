@@ -4,7 +4,7 @@ Browser app for planning openGrid cable management (28 mm tiles) on an infinite 
 
 ## Commands
 
-- Node 20.19+ (`.nvmrc` pins 22). `npm run dev` serves http://localhost:5173. `npm run build` runs `tsc --noEmit` then the Vite build.
+- Node 22.12+ (`.nvmrc` pins 22). `npm run dev` serves http://localhost:5173. `npm run build` runs `tsc --noEmit` then the Vite build.
 - `npm run check` runs typecheck, ESLint, Prettier check and Vitest. Run it and the build before every commit.
 - Unit tests sit next to the code (`*.test.ts`) and use the fixture `src/test/fixtures/layout.json` (every part, every channel shape, cables through channels). Store tests use jsdom. Snapshots pin routing, centerlines and the BOM: an unexpected snapshot change is a behaviour change.
 - UI changes still need a browser check (Playwright with a seeded `localStorage` works well, see below), in dark and light schemes.

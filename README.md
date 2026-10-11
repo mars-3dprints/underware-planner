@@ -78,7 +78,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## Development
 
-Requires Node 20.19 or later (`.nvmrc` pins 22).
+Requires Node 22.12 or later (`.nvmrc` pins 22).
 
 ```sh
 npm install
