@@ -1,0 +1,40 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Place a rounded turn
+        2. Draw a cable through it
+        3. …
+    validations:
+      required: true
+  - type: textarea
+    id: layout
+    attributes:
+      label: Layout
+      description: Attach your layout if you can (Export in the top bar saves `underware-layout.json`; drag it here). Screenshots help too.
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      options:
+        - Hosted site (mars-3dprints.github.io)
+        - Local build
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: Chrome 141 on macOS 26
