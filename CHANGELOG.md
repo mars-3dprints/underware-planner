@@ -4,6 +4,8 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-12
+
 ### Added
 
 - Version shown next to the app name, with links to its release notes, the source and bug reports.
