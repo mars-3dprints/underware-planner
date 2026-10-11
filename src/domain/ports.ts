@@ -76,12 +76,3 @@ export const openingsMaskPath = (ports: Port[], depth: number, half: number) =>
       return `M${at(-0.02, -half)}L${at(depth, -half)}L${at(depth, half)}L${at(-0.02, half)}Z`;
     })
     .join('');
-
-/** Arrow markers pointing out of each opening. */
-export const openingArrowsPath = (ports: Port[]) =>
-  ports
-    .map((port) => {
-      const at = (along: number, across: number) => fromPort(port, along, across);
-      return `M${at(0.08, 0)}L${at(0.3, 0.14)}L${at(0.3, -0.14)}Z`;
-    })
-    .join('');

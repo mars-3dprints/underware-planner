@@ -25,7 +25,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M1.08 3.5L1.3 3.36L1.3 3.64ZM5.92 3.5L5.7 3.64L5.7 3.36Z",
   ],
   [
     "s2",
@@ -50,7 +49,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M10.5 2.08L10.64 2.3L10.36 2.3ZM10.5 5.92L10.36 5.7L10.64 5.7Z",
   ],
   [
     "s3",
@@ -75,7 +73,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M7.5 9.08L7.64 9.3L7.36 9.3ZM7.5 9.92L7.36 9.7L7.64 9.7Z",
   ],
   [
     "b1",
@@ -100,7 +97,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M8.08 4.5L8.3 4.36L8.3 4.64ZM11.92 4.5L11.7 4.64L11.7 4.36Z",
   ],
   [
     "t1",
@@ -140,7 +136,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M0.08 0.5L0.3 0.36L0.3 0.64ZM2.5 2.92L2.36 2.7L2.64 2.7Z",
   ],
   [
     "t2",
@@ -180,7 +175,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M0.08 0.5L0.3 0.36L0.3 0.64ZM3.5 3.92L3.36 3.7L3.64 3.7Z",
   ],
   [
     "t3",
@@ -220,7 +214,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M0.08 0.5L0.3 0.36L0.3 0.64ZM0.5 0.92L0.36 0.7L0.64 0.7Z",
   ],
   [
     "y1",
@@ -266,7 +259,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M0.5 0.08L0.64 0.3L0.36 0.3ZM1.5 0.08L1.64 0.3L1.36 0.3ZM1.5 2.92L1.36 2.7L1.64 2.7Z",
   ],
   [
     "y2",
@@ -312,7 +304,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M0.5 0.08L0.64 0.3L0.36 0.3ZM1.5 0.08L1.64 0.3L1.36 0.3ZM1.5 2.92L1.36 2.7L1.64 2.7Z",
   ],
   [
     "j1",
@@ -352,7 +343,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M0.5 0.08L0.64 0.3L0.36 0.3ZM1.5 2.92L1.36 2.7L1.64 2.7Z",
   ],
   [
     "j2",
@@ -392,7 +382,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M0.5 0.08L0.64 0.3L0.36 0.3ZM1.5 2.92L1.36 2.7L1.64 2.7Z",
   ],
   [
     "x1",
@@ -438,7 +427,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M0.5 0.08L0.64 0.3L0.36 0.3ZM0.5 2.92L0.36 2.7L0.64 2.7ZM1.92 1.5L1.7 1.64L1.7 1.36Z",
   ],
   [
     "x2",
@@ -490,7 +478,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M0.5 0.08L0.64 0.3L0.36 0.3ZM0.92 0.5L0.7 0.64L0.7 0.36ZM0.5 0.92L0.36 0.7L0.64 0.7ZM0.08 0.5L0.3 0.36L0.3 0.64Z",
   ],
   [
     "x3",
@@ -542,7 +529,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M1.5 0.08L1.64 0.3L1.36 0.3ZM2.92 1.5L2.7 1.64L2.7 1.36ZM1.5 2.92L1.36 2.7L1.64 2.7ZM0.08 1.5L0.3 1.36L0.3 1.64Z",
   ],
   [
     "f1",
@@ -588,7 +574,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M0.08 0.5L0.3 0.36L0.3 0.64ZM0.08 2.5L0.3 2.36L0.3 2.64ZM2.92 1.5L2.7 1.64L2.7 1.36Z",
   ],
   [
     "f2",
@@ -634,7 +619,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M0.08 0.5L0.3 0.36L0.3 0.64ZM0.08 2.5L0.3 2.36L0.3 2.64ZM2.92 1.5L2.7 1.64L2.7 1.36Z",
   ],
   [
     "c1",
@@ -674,7 +658,6 @@ exports[`places every channel shape with its matrix and openings 1`] = `
         ],
       ],
     },
-    "M0.08 0.5L0.3 0.36L0.3 0.64ZM1.5 0.92L1.36 0.7L1.64 0.7Z",
   ],
 ]
 `;

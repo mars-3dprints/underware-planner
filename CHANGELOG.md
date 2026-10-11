@@ -16,6 +16,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 - **Project structure:** `src/` split by responsibility into `domain/`, `routing/`, `bom/`, `store/`, `features/canvas/`, `features/panels/`, `app/` and `ui/`. The 450-line canvas component is now a set of shape components and input hooks; the panels and toolbar are split into sections. Identifiers are descriptive (`Part`, `PieceType`, `pieceShape`, `selectedIds`, …), shared helpers replace duplicated code (rounded cable paths, the selection targets of an action, outside-click dismiss), and the app renders in React `StrictMode`. Behaviour is unchanged: the saved and exported layout format is the same, unit-test snapshots are unchanged, and screenshots of 10 interaction states match pixel for pixel in light and dark themes.
 - **Styles** split into `tokens`, `base`, `layout`, `toolbar`, `panels` and `canvas` files. Rules that were defined two or three times (later copies overriding earlier ones) are merged into one, and unused rules (`.seg`, `.stat`, `.btns`, `.tbl .tot`, `.chip.on`, `.sw.picker.custom`) are gone. Rendering is unchanged (pixel-identical, including popovers and the narrow layout).
 
+### Removed
+
+- Unused code: opening-arrow paths (`channelArrows`, `openingArrowsPath`) and the unused `addonCount` and per-cable `bends` fields of the bill-of-materials data.
+
 ## [0.2.0] - 2026-10-12
 
 ### Added

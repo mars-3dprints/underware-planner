@@ -92,7 +92,6 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
     name: c.name,
     color: c.color,
     mm: routes.get(c.id)?.mm ?? 0,
-    bends: routes.get(c.id)?.bends ?? 0,
   }));
   return {
     sizes,
@@ -100,7 +99,6 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
     tiles: cells,
     connectors: countConnectors(tiles),
     addons,
-    addonCount: addons.reduce((n, a) => n + a.qty, 0),
     bboxMm: tiles.length ? { w: footprint.w * CELL_MM, h: footprint.h * CELL_MM } : null,
     objects: doc.objects.filter((p) => p.kind === 'object').length,
     cables,

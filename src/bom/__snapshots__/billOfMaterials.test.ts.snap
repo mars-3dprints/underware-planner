@@ -2,7 +2,6 @@
 
 exports[`builds the bill of materials 1`] = `
 {
-  "addonCount": 20,
   "addons": [
     {
       "label": "Channel, straight",
@@ -183,42 +182,36 @@ exports[`builds the bill of materials 1`] = `
   "cableMm": 1606,
   "cables": [
     {
-      "bends": 0,
       "color": "#e76f51",
       "id": "k1",
       "mm": 140,
       "name": "Cable 1",
     },
     {
-      "bends": 3,
       "color": "#f4a261",
       "id": "k2",
       "mm": 458,
       "name": "Uplink",
     },
     {
-      "bends": 1,
       "color": "#4cc9f0",
       "id": "k3",
       "mm": 252,
       "name": "Through turn",
     },
     {
-      "bends": 1,
       "color": "#9d4edd",
       "id": "k4",
       "mm": 140,
       "name": "Through cross",
     },
     {
-      "bends": 1,
       "color": "#2a9d8f",
       "id": "k5",
       "mm": 168,
       "name": "Through fork",
     },
     {
-      "bends": 5,
       "color": "#343a40",
       "id": "k6",
       "mm": 448,

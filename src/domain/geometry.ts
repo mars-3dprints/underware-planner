@@ -1,5 +1,5 @@
 import { isLinear, isVertical, pieceShape } from './pieces';
-import { openingArrowsPath, piecePorts, type Port } from './ports';
+import { piecePorts, type Port } from './ports';
 import type { Cell, Part } from './types';
 
 /** SVG affine matrix [a, b, c, d, e, f]. */
@@ -54,9 +54,4 @@ export function channelPorts(part: Part): { ports: Port[]; m: Matrix | null } {
     ports: shape && part.sub ? piecePorts(part.sub, shape.w) : [],
     m: shape ? channelGeometry(part).m : null,
   };
-}
-
-export function channelArrows(part: Part): { d: string; m: Matrix | null } {
-  const { ports, m } = channelPorts(part);
-  return { d: openingArrowsPath(ports), m };
 }
