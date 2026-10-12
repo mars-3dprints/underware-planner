@@ -9,6 +9,7 @@ import { routesFor } from '../../routing/route';
 import { isGroupSelected, selectedCable, selectedPart, useStore } from '../../store/store';
 import { fitToContent } from '../../store/view';
 import { CableShape } from './CableShape';
+import { CableTip } from './CableTip';
 import { CanvasDefs, CanvasGrid } from './CanvasDefs';
 import { PartShape } from './PartShape';
 import { RenameInput } from './RenameInput';
@@ -45,6 +46,7 @@ export function Canvas() {
     selectedIds,
     selectedCableIds,
     peek,
+    hoverCableIds,
     hidden,
     isGroup,
     part,
@@ -58,6 +60,7 @@ export function Canvas() {
       selectedIds: s.selectedIds,
       selectedCableIds: s.selectedCableIds,
       peek: s.peek,
+      hoverCableIds: s.hoverCableIds,
       hidden: s.hidden,
       isGroup: isGroupSelected(s),
       part: selectedPart(s),
@@ -144,6 +147,7 @@ export function Canvas() {
                     cable={c}
                     route={route}
                     selected={selectedCableIds.includes(c.id)}
+                    dim={hoverCableIds.length > 0 && !hoverCableIds.includes(c.id)}
                     width={cableWidth}
                     zoom={view.k}
                     interactive={tool === 'select'}
@@ -224,6 +228,7 @@ export function Canvas() {
           ))}
         </g>
       </svg>
+      <CableTip svgRef={svgRef} />
       {renamed && <RenameInput part={renamed} view={view} onDone={() => setRenaming(null)} />}
     </>
   );

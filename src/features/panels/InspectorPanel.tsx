@@ -9,6 +9,7 @@ import { SelectionSection } from './SelectionSection';
 function CablesSection({ bom }: { bom: BillOfMaterials }) {
   const selectedCableIds = useStore((s) => s.selectedCableIds);
   const select = useStore((s) => s.select);
+  const setHoverCables = useStore((s) => s.setHoverCables);
   return (
     <section>
       <h3>
@@ -21,6 +22,8 @@ function CablesSection({ bom }: { bom: BillOfMaterials }) {
               key={cable.id}
               className={selectedCableIds.includes(cable.id) ? 'on' : ''}
               onClick={() => select({ type: 'cable', id: cable.id })}
+              onMouseEnter={() => setHoverCables([cable.id])}
+              onMouseLeave={() => setHoverCables([])}
             >
               <i style={{ background: cable.color }} />
               {cable.name}

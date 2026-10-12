@@ -60,6 +60,8 @@ export interface EditorState {
   view: View;
   viewRestored: boolean;
   peek: boolean;
+  /** Cables under the pointer (or hovered in the list). View-only: not saved or undone. */
+  hoverCableIds: string[];
   hidden: Record<Layer, boolean>;
   /** The right-hand panel (selection and bill of materials). */
   sidebarOpen: boolean;
@@ -106,6 +108,7 @@ export interface EditorState {
 
   setView(view: View): void;
   togglePeek(): void;
+  setHoverCables(ids: string[]): void;
   toggleSidebar(): void;
   toggleLayer(layer: Layer): void;
   showLayers(...layers: Layer[]): void;
@@ -222,6 +225,7 @@ export const useStore = create<EditorState>((set, get) => ({
   view: saved.view ?? { x: 0, y: 0, k: BASE_ZOOM },
   viewRestored: !!saved.view,
   peek: false,
+  hoverCableIds: [],
   sidebarOpen: true,
   hidden: { tiles: false, objects: false, channels: false, cables: false },
 
@@ -495,6 +499,12 @@ export const useStore = create<EditorState>((set, get) => ({
 
   setView: (view) => set({ view }),
   togglePeek: () => set((s) => ({ peek: !s.peek })),
+  setHoverCables: (ids) =>
+    set((s) =>
+      ids.length === s.hoverCableIds.length && ids.every((id, i) => id === s.hoverCableIds[i])
+        ? s
+        : { hoverCableIds: ids },
+    ),
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
   toggleLayer: (layer) =>
     set((s) => {

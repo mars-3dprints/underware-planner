@@ -7,6 +7,8 @@ interface CableShapeProps {
   cable: Cable;
   route: Route;
   selected: boolean;
+  /** Fades the cable while others are being inspected. */
+  dim: boolean;
   /** Stroke width in cells. */
   width: number;
   /** Pixels per cell. */
@@ -20,6 +22,7 @@ export const CableShape = memo(function CableShape({
   cable,
   route,
   selected,
+  dim,
   width,
   zoom,
   interactive,
@@ -31,7 +34,7 @@ export const CableShape = memo(function CableShape({
     { at: cellCenter(route.pts[route.pts.length - 1]), loose: cable.b.objId === undefined },
   ];
   return (
-    <g>
+    <g opacity={dim ? 0.15 : 1}>
       {selected && (
         <path
           d={d}
