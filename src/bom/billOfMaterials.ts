@@ -1,3 +1,4 @@
+import { cableRoute, partsById } from '../domain/anchors';
 import { CELL_MM } from '../domain/constants';
 import { boundsOf } from '../domain/group';
 import { isLinear, isMirrored, isTurn, PIECE_ORDER, pieceLabel, pieceShape } from '../domain/pieces';
@@ -100,9 +101,11 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
   const footprint = boundsOf(tiles);
   const sizes = [...tileSizes.values()].sort((a, b) => b.rows * b.cols - a.rows * a.cols || b.rows - a.rows);
   const addons = [...pieceLines.values()].sort((a, b) => a.order - b.order);
+  const byId = partsById(doc.objects);
   const cables = doc.cables.map((c) => ({
     id: c.id,
     name: c.name,
+    route: cableRoute(c, byId),
     color: c.color,
     mm: routes.get(c.id)?.mm ?? 0,
   }));
@@ -136,6 +139,6 @@ export function billOfMaterialsText(bom: BillOfMaterials) {
     `Objects: ${bom.objects}`,
     ...(bom.excluded ? [`Excluded parts: ${bom.excluded}`] : []),
     `Cables: ${bom.cables.length}, ${(bom.cableMm / 1000).toFixed(2)} m total`,
-    ...bom.cables.map((c) => `  ${c.name}: ${c.mm} mm`),
+    ...bom.cables.map((c) => `  ${c.name}: ${c.route}, ${c.mm} mm`),
   ].join('\n');
 }

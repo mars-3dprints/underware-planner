@@ -250,3 +250,14 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+.list li .cabname {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.list li .cabname small {
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

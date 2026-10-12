@@ -26,7 +26,10 @@ function CablesSection({ bom }: { bom: BillOfMaterials }) {
               onMouseLeave={() => setHoverCables([])}
             >
               <i style={{ background: cable.color }} />
-              {cable.name}
+              <div className="cabname">
+                {cable.name}
+                <small>{cable.route}</small>
+              </div>
               <span>{cable.mm} mm</span>
             </li>
           ))}

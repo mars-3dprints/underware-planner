@@ -1,5 +1,6 @@
 import { type RefObject, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { cableRoute, partsById } from '../../domain/anchors';
 import { useStore } from '../../store/store';
 
 const OFFSET = 14;
@@ -17,8 +18,8 @@ function cablesAt(x: number, y: number): string[] {
 /** While selecting, hovering cables shows which ones are there and fades the rest. Works for any number of overlaps. */
 export function CableTip({ svgRef }: { svgRef: RefObject<SVGSVGElement | null> }) {
   const tipRef = useRef<HTMLDivElement>(null);
-  const { ids, cables, tool } = useStore(
-    useShallow((s) => ({ ids: s.hoverCableIds, cables: s.doc.cables, tool: s.tool })),
+  const { ids, doc, tool } = useStore(
+    useShallow((s) => ({ ids: s.hoverCableIds, doc: s.doc, tool: s.tool })),
   );
 
   useEffect(() => {
@@ -52,7 +53,8 @@ export function CableTip({ svgRef }: { svgRef: RefObject<SVGSVGElement | null> }
     };
   }, [svgRef, tool]);
 
-  const shown = ids.map((id) => cables.find((c) => c.id === id)).filter((c) => c !== undefined);
+  const parts = partsById(doc.objects);
+  const shown = ids.map((id) => doc.cables.find((c) => c.id === id)).filter((c) => c !== undefined);
   return (
     <div
       ref={tipRef}
@@ -64,6 +66,7 @@ export function CableTip({ svgRef }: { svgRef: RefObject<SVGSVGElement | null> }
         <div key={c.id}>
           <i style={{ background: c.color }} />
           {c.name}
+          <small>{cableRoute(c, parts)}</small>
         </div>
       ))}
     </div>

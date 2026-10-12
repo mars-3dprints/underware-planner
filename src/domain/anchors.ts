@@ -1,4 +1,4 @@
-import type { Anchor, Cell, Doc, Part } from './types';
+import type { Anchor, Cable, Cell, Doc, Part } from './types';
 
 export const sameCell = (a: Cell | null | undefined, b: Cell | null | undefined) =>
   !!a && !!b && a.x === b.x && a.y === b.y;
@@ -32,4 +32,19 @@ export function anchorAt(doc: Doc, cell: Cell, devicesHidden = false): Anchor {
   return device
     ? { objId: device.id, dx: cell.x - device.x, dy: cell.y - device.y }
     : { x: cell.x, y: cell.y };
+}
+
+/** What a cable end is attached to: the object's name, or nothing for a loose end. */
+function endName(anchor: Anchor, parts: Map<string, Part>): string | null {
+  if (anchor.objId === undefined) return null;
+  const part = parts.get(anchor.objId);
+  return part ? part.name.trim() || 'Device' : null;
+}
+
+/** Where a cable goes, e.g. "Router ↔ NAS". Cables have no direction, so no arrow. */
+export function cableRoute(cable: Cable, parts: Map<string, Part>): string {
+  const a = endName(cable.a, parts);
+  const b = endName(cable.b, parts);
+  if (!a && !b) return 'Loose cable';
+  return `${a ?? 'loose end'} ↔ ${b ?? 'loose end'}`;
 }

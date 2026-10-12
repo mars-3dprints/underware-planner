@@ -186,36 +186,42 @@ exports[`builds the bill of materials 1`] = `
       "id": "k1",
       "mm": 140,
       "name": "Cable 1",
+      "route": "Router ↔ Switch",
     },
     {
       "color": "#f4a261",
       "id": "k2",
       "mm": 458,
       "name": "Uplink",
+      "route": "Switch ↔ NAS",
     },
     {
       "color": "#4cc9f0",
       "id": "k3",
       "mm": 252,
       "name": "Through turn",
+      "route": "Loose cable",
     },
     {
       "color": "#9d4edd",
       "id": "k4",
       "mm": 140,
       "name": "Through cross",
+      "route": "Loose cable",
     },
     {
       "color": "#2a9d8f",
       "id": "k5",
       "mm": 168,
       "name": "Through fork",
+      "route": "Loose cable",
     },
     {
       "color": "#343a40",
       "id": "k6",
       "mm": 448,
       "name": "Loose",
+      "route": "Loose cable",
     },
   ],
   "connectors": 14,
@@ -276,10 +282,10 @@ Channels and tile covers:
 
 Objects: 6
 Cables: 6, 1.61 m total
-  Cable 1: 140 mm
-  Uplink: 458 mm
-  Through turn: 252 mm
-  Through cross: 140 mm
-  Through fork: 168 mm
-  Loose: 448 mm"
+  Cable 1: Router ↔ Switch, 140 mm
+  Uplink: Switch ↔ NAS, 458 mm
+  Through turn: Loose cable, 252 mm
+  Through cross: Loose cable, 140 mm
+  Through fork: Loose cable, 168 mm
+  Loose: Loose cable, 448 mm"
 `;
