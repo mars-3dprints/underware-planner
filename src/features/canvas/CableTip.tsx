@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useRef } from 'react';
+import { type RefObject, useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { cableRoute, partsById } from '../../domain/anchors';
 import { useStore } from '../../store/store';
@@ -15,9 +15,13 @@ function cablesAt(x: number, y: number): string[] {
   return [...ids];
 }
 
-/** While selecting, hovering cables shows which ones are there and fades the rest. Works for any number of overlaps. */
+/**
+ * While selecting, hovering cables shows which ones are there and fades the rest. Works for any number of overlaps.
+ * The tip follows the pointer, so it only shows while the pointer is over the canvas, not for list hovers.
+ */
 export function CableTip({ svgRef }: { svgRef: RefObject<SVGSVGElement | null> }) {
   const tipRef = useRef<HTMLDivElement>(null);
+  const [onCanvas, setOnCanvas] = useState(false);
   const { ids, doc, tool } = useStore(
     useShallow((s) => ({ ids: s.hoverCableIds, doc: s.doc, tool: s.tool })),
   );
@@ -36,6 +40,7 @@ export function CableTip({ svgRef }: { svgRef: RefObject<SVGSVGElement | null> }
         setHoverCables([]);
         return;
       }
+      setOnCanvas(true);
       setHoverCables(cablesAt(e.clientX, e.clientY));
       if (tip) {
         const flip = e.clientX + tip.offsetWidth + OFFSET > window.innerWidth;
@@ -43,7 +48,10 @@ export function CableTip({ svgRef }: { svgRef: RefObject<SVGSVGElement | null> }
         tip.style.top = `${e.clientY + OFFSET}px`;
       }
     };
-    const leave = () => setHoverCables([]);
+    const leave = () => {
+      setOnCanvas(false);
+      setHoverCables([]);
+    };
     svg.addEventListener('pointermove', move);
     svg.addEventListener('pointerleave', leave);
     return () => {
@@ -59,7 +67,7 @@ export function CableTip({ svgRef }: { svgRef: RefObject<SVGSVGElement | null> }
     <div
       ref={tipRef}
       className="cabtip"
-      style={{ display: shown.length && tool === 'select' ? 'block' : 'none' }}
+      style={{ display: shown.length && onCanvas && tool === 'select' ? 'block' : 'none' }}
     >
       <b>{shown.length === 1 ? '1 cable' : `${shown.length} cables`}</b>
       {shown.map((c) => (
