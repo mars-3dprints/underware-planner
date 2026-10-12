@@ -4,6 +4,8 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-13
+
 ### Added
 
 - Snaps: Multiconnect (a bigger threaded hole), channel base snap (a notch for zip ties) and base compatibility snap (a small threaded stub).
