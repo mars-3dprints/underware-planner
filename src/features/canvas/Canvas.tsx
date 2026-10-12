@@ -76,7 +76,7 @@ export function Canvas() {
   const [renaming, setRenaming] = useState<string | null>(null);
   const draft = useCableDraft(hover);
   // Cables in focus, the rest fade: the hovered ones, else those attached to the selected objects.
-  const focus = useMemo(() => {
+  const focusIds = useMemo(() => {
     if (hoverCableIds.length) return new Set(hoverCableIds);
     const attached = attachedCables(doc.cables, new Set(selectedIds));
     return attached.length ? new Set([...attached.map((c) => c.id), ...selectedCableIds]) : null;
@@ -154,7 +154,7 @@ export function Canvas() {
                     cable={c}
                     route={route}
                     selected={selectedCableIds.includes(c.id)}
-                    dim={!!focus && !focus.has(c.id)}
+                    focus={focusIds && (focusIds.has(c.id) ? 'glow' : 'dim')}
                     width={cableWidth}
                     zoom={view.k}
                     interactive={tool === 'select'}

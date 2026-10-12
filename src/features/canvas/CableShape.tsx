@@ -7,8 +7,8 @@ interface CableShapeProps {
   cable: Cable;
   route: Route;
   selected: boolean;
-  /** Fades the cable while others are in focus (hovered, or attached to the selected objects). */
-  dim: boolean;
+  /** While some cables are in focus (hovered, or attached to the selected objects): glow if this one is, else fade. */
+  focus: 'glow' | 'dim' | null;
   /** Stroke width in cells. */
   width: number;
   /** Pixels per cell. */
@@ -22,7 +22,7 @@ export const CableShape = memo(function CableShape({
   cable,
   route,
   selected,
-  dim,
+  focus,
   width,
   zoom,
   interactive,
@@ -33,15 +33,22 @@ export const CableShape = memo(function CableShape({
     { at: cellCenter(route.pts[0]), loose: cable.a.objId === undefined },
     { at: cellCenter(route.pts[route.pts.length - 1]), loose: cable.b.objId === undefined },
   ];
+  // Selected cables get the accent halo; focused ones glow in their own colour, so they don't look selected.
+  const halo = selected
+    ? { stroke: 'var(--accent)', grow: 8 }
+    : focus === 'glow'
+      ? { stroke: cable.color, grow: 10 }
+      : null;
   return (
-    <g opacity={dim ? 0.15 : 1}>
-      {selected && (
+    <g opacity={focus === 'dim' ? 0.15 : 1}>
+      {halo && (
         <path
           d={d}
           fill="none"
-          stroke="var(--accent)"
-          strokeWidth={width + px(8)}
+          stroke={halo.stroke}
+          strokeWidth={width + px(halo.grow)}
           strokeLinecap="round"
+          strokeLinejoin="round"
           opacity={0.35}
           pointerEvents="none"
         />
