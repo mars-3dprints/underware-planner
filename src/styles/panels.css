@@ -215,11 +215,14 @@
   margin: 0;
   padding: 0;
 }
+/* Rows bleed into the section padding to line up with the heading; the grip sits in the left padding. */
 .list li {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 8px;
+  margin: 0 -12px;
+  padding: 6px 12px;
   border-radius: 6px;
   cursor: grab;
 }
@@ -254,9 +257,11 @@
 .list li.dragging {
   opacity: 0.5;
 }
-/* The grip (the row's only direct svg child) keeps its space while hidden, so rows don't shift. */
+/* The grip (the row's only direct svg child), out of the flow so it never shifts the row. The row's flex
+   alignment centres it vertically; -1px centres the 14px icon in the 12px left padding. */
 .list li > svg {
-  margin: 0 -4px 0 -6px;
+  position: absolute;
+  left: -1px;
   color: var(--muted);
   visibility: hidden;
 }
