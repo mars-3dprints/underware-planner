@@ -33,9 +33,14 @@ describe('doc operations', () => {
   it('moves cables in the list, clamping the index', () => {
     const d = fixture();
     const ids = (doc: typeof d) => doc.cables.map((c) => c.id).join(' ');
-    expect(ids(moveCable(d, 'k1', 2))).toBe('k2 k3 k1 k4 k5 k6');
-    expect(ids(moveCable(d, 'k5', 0))).toBe('k5 k1 k2 k3 k4 k6');
-    expect(ids(moveCable(d, 'k2', 99))).toBe('k1 k3 k4 k5 k6 k2');
+    // The fixture's other cables (k6 onwards) keep their order after the moved ones.
+    const rest = d.cables
+      .slice(5)
+      .map((c) => c.id)
+      .join(' ');
+    expect(ids(moveCable(d, 'k1', 2))).toBe(`k2 k3 k1 k4 k5 ${rest}`);
+    expect(ids(moveCable(d, 'k5', 0))).toBe(`k5 k1 k2 k3 k4 ${rest}`);
+    expect(ids(moveCable(d, 'k2', 99))).toBe(`k1 k3 k4 k5 ${rest} k2`);
     expect(moveCable(d, 'k3', 2)).toBe(d);
     expect(moveCable(d, 'missing', 0)).toBe(d);
   });

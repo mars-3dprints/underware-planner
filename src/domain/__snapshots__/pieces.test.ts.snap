@@ -275,6 +275,102 @@ exports[`part catalogue > has a shape and openings for every channel 1`] = `
     ],
   ],
   [
+    "t_inline",
+    "Channel, 3-way junction (inline)",
+    {
+      "d": "M0 0H3V1H0Z",
+      "h": 1,
+      "label": "Channel, 3-way junction (inline)",
+      "w": 3,
+    },
+    [
+      [
+        0,
+        0.5,
+        -1,
+        0,
+      ],
+      [
+        3,
+        0.5,
+        1,
+        0,
+      ],
+      [
+        1.5,
+        0,
+        0,
+        -1,
+      ],
+    ],
+  ],
+  [
+    "cross_inline",
+    "Channel, 4-way junction (inline)",
+    {
+      "d": "M0 0H3V1H0Z",
+      "h": 1,
+      "label": "Channel, 4-way junction (inline)",
+      "w": 3,
+    },
+    [
+      [
+        0,
+        0.5,
+        -1,
+        0,
+      ],
+      [
+        3,
+        0.5,
+        1,
+        0,
+      ],
+      [
+        1.5,
+        0,
+        0,
+        -1,
+      ],
+      [
+        1.5,
+        1,
+        0,
+        1,
+      ],
+    ],
+  ],
+  [
+    "t_end",
+    "Channel, 3-way junction (end)",
+    {
+      "d": "M0 0H2V1H0Z",
+      "h": 1,
+      "label": "Channel, 3-way junction (end)",
+      "w": 2,
+    },
+    [
+      [
+        0.5,
+        0,
+        0,
+        -1,
+      ],
+      [
+        0.5,
+        1,
+        0,
+        1,
+      ],
+      [
+        2,
+        0.5,
+        1,
+        0,
+      ],
+    ],
+  ],
+  [
     "fork_round",
     "Channel, fork (rounded)",
     {

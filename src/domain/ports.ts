@@ -39,6 +39,25 @@ export function piecePorts(type: PieceType, n: number): Port[] {
         [0.5, 1, 0, 1],
         [0, 0.5, -1, 0],
       ];
+    case 't_inline':
+      return [
+        [0, 0.5, -1, 0],
+        [3, 0.5, 1, 0],
+        [1.5, 0, 0, -1],
+      ];
+    case 'cross_inline':
+      return [
+        [0, 0.5, -1, 0],
+        [3, 0.5, 1, 0],
+        [1.5, 0, 0, -1],
+        [1.5, 1, 0, 1],
+      ];
+    case 't_end':
+      return [
+        [0.5, 0, 0, -1],
+        [0.5, 1, 0, 1],
+        [2, 0.5, 1, 0],
+      ];
     case 'cross':
       return [
         [1.5, 0, 0, -1],

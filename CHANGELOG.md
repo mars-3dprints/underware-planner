@@ -4,6 +4,14 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Inline junctions: 3-way and 4-way (3×1) with openings in the side walls, and an end 3-way (2×1).
+
+### Changed
+
+- Library and bill-of-materials pictures of shaped channels show where their openings are, as on the canvas.
+
 ### Fixed
 
 - The short turn has a mirrored version in the library, counted as its own part in the bill of materials.

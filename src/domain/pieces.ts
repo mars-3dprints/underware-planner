@@ -45,6 +45,10 @@ export const PIECE_SHAPES: Partial<Record<PieceType, PieceShape>> = {
   t: { label: 'Channel, 3-way junction', w: 2, h: 3, d: 'M0 0H1V1H2V2H1V3H0Z' },
   cross1: { label: 'Channel, 4-way junction (1×1)', w: 1, h: 1, d: 'M0 0H1V1H0Z' },
   cross: { label: 'Channel, 4-way junction', w: 3, h: 3, d: 'M1 0H2V1H3V2H2V3H1V2H0V1H1Z' },
+  // Inline junctions: a straight run with openings flush in its side walls, no arms.
+  t_inline: { label: 'Channel, 3-way junction (inline)', w: 3, h: 1, d: 'M0 0H3V1H0Z' },
+  cross_inline: { label: 'Channel, 4-way junction (inline)', w: 3, h: 1, d: 'M0 0H3V1H0Z' },
+  t_end: { label: 'Channel, 3-way junction (end)', w: 2, h: 1, d: 'M0 0H2V1H0Z' },
   fork_round: {
     label: 'Channel, fork (rounded)',
     w: 3,
@@ -67,6 +71,9 @@ const CHANNEL_TYPES: PieceType[] = [
   't',
   'cross1',
   'cross',
+  't_inline',
+  'cross_inline',
+  't_end',
   'fork_round',
   'fork_angled',
   'cap',

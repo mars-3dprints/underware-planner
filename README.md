@@ -32,7 +32,7 @@ Everything runs client-side. There is no backend and no account; your layout aut
 | Straight | Straight (any length), bridge (min. 3 cells, passes over other channels) |
 | Turns | Rounded and angled turns (resizable, 1–12 cells), short turn (open on two sides, no arm), plus its mirrored version |
 | Merge and branch | Rounded and angled, plus the mirrored versions |
-| Junctions | 3-way, 4-way (3×3), compact 4-way (1×1), rounded and angled forks |
+| Junctions | 3-way, 4-way (3×3), compact 4-way (1×1), inline 3-way and 4-way (3×1, openings in the side walls), end 3-way (2×1), rounded and angled forks |
 | Offsets | Rounded and angled, plus the mirrored versions |
 
 Mirrored parts are different prints, so they are listed as separate BOM entries. Overlapping channels are flagged with a dashed red outline. Turns, merges, offsets and forks each come in a rounded and an angled form; press **T** (or use the toolbar button) to switch a selected part, or the part you are placing, between them.

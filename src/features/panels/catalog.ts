@@ -37,6 +37,10 @@ export const CHANNEL_GROUPS: ChannelGroup[] = [
   { title: 'Straight', kind: 'straight', entries: types('straight', 'bridge') },
   { title: 'Turns', kind: 'turns', entries: types('turn', 'angled', 'cap') },
   { title: 'Merge and branch', kind: 'other', entries: types('y_round', 'y_angled') },
-  { title: 'Junctions', kind: 'other', entries: types('t', 'cross1', 'cross', 'fork_round', 'fork_angled') },
+  {
+    title: 'Junctions',
+    kind: 'other',
+    entries: types('t', 'cross1', 'cross', 't_inline', 'cross_inline', 't_end', 'fork_round', 'fork_angled'),
+  },
   { title: 'Offsets', kind: 'other', entries: types('jog_round', 'jog_angled') },
 ];

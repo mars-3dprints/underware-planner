@@ -109,7 +109,10 @@ describe('store actions', () => {
   it('adds cables and cycles the cable colour', () => {
     s().selectItems(['o1', 'o2'], ['k1']);
     s().addCable({ x: 0, y: 30 }, { x: 5, y: 30 }, []);
-    expect(s().doc.cables.at(-1)).toMatchObject({ name: 'Cable 7', color: '#e76f51' });
+    expect(s().doc.cables.at(-1)).toMatchObject({
+      name: `Cable ${fixture().cables.length + 1}`,
+      color: '#e76f51',
+    });
     expect(s().cableColor).toBe('#f4a261');
     expect(s().selection).toEqual({ type: 'cable', id: s().doc.cables.at(-1)!.id });
     // The new cable replaces the selection, so colour and delete act on it alone.

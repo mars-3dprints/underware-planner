@@ -2,9 +2,9 @@ import { memo, type SVGProps } from 'react';
 import { TILE_LABEL } from '../../domain/constants';
 import { channelGeometry, channelPorts, matrixAttr } from '../../domain/geometry';
 import { isVertical, TILE_HOLE_PATH } from '../../domain/pieces';
-import { openingsMaskPath } from '../../domain/ports';
 import type { Part } from '../../domain/types';
 import { readableTextColor } from '../../ui/color';
+import { InsetMask } from '../../ui/InsetMask';
 import { wrapText } from './wrapText';
 
 /** Channels are drawn this much narrower (cells) on each side, with their openings kept flush. */
@@ -104,24 +104,18 @@ function ChannelShape({ part: p, overlapping, zoom, props }: ShapeProps) {
   const openings = channelPorts(p);
   const border = (overlapping ? 3 : 1.6) / zoom;
   const insetMask = (id: string, inset: number) => (
-    <mask id={id} maskUnits="userSpaceOnUse" x={p.x - 1} y={p.y - 1} width={p.w + 2} height={p.h + 2}>
-      <rect x={p.x - 1} y={p.y - 1} width={p.w + 2} height={p.h + 2} fill="#fff" />
-      <path
-        d={d}
-        transform={transform}
-        fill="none"
-        stroke="#000"
-        strokeWidth={inset * 2}
-        strokeLinejoin="miter"
-      />
-      {openings.ports.length > 0 && (
-        <path
-          d={openingsMaskPath(openings.ports, inset * 2 + 0.02, 0.5 - inset)}
-          transform={openings.m ? matrixAttr(openings.m) : undefined}
-          fill="#fff"
-        />
-      )}
-    </mask>
+    <InsetMask
+      id={id}
+      d={d}
+      transform={transform}
+      ports={openings.ports}
+      portsTransform={openings.m ? matrixAttr(openings.m) : undefined}
+      inset={inset}
+      x={p.x}
+      y={p.y}
+      w={p.w}
+      h={p.h}
+    />
   );
   return (
     <g {...props}>
