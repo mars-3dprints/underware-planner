@@ -29,3 +29,6 @@ coverage/
 *.swp
 .DS_Store
 Thumbs.db
+
+# Local Claude outputs
+Claude outputs/
