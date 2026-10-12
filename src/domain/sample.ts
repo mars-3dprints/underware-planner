@@ -52,9 +52,9 @@ export function sampleDoc(): Doc {
     },
   ];
   const pieces = [
-    makePiece('hole', 0, 0),
+    makePiece('channel_grip', 0, 0),
     makePiece('wall', 7, 0),
-    makePiece('hole', 7, 3),
+    makePiece('channel_grip', 7, 3),
     makePiece('wall', 0, 3),
     makePiece('straight', 9, 5, 3),
     makePiece('turn', 12, 5, 3, 1),

@@ -31,7 +31,7 @@ describe('part catalogue', () => {
     expect(stampSize({ sub: 'bridge', len: 1, rot: 0 })).toEqual({ w: 3, h: 1 });
     expect(stampSize({ sub: 'turn', len: 20, rot: 1 })).toEqual({ w: 12, h: 12 });
     expect(stampSize({ sub: 'y_round', len: 1, rot: 1 })).toEqual({ w: 3, h: 2 });
-    expect(stampSize({ sub: 'hole', len: 3, rot: 0 })).toEqual({ w: 1, h: 1 });
+    expect(stampSize({ sub: 'channel_grip', len: 3, rot: 0 })).toEqual({ w: 1, h: 1 });
   });
 
   it('pairs rounded and angled parts', () => {
@@ -50,7 +50,7 @@ describe('part catalogue', () => {
     expect(pieceLabel('angled', { size: 2 })).toBe('Channel, turn (angled)');
     expect(channelLabel('Channel, 3-way junction (inline)')).toBe('3-way junction (inline)');
     expect(channelLabel('Channel, turn (rounded)')).toBe('Turn (rounded)');
-    expect(channelLabel('Tile cover')).toBe('Tile cover');
+    expect(channelLabel('Channel grip snap')).toBe('Channel grip snap');
   });
 
   it('keeps straight orientation in step with rotation', () => {

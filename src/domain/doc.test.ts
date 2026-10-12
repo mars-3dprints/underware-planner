@@ -60,7 +60,15 @@ describe('doc operations', () => {
     const replaced = placeStamp(snap, { x: 0, y: 0 })(d);
     expect(replaced.objects).toHaveLength(d.objects.length);
     expect(replaced.objects.find((o) => o.id === 'h1')).toMatchObject({ sub: 'wall', name: 'Wall mount' });
-    expect(placeStamp({ ...snap, sub: 'hole' }, { x: 0, y: 0 })(d)).toBe(d);
+    expect(placeStamp({ ...snap, sub: 'channel_grip' }, { x: 0, y: 0 })(d)).toBe(d);
+    // A turned stamp turns the grip snap it paints over; symmetric snaps keep a single turn.
+    const turned = placeStamp({ ...snap, sub: 'channel_grip', rot: 1 }, { x: 0, y: 0 })(d);
+    expect(turned.objects.find((o) => o.id === 'h1')).toMatchObject({ sub: 'channel_grip', rot: 1 });
+    expect(placeStamp({ ...snap, sub: 'channel_grip', rot: 2 }, { x: 0, y: 0 })(d)).toBe(d);
+    expect(placeStamp({ ...snap, rot: 3 }, { x: 40, y: 40 })(d).objects.at(-1)).toMatchObject({
+      sub: 'wall',
+      rot: 0,
+    });
     const b = placeBlock(
       { kind: 'object', name: 'PC', w: 2, h: 4, color: '#fff' },
       { x: 10, y: 10 },

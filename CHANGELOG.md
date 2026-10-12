@@ -6,12 +6,12 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ### Added
 
-- Multiconnect snap: like the wall mount, with a bigger threaded hole.
+- Snaps: Multiconnect (a bigger threaded hole), channel base snap (a notch for zip ties) and base compatibility snap (a small threaded stub).
 - Inline junctions: 3-way and 4-way (3×1) with openings in the side walls, and an end 3-way (2×1).
 
 ### Changed
 
-- The "Tile covers" sections are now called "Snaps"; the tile cover part keeps its name.
+- The "Tile covers" sections are now called "Snaps", and the plain tile cover is replaced by the channel grip snap. Snaps are drawn as they look, covering most of their tile cell.
 - The sidebars use one order: tiles, custom objects, channels, snaps, then cables. Channels in the bill of materials follow the library's groups, and the copied parts list has a separate Snaps section.
 - Channels in the bill of materials, the library and the copied parts list drop the repeated "Channel, " prefix ("Turn (rounded)").
 - Library and bill-of-materials pictures of shaped channels show where their openings are, as on the canvas.

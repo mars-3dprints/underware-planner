@@ -1,5 +1,5 @@
 import { uid } from './id';
-import { isLinear, isShaped } from './pieces';
+import { pieceRot } from './pieces';
 import { anchorCell, partsById } from './anchors';
 import type { Anchor, Bounds, Cable, Cell, Doc, Part } from './types';
 
@@ -166,7 +166,8 @@ export function rotateGroup(doc: Doc, partIds: string[], cableIds: string[] = []
             y: box.y + (p.x - box.x),
             w: p.h,
             h: p.w,
-            rot: isShaped(p.sub) || isLinear(p.sub) ? ((p.rot ?? 0) + 1) % 4 : p.rot,
+            // Every piece turns with the group (channels and snaps); tiles and objects only swap w and h.
+            rot: p.sub ? pieceRot(p.sub, (p.rot ?? 0) + 1) : p.rot,
           }
         : p,
     ),

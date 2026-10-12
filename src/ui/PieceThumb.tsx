@@ -1,16 +1,8 @@
 import { useId } from 'react';
-import {
-  circlePath,
-  SNAP_HOLES,
-  SNAP_TYPES,
-  isLinear,
-  minLength,
-  pieceShape,
-  TILE_HOLE_PATH,
-} from '../domain/pieces';
+import { isLinear, minLength, pieceShape, SNAP_TYPES } from '../domain/pieces';
 import { piecePorts } from '../domain/ports';
 import { InsetMask } from './InsetMask';
-import { ThreadRing } from './ThreadRing';
+import { SnapGlyph } from './SnapGlyph';
 import type { PieceType } from '../domain/types';
 
 const PAD = 0.15;
@@ -31,15 +23,9 @@ interface PieceThumbProps {
 export function PieceThumb({ sub, len = 3, size = 34, flip = false }: PieceThumbProps) {
   const maskId = useId();
   if (SNAP_TYPES.includes(sub)) {
-    const hole = SNAP_HOLES[sub];
-    // The hole is cut out of the snap (even-odd), so the background shows through.
-    const cut = hole ? circlePath(hole.r) : '';
     return (
       <svg width={size} height={size} viewBox="0 0 1 1" aria-hidden="true">
-        <g transform="translate(.5 .5) scale(1.3) translate(-.5 -.5)">
-          <path d={TILE_HOLE_PATH + cut} fill="currentColor" fillRule="evenodd" />
-          {hole?.threaded && <ThreadRing r={hole.r} stroke="currentColor" />}
-        </g>
+        <SnapGlyph sub={sub} fill="currentColor" line="var(--panel)" />
       </svg>
     );
   }

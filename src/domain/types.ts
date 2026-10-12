@@ -26,9 +26,11 @@ export type PieceType =
   | 'fork_round'
   | 'fork_angled'
   | 'cap'
-  | 'hole'
+  | 'channel_grip'
+  | 'channel_base'
   | 'wall'
-  | 'multiconnect';
+  | 'multiconnect'
+  | 'base_compat';
 
 /** Anything placed on the canvas. Positions and sizes are whole cells. */
 export interface Part {

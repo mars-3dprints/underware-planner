@@ -17,8 +17,7 @@ export interface PieceShape {
 export const TILE_HOLE_PATH = 'M.36 .2H.64L.8 .36V.64L.64 .8H.36L.2 .64V.36Z';
 
 /** Circle of radius `r` centred in a unit cell, as path data. */
-export const circlePath = (r: number) =>
-  `M${0.5 - r} .5a${r} ${r} 0 1 0 ${r * 2} 0a${r} ${r} 0 1 0 ${-r * 2} 0Z`;
+const circlePath = (r: number) => `M${0.5 - r} .5a${r} ${r} 0 1 0 ${r * 2} 0a${r} ${r} 0 1 0 ${-r * 2} 0Z`;
 
 const roundedTurnPath = (n: number) =>
   `M0 0H1A${n - 1} ${n - 1} 0 0 1 ${n} ${n - 1}V${n}H${n - 1}V${n - 1}${n > 2 ? `A${n - 2} ${n - 2} 0 0 0 1 1` : ''}H0Z`;
@@ -75,12 +74,56 @@ export const CHANNEL_FAMILIES: { title: string; types: PieceType[] }[] = [
   { title: 'Offsets', types: ['jog_round', 'jog_angled'] },
 ];
 const CHANNEL_TYPES = CHANNEL_FAMILIES.flatMap((family) => family.types);
-export const SNAP_TYPES: PieceType[] = ['hole', 'wall', 'multiconnect'];
-/** The hole through a snap, in cells, for snaps that have one; Multiconnect's is threaded. */
-export const SNAP_HOLES: Partial<Record<PieceType, { r: number; threaded?: boolean }>> = {
-  wall: { r: 0.085 },
-  multiconnect: { r: 0.2, threaded: true },
+/** Gap from a snap's edge to its cell's, and how much its octagon cuts off each corner, in cells. */
+const SNAP_GAP = 0.07;
+const SNAP_CORNER = 0.2;
+/** Depth of the base snap's notches; inset and width of the grip snap's slots. */
+const NOTCH_DEPTH = 0.12;
+const SLOT_INSET = 0.07;
+const SLOT_WIDTH = 0.05;
+
+/** A snap's octagon, covering most of its cell; `notched` cuts a notch into the middle of the top and bottom. */
+function snapOctagon(notched = false) {
+  const [a, b, c, d] = [SNAP_GAP, SNAP_GAP + SNAP_CORNER, 1 - SNAP_GAP - SNAP_CORNER, 1 - SNAP_GAP];
+  const top = notched ? `H.4V${a + NOTCH_DEPTH}H.6V${a}` : '';
+  const bottom = notched ? `H.6V${d - NOTCH_DEPTH}H.4V${d}` : '';
+  return `M${b} ${a}${top}H${c}L${d} ${b}V${c}L${c} ${d}${bottom}H${b}L${a} ${c}V${b}Z`;
+}
+
+/** Slot running down the middle of the cell, its left edge at `x`. */
+const slot = (x: number) => `M${x} .3H${x + SLOT_WIDTH}V.7H${x}Z`;
+
+/**
+ * How a snap looks from above, in its cell: `d` is its outline with any cut-outs (draw with even-odd fill),
+ * `thread` the radius of a threaded hole, `stub` the radius of a threaded stub standing up from it.
+ * `turns` is how many quarter turns look different: 2 for snaps that differ side to side, else 1.
+ */
+export interface SnapShape {
+  label: string;
+  d: string;
+  turns: 1 | 2;
+  thread?: number;
+  stub?: number;
+}
+
+/** Snaps, in catalogue order. */
+export const SNAP_SHAPES: Partial<Record<PieceType, SnapShape>> = {
+  // Slots along two sides make the edges flex, for easier snapping.
+  channel_grip: {
+    label: 'Channel grip snap',
+    d: snapOctagon() + slot(SNAP_GAP + SLOT_INSET) + slot(1 - SNAP_GAP - SLOT_INSET - SLOT_WIDTH),
+    turns: 2,
+  },
+  // A notch through the middle, for zip ties.
+  channel_base: { label: 'Channel base snap', d: snapOctagon(true), turns: 2 },
+  wall: { label: 'Wall mount', d: snapOctagon() + circlePath(0.085), turns: 1 },
+  multiconnect: { label: 'Multiconnect', d: snapOctagon() + circlePath(0.2), turns: 1, thread: 0.2 },
+  base_compat: { label: 'Base compatibility snap', d: snapOctagon(), turns: 1, stub: 0.12 },
 };
+export const SNAP_TYPES = Object.keys(SNAP_SHAPES) as PieceType[];
+
+/** A piece's quarter turns, kept to those that look different (a symmetric snap has one). */
+export const pieceRot = (sub: PieceType, rot: number) => rot % (SNAP_SHAPES[sub]?.turns ?? 4);
 /** Catalogue order, used to sort the bill of materials. */
 export const PIECE_ORDER: PieceType[] = [...CHANNEL_TYPES, ...SNAP_TYPES];
 
@@ -89,10 +132,8 @@ export const PIECE_LABELS = {
   bridge: 'Channel, bridge',
   turn: 'Channel, turn (rounded)',
   angled: 'Channel, turn (angled)',
-  hole: 'Tile cover',
-  wall: 'Wall mount',
-  multiconnect: 'Multiconnect',
   ...Object.fromEntries(Object.entries(PIECE_SHAPES).map(([type, shape]) => [type, shape.label])),
+  ...Object.fromEntries(Object.entries(SNAP_SHAPES).map(([type, shape]) => [type, shape.label])),
 } as Record<PieceType, string>;
 
 /** Pieces whose mirror image is a different part to print (rotating never changes this, flipping does). */

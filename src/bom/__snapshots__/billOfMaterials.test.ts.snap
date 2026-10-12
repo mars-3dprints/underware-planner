@@ -323,25 +323,36 @@ exports[`builds the bill of materials 1`] = `
   "snaps": [
     {
       "color": "#343a40",
-      "key": "hole:#343a40",
-      "label": "Tile cover",
+      "key": "channel_grip:#343a40",
+      "label": "Channel grip snap",
       "len": 1,
       "mirrored": false,
       "order": 17001,
       "qty": 1,
       "spec": "28 mm",
-      "sub": "hole",
+      "sub": "channel_grip",
     },
     {
       "color": "#e76f51",
-      "key": "hole:#e76f51",
-      "label": "Tile cover",
+      "key": "channel_grip:#e76f51",
+      "label": "Channel grip snap",
       "len": 1,
       "mirrored": false,
       "order": 17001,
       "qty": 1,
       "spec": "28 mm",
-      "sub": "hole",
+      "sub": "channel_grip",
+    },
+    {
+      "color": "#343a40",
+      "key": "channel_base:#343a40",
+      "label": "Channel base snap",
+      "len": 1,
+      "mirrored": false,
+      "order": 18001,
+      "qty": 1,
+      "spec": "28 mm",
+      "sub": "channel_base",
     },
     {
       "color": "#343a40",
@@ -349,7 +360,7 @@ exports[`builds the bill of materials 1`] = `
       "label": "Wall mount",
       "len": 1,
       "mirrored": false,
-      "order": 18001,
+      "order": 19001,
       "qty": 1,
       "spec": "28 mm",
       "sub": "wall",
@@ -360,10 +371,21 @@ exports[`builds the bill of materials 1`] = `
       "label": "Multiconnect",
       "len": 1,
       "mirrored": false,
-      "order": 19001,
+      "order": 20001,
       "qty": 1,
       "spec": "28 mm",
       "sub": "multiconnect",
+    },
+    {
+      "color": "#343a40",
+      "key": "base_compat:#343a40",
+      "label": "Base compatibility snap",
+      "len": 1,
+      "mirrored": false,
+      "order": 21001,
+      "qty": 1,
+      "spec": "28 mm",
+      "sub": "base_compat",
     },
   ],
   "tiles": 146,
@@ -403,10 +425,12 @@ Channels:
   Offset (angled, mirrored) (2×3 cells · 56×84 mm, #343a40) × 1
 
 Snaps:
-  Tile cover (28 mm, #343a40) × 1
-  Tile cover (28 mm, #e76f51) × 1
+  Channel grip snap (28 mm, #343a40) × 1
+  Channel grip snap (28 mm, #e76f51) × 1
+  Channel base snap (28 mm, #343a40) × 1
   Wall mount (28 mm, #343a40) × 1
   Multiconnect (28 mm, #343a40) × 1
+  Base compatibility snap (28 mm, #343a40) × 1
 
 Cables: 9, 2.00 m total
   Cable 1: Router ↔ Switch, 140 mm

@@ -1,11 +1,11 @@
 import { memo, type SVGProps } from 'react';
 import { TILE_LABEL } from '../../domain/constants';
 import { channelGeometry, channelPorts, matrixAttr } from '../../domain/geometry';
-import { isVertical, SNAP_HOLES, TILE_HOLE_PATH } from '../../domain/pieces';
+import { isVertical } from '../../domain/pieces';
 import type { Part } from '../../domain/types';
 import { readableTextColor } from '../../ui/color';
 import { InsetMask } from '../../ui/InsetMask';
-import { ThreadRing } from '../../ui/ThreadRing';
+import { SnapGlyph } from '../../ui/SnapGlyph';
 import { wrapText } from './wrapText';
 
 /** Channels are drawn this much narrower (cells) on each side, with their openings kept flush. */
@@ -69,31 +69,15 @@ function TileShape({ part: p, overlapping, showLabel, props }: ShapeProps) {
 }
 
 function SnapShape({ part: p, overlapping, props }: ShapeProps) {
-  const hole = p.sub && SNAP_HOLES[p.sub];
   return (
-    <g transform={`translate(${p.x} ${p.y})`} {...props}>
-      <path
-        d={TILE_HOLE_PATH}
-        transform="translate(.5 .5) scale(1.14) translate(-.5 -.5)"
+    // Some snaps differ side to side (slots, notches), so they turn with `rot` about the cell's centre.
+    <g transform={`translate(${p.x} ${p.y}) rotate(${(p.rot ?? 0) * 90} .5 .5)`} {...props}>
+      <SnapGlyph
+        sub={p.sub!}
         fill={p.color}
+        line={readableTextColor(p.color)}
         stroke={outline(overlapping, 'rgba(0,0,0,.55)')}
-        strokeWidth={1}
-        vectorEffect="non-scaling-stroke"
       />
-      {hole && (
-        <>
-          <circle
-            cx={0.5}
-            cy={0.5}
-            r={hole.r}
-            fill="var(--canvas)"
-            stroke="rgba(0,0,0,.65)"
-            strokeWidth={1}
-            vectorEffect="non-scaling-stroke"
-          />
-          {hole.threaded && <ThreadRing r={hole.r} stroke={p.color} />}
-        </>
-      )}
     </g>
   );
 }

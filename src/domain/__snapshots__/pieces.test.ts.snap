@@ -455,8 +455,14 @@ exports[`part catalogue > has a shape and openings for every channel 1`] = `
     ],
   ],
   [
-    "hole",
-    "Tile cover",
+    "channel_grip",
+    "Channel grip snap",
+    undefined,
+    [],
+  ],
+  [
+    "channel_base",
+    "Channel base snap",
     undefined,
     [],
   ],
@@ -469,6 +475,12 @@ exports[`part catalogue > has a shape and openings for every channel 1`] = `
   [
     "multiconnect",
     "Multiconnect",
+    undefined,
+    [],
+  ],
+  [
+    "base_compat",
+    "Base compatibility snap",
     undefined,
     [],
   ],

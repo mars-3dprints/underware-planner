@@ -10,6 +10,7 @@ import {
   lengthPatch,
   minLength,
   PIECE_LABELS,
+  pieceRot,
   stampSize,
 } from './pieces';
 import type { Anchor, Block, Cable, Cell, Doc, Part, PieceType, Stamp } from './types';
@@ -169,7 +170,7 @@ export function makePiece(
     w,
     h,
     color,
-    rot: rot % 4,
+    rot: pieceRot(sub, rot),
     flip,
   };
 }
@@ -182,8 +183,16 @@ export const placeStamp =
     if (piece.kind === 'snap') {
       const existing = doc.objects.find((p) => p.kind === 'snap' && p.x === cell.x && p.y === cell.y);
       if (existing) {
-        if (existing.sub === stamp.sub && existing.color === stamp.color) return doc;
-        const replaced = { ...existing, sub: stamp.sub, name: piece.name, color: stamp.color };
+        const same =
+          existing.sub === piece.sub && existing.color === piece.color && (existing.rot ?? 0) === piece.rot;
+        if (same) return doc;
+        const replaced = {
+          ...existing,
+          sub: piece.sub,
+          name: piece.name,
+          color: piece.color,
+          rot: piece.rot,
+        };
         return { ...doc, objects: doc.objects.map((p) => (p === existing ? replaced : p)) };
       }
     }

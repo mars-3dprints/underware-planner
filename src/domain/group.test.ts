@@ -58,6 +58,12 @@ describe('group helpers', () => {
     expect(rotateGroup(d, ['o1', 'o2', 's1', 't1', 'y1'], ['k6'])).toMatchSnapshot();
   });
 
+  it('turns snaps in place, so slots and notches face the new way', () => {
+    const d = fixture();
+    const turned = rotateGroup(d, ['h5']).objects.find((o) => o.id === 'h5')!;
+    expect(turned).toMatchObject({ x: 9, y: 0, w: 1, h: 1, rot: 1 });
+  });
+
   it('rotates cables alone around their attached ends, back to the start after four turns', () => {
     const d = fixture();
     let r = d;
