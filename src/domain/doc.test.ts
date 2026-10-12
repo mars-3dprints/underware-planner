@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { fixture } from '../test/fixture';
-import { patchPart, placeBlock, placeStamp, removePart, setInBom } from './doc';
+import { moveCable, patchPart, placeBlock, placeStamp, removePart, setInBom } from './doc';
 
 describe('doc operations', () => {
   it('patches objects, rounding and clamping attached cable ends', () => {
@@ -27,6 +27,16 @@ describe('doc operations', () => {
     const n = removePart(fixture(), 'o1');
     expect(n.objects.some((o) => o.id === 'o1')).toBe(false);
     expect(n.cables.find((c) => c.id === 'k1')!.a).toEqual({ x: 2, y: 1 });
+  });
+
+  it('moves cables in the list, clamping the index', () => {
+    const d = fixture();
+    const ids = (doc: typeof d) => doc.cables.map((c) => c.id).join(' ');
+    expect(ids(moveCable(d, 'k1', 2))).toBe('k2 k3 k1 k4 k5 k6');
+    expect(ids(moveCable(d, 'k5', 0))).toBe('k5 k1 k2 k3 k4 k6');
+    expect(ids(moveCable(d, 'k2', 99))).toBe('k1 k3 k4 k5 k6 k2');
+    expect(moveCable(d, 'k3', 2)).toBe(d);
+    expect(moveCable(d, 'missing', 0)).toBe(d);
   });
 
   it('stamps parts and replaces covers in place', () => {

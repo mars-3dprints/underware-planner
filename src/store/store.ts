@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { partsById } from '../domain/anchors';
 import { BASE_ZOOM, DEFAULT_COLORS, PIECE_COLOR } from '../domain/constants';
-import { deleteWaypoint, removePart, setInBom } from '../domain/doc';
+import { deleteWaypoint, moveCable, removePart, setInBom } from '../domain/doc';
 import { carriedCables, cloneItems, moveGroup, rotateGroup, selectionBounds } from '../domain/group';
 import { uid } from '../domain/id';
 import { type Layer, layerOf } from '../domain/layers';
@@ -93,6 +93,8 @@ export interface EditorState {
   copySelection(): void;
   pasteAt(cell: Cell | null): void;
   addCable(a: Anchor, b: Anchor, waypoints: Cell[]): void;
+  /** Moves a cable in the list, and so in the drawing order. */
+  moveCable(id: string, index: number): void;
 
   setTool(tool: Tool): void;
   setStamp(sub: PieceType, len?: number, flip?: boolean): void;
@@ -186,7 +188,33 @@ export function targets(s: SelectionState) {
   };
 }
 
-/** Items in `to` added or changed relative to `from` (what an undo or redo touched), as a selection. */
+/**
+ * Ids in `after` that moved relative to `before`: those outside the longest common subsequence of the two orders.
+ * For a single move that is just the moved item.
+ */
+function movedIds(before: string[], after: string[]): Set<string> {
+  if (before.join('\n') === after.join('\n')) return new Set();
+  // lcs[i][j]: LCS length of before[i..] and after[j..].
+  const lcs = before.map(() => new Array<number>(after.length + 1).fill(0));
+  lcs.push(new Array<number>(after.length + 1).fill(0));
+  for (let i = before.length - 1; i >= 0; i--) {
+    for (let j = after.length - 1; j >= 0; j--) {
+      lcs[i][j] = before[i] === after[j] ? lcs[i + 1][j + 1] + 1 : Math.max(lcs[i + 1][j], lcs[i][j + 1]);
+    }
+  }
+  const moved = new Set(after);
+  for (let i = 0, j = 0; i < before.length && j < after.length;) {
+    if (before[i] === after[j]) {
+      moved.delete(after[j]);
+      i++;
+      j++;
+    } else if (lcs[i + 1][j] >= lcs[i][j + 1]) i++;
+    else j++;
+  }
+  return moved;
+}
+
+/** Items in `to` added, changed or moved relative to `from` (what an undo or redo touched), as a selection. */
 function changedIn(from: Doc, to: Doc, hidden: Record<Layer, boolean>): SelectionFields {
   const changed = <T extends { id: string }>(before: T[], after: T[]) => {
     const old = new Map(before.map((x) => [x.id, x]));
@@ -198,7 +226,14 @@ function changedIn(from: Doc, to: Doc, hidden: Record<Layer, boolean>): Selectio
   const partIds = changed(from.objects, to.objects)
     .filter((p) => !hidden[layerOf(p)])
     .map((p) => p.id);
-  const cableIds = hidden.cables ? [] : changed(from.cables, to.cables).map((c) => c.id);
+  const edited = new Set(changed(from.cables, to.cables).map((c) => c.id));
+  const moved = movedIds(
+    from.cables.map((c) => c.id),
+    to.cables.map((c) => c.id),
+  );
+  const cableIds = hidden.cables
+    ? []
+    : to.cables.filter((c) => edited.has(c.id) || moved.has(c.id)).map((c) => c.id);
   return selectionOf(partIds, cableIds);
 }
 
@@ -424,6 +459,7 @@ export const useStore = create<EditorState>((set, get) => ({
     addCopies(cloneItems(clipboard.parts, clipboard.cables, x - box.x, y - box.y));
     set({ lastPasteAt: `${x},${y}` });
   },
+  moveCable: (id, index) => get().commit((d) => moveCable(d, id, index)),
   addCable: (a, b, waypoints) => {
     const s = get();
     const colors = [...DEFAULT_COLORS, ...s.palette];

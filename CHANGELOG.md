@@ -8,6 +8,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 - Hover cables to see which ones share a path: a tooltip lists them and the rest fade. Hovering a cable in the list traces it.
 - Each cable shows where it goes (for example `Router ↔ NAS`) in the cable list, the hover tooltip and the copied parts list.
+- Drag cables in the cable list to reorder them; the order sets which cables are drawn on top.
 
 ## [0.6.0] - 2026-10-12
 

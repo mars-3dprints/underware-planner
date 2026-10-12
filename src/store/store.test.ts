@@ -195,6 +195,17 @@ describe('store actions', () => {
     expect(s().past).toHaveLength(2);
   });
 
+  it('reorders cables as one undoable step', () => {
+    s().moveCable('k6', 0);
+    expect(s().doc.cables[0].id).toBe('k6');
+    expect(s().past).toHaveLength(1);
+    s().undo();
+    expect(s().doc.cables.map((c) => c.id)).toEqual(fixture().cables.map((c) => c.id));
+    expect(s().selectedCableIds).toEqual(['k6']);
+    s().redo();
+    expect(s().selectedCableIds).toEqual(['k6']);
+  });
+
   it('places stamps and blocks', () => {
     s().toggleLayer('channels');
     s().setStamp('turn', 3);

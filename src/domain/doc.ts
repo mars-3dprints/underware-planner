@@ -86,6 +86,19 @@ export function updateCable(doc: Doc, id: string, edit: (cable: Cable) => Cable)
   return changed ? { ...doc, cables } : doc;
 }
 
+/**
+ * Moves a cable to `index` in the cable list, which is also the drawing order (later cables are drawn on top).
+ * Returns `doc` itself when nothing moves.
+ */
+export function moveCable(doc: Doc, id: string, index: number): Doc {
+  const from = doc.cables.findIndex((c) => c.id === id);
+  const to = Math.max(0, Math.min(doc.cables.length - 1, index));
+  if (from < 0 || from === to) return doc;
+  const cables = [...doc.cables];
+  cables.splice(to, 0, ...cables.splice(from, 1));
+  return { ...doc, cables };
+}
+
 export const patchCable = (doc: Doc, id: string, patch: Partial<Cable>): Doc =>
   updateCable(doc, id, (c) => ({ ...c, ...patch }));
 

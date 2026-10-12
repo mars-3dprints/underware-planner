@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { billOfMaterials, type BillOfMaterials } from '../../bom/billOfMaterials';
 import { overlapsFor } from '../../bom/overlaps';
 import { routesFor } from '../../routing/route';
@@ -6,10 +7,30 @@ import { useStore } from '../../store/store';
 import { BillOfMaterialsSection } from './BillOfMaterialsSection';
 import { SelectionSection } from './SelectionSection';
 
+/** A cable being dragged in the list, from index `from` to where it would land, `to`. */
+interface CableDrag {
+  id: string;
+  from: number;
+  to: number;
+}
+
+/** The drop indicator's class for list item `i`: a line on the side of the cable it would land next to. */
+function dropClass(drag: CableDrag | null, i: number) {
+  if (!drag || drag.to !== i || drag.to === drag.from) return '';
+  return drag.to < drag.from ? ' drop-before' : ' drop-after';
+}
+
+/** The cable list, in drawing order (later cables are drawn on top). Drag a cable to reorder. */
 function CablesSection({ bom }: { bom: BillOfMaterials }) {
-  const selectedCableIds = useStore((s) => s.selectedCableIds);
-  const select = useStore((s) => s.select);
-  const setHoverCables = useStore((s) => s.setHoverCables);
+  const { selectedCableIds, select, setHoverCables, moveCable } = useStore(
+    useShallow((s) => ({
+      selectedCableIds: s.selectedCableIds,
+      select: s.select,
+      setHoverCables: s.setHoverCables,
+      moveCable: s.moveCable,
+    })),
+  );
+  const [drag, setDrag] = useState<CableDrag | null>(null);
   return (
     <section>
       <h3>
@@ -17,13 +38,34 @@ function CablesSection({ bom }: { bom: BillOfMaterials }) {
       </h3>
       {bom.cables.length ? (
         <ul className="list">
-          {bom.cables.map((cable) => (
+          {bom.cables.map((cable, i) => (
             <li
               key={cable.id}
-              className={selectedCableIds.includes(cable.id) ? 'on' : ''}
+              className={(selectedCableIds.includes(cable.id) ? 'on' : '') + dropClass(drag, i)}
+              title="Drag to reorder. Cables lower in the list are drawn on top."
+              draggable
               onClick={() => select({ type: 'cable', id: cable.id })}
               onMouseEnter={() => setHoverCables([cable.id])}
               onMouseLeave={() => setHoverCables([])}
+              onDragStart={(e) => {
+                e.dataTransfer.effectAllowed = 'move';
+                setHoverCables([]);
+                setDrag({ id: cable.id, from: i, to: i });
+              }}
+              onDragOver={(e) => {
+                if (!drag) return;
+                e.preventDefault();
+                // The gap before (top half) or after (bottom half) this item, as an index once the cable is moved.
+                const box = e.currentTarget.getBoundingClientRect();
+                const gap = e.clientY > box.top + box.height / 2 ? i + 1 : i;
+                const to = gap > drag.from ? gap - 1 : gap;
+                if (to !== drag.to) setDrag({ ...drag, to });
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                if (drag) moveCable(drag.id, drag.to);
+              }}
+              onDragEnd={() => setDrag(null)}
             >
               <i style={{ background: cable.color }} />
               <div className="cabname">
