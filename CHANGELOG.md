@@ -7,7 +7,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 ### Added
 
 - Snaps: Multiconnect (a bigger threaded hole), channel base snap (a notch for zip ties) and base compatibility snap (a small threaded stub).
-- Inline junctions: 3-way and 4-way (3×1) with openings in the side walls, and an end 3-way (2×1).
+- Junctions: inline 3-way and 4-way (3×1) with openings in the side walls, and an end 3-way (2×1).
+- Open channel: a straight of any length, open on both sides of every cell. It replaces the 1×1 4-way junction, which is a 1-cell open channel.
+- Open channel (one side): the same, open along one side only; turn it to choose the side.
+- End channel: a straight of any length, open at one end only, with its closed end rounded or angled (**T** switches).
 
 ### Changed
 

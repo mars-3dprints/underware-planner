@@ -29,13 +29,13 @@ Everything runs client-side. There is no backend and no account; your layout aut
 
 | Group | Parts |
 | --- | --- |
-| Straight | Straight (any length), bridge (min. 3 cells, passes over other channels) |
+| Straight | Straight (any length), bridge (min. 3 cells, passes over other channels), open channel (any length, open on both sides of every cell) open channel (one side), and end channel (any length, open at one end only; rounded or angled) |
 | Turns | Rounded and angled turns (resizable, 1–12 cells), short turn (open on two sides, no arm), plus its mirrored version |
 | Merge and branch | Rounded and angled, plus the mirrored versions |
-| Junctions | 3-way, 4-way (3×3), compact 4-way (1×1), inline 3-way and 4-way (3×1, openings in the side walls), end 3-way (2×1), rounded and angled forks |
+| Junctions | 3-way, 4-way (3×3), inline 3-way and 4-way (3×1, openings in the side walls of the middle cell), end 3-way (2×1), rounded and angled forks |
 | Offsets | Rounded and angled, plus the mirrored versions |
 
-Mirrored parts are different prints, so they are listed as separate BOM entries. Overlapping channels are flagged with a dashed red outline. Turns, merges, offsets and forks each come in a rounded and an angled form; press **T** (or use the toolbar button) to switch a selected part, or the part you are placing, between them.
+Mirrored parts are different prints, so they are listed as separate BOM entries. Overlapping channels are flagged with a dashed red outline. Turns, merges, offsets, forks and end channels each come in a rounded and an angled form; press **T** (or use the toolbar button) to switch a selected part, or the part you are placing, between them.
 
 **Snaps** — parts that snap into a tile hole: channel grip snap (slotted sides, the everyday cover), channel base snap (a notch for zip ties), wall mount, Multiconnect (a bigger, threaded hole) and base compatibility snap (a small threaded stub). Tile holes stay open until a snap is placed.
 

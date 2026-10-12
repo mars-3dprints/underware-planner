@@ -47,8 +47,17 @@ function migratePart(part: Part): Part {
   return part.w === w && part.h === h ? part : { ...part, w, h, name: PIECE_LABELS[sub] };
 }
 
+/** A part this version knows. Parts of removed types (such as an old save's tile covers) are dropped on load. */
+const isKnownPart = (part: Part) =>
+  part.kind === 'plate' ||
+  part.kind === 'object' ||
+  ((part.kind === 'raceway' || part.kind === 'snap') && !!part.sub && part.sub in PIECE_LABELS);
+
 /** Brings a layout from an older save up to date. */
-export const migrateDoc = (doc: Doc): Doc => ({ ...doc, objects: doc.objects.map(migratePart) });
+export const migrateDoc = (doc: Doc): Doc => ({
+  ...doc,
+  objects: doc.objects.map(migratePart).filter(isKnownPart),
+});
 
 /** A layout read from a save or an exported file, brought up to date, or null when it is not a layout. */
 export const readLayout = (value: unknown): Doc | null => (isDoc(value) ? migrateDoc(value) : null);

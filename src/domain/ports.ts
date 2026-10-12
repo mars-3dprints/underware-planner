@@ -13,6 +13,22 @@ export function piecePorts(type: PieceType, n: number): Port[] {
     ];
   }
   switch (type) {
+    // Open only at its far end, whatever its length `n`.
+    case 'end_round':
+    case 'end_angled':
+      return [[n, 0.5, 1, 0]];
+    // Open at both ends and along both sides of every cell (`open`), or along its top side only.
+    case 'open':
+    case 'open_side': {
+      const ends: Port[] = [
+        [0, 0.5, -1, 0],
+        [n, 0.5, 1, 0],
+      ];
+      const cells = Array.from({ length: n }, (_, i) => i + 0.5);
+      const top = cells.map((x): Port => [x, 0, 0, -1]);
+      const bottom = cells.map((x): Port => [x, 1, 0, 1]);
+      return [...ends, ...top, ...(type === 'open' ? bottom : [])];
+    }
     case 'y_round':
     case 'y_angled':
       return [
@@ -31,13 +47,6 @@ export function piecePorts(type: PieceType, n: number): Port[] {
         [0.5, 0, 0, -1],
         [0.5, 3, 0, 1],
         [2, 1.5, 1, 0],
-      ];
-    case 'cross1':
-      return [
-        [0.5, 0, 0, -1],
-        [1, 0.5, 1, 0],
-        [0.5, 1, 0, 1],
-        [0, 0.5, -1, 0],
       ];
     case 't_inline':
       return [

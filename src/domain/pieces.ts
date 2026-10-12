@@ -23,7 +23,7 @@ const roundedTurnPath = (n: number) =>
   `M0 0H1A${n - 1} ${n - 1} 0 0 1 ${n} ${n - 1}V${n}H${n - 1}V${n - 1}${n > 2 ? `A${n - 2} ${n - 2} 0 0 0 1 1` : ''}H0Z`;
 const angledTurnPath = (n: number) => `M0 0H1L${n} ${n - 1}V${n}H${n - 1}V${n - 1}L1 1H0Z`;
 
-/** Fixed-size channel pieces. Straights, bridges and turns are sized by length instead. */
+/** Fixed-size channel pieces. Straights, bridges, open and end channels, and turns are sized by length instead. */
 export const PIECE_SHAPES: Partial<Record<PieceType, PieceShape>> = {
   y_round: {
     label: 'Channel, merge/branch (rounded)',
@@ -46,7 +46,6 @@ export const PIECE_SHAPES: Partial<Record<PieceType, PieceShape>> = {
     d: 'M0 0V1.208L1 2.208V3H2V1.792L1 .792V0Z',
   },
   t: { label: 'Channel, 3-way junction', w: 2, h: 3, d: 'M0 0H1V1H2V2H1V3H0Z' },
-  cross1: { label: 'Channel, 4-way junction (1×1)', w: 1, h: 1, d: 'M0 0H1V1H0Z' },
   cross: { label: 'Channel, 4-way junction', w: 3, h: 3, d: 'M1 0H2V1H3V2H2V3H1V2H0V1H1Z' },
   // Inline junctions: a straight run with openings flush in its side walls, no arms.
   t_inline: { label: 'Channel, 3-way junction (inline)', w: 3, h: 1, d: 'M0 0H3V1H0Z' },
@@ -64,12 +63,12 @@ export const PIECE_SHAPES: Partial<Record<PieceType, PieceShape>> = {
 
 /** Channels by family, in the order the library and the bill of materials list them. */
 export const CHANNEL_FAMILIES: { title: string; types: PieceType[] }[] = [
-  { title: 'Straight', types: ['straight', 'bridge'] },
+  { title: 'Straight', types: ['straight', 'bridge', 'open', 'open_side', 'end_round', 'end_angled'] },
   { title: 'Turns', types: ['turn', 'angled', 'cap'] },
   { title: 'Merge and branch', types: ['y_round', 'y_angled'] },
   {
     title: 'Junctions',
-    types: ['t', 'cross1', 'cross', 't_inline', 'cross_inline', 't_end', 'fork_round', 'fork_angled'],
+    types: ['t', 'cross', 't_inline', 'cross_inline', 't_end', 'fork_round', 'fork_angled'],
   },
   { title: 'Offsets', types: ['jog_round', 'jog_angled'] },
 ];
@@ -130,6 +129,10 @@ export const PIECE_ORDER: PieceType[] = [...CHANNEL_TYPES, ...SNAP_TYPES];
 export const PIECE_LABELS = {
   straight: 'Channel, straight',
   bridge: 'Channel, bridge',
+  open: 'Open channel',
+  open_side: 'Open channel (one side)',
+  end_round: 'End channel (rounded)',
+  end_angled: 'End channel (angled)',
   turn: 'Channel, turn (rounded)',
   angled: 'Channel, turn (angled)',
   ...Object.fromEntries(Object.entries(PIECE_SHAPES).map(([type, shape]) => [type, shape.label])),
@@ -148,12 +151,19 @@ const COUNTERPARTS: Partial<Record<PieceType, PieceType>> = {
   jog_angled: 'jog_round',
   fork_round: 'fork_angled',
   fork_angled: 'fork_round',
+  end_round: 'end_angled',
+  end_angled: 'end_round',
 };
 
 export const kindOfPiece = (type: PieceType): PartKind => (SNAP_TYPES.includes(type) ? 'snap' : 'raceway');
 export const isTurn = (type?: PieceType) => type === 'turn' || type === 'angled';
-/** Straights and bridges: sized by length, orientation from their footprint. */
-export const isLinear = (type?: PieceType) => type === 'straight' || type === 'bridge';
+/** Straights open at one end only, the closed end rounded or angled off. */
+export const isEndChannel = (type?: PieceType) => type === 'end_round' || type === 'end_angled';
+/** Straights open along their sides as well as at the ends: both sides, or one. */
+export const isOpenChannel = (type?: PieceType) => type === 'open' || type === 'open_side';
+/** Straights, bridges, open and end channels: sized by length, orientation from their footprint. */
+export const isLinear = (type?: PieceType) =>
+  type === 'straight' || type === 'bridge' || isEndChannel(type) || isOpenChannel(type);
 /** Pieces drawn from a shape (turns and fixed-size pieces), which can be flipped. */
 export const isShaped = (type?: PieceType) => isTurn(type) || (!!type && !!PIECE_SHAPES[type]);
 /**
@@ -172,8 +182,25 @@ export const minLength = (type: PieceType) => (type === 'bridge' ? 3 : 1);
 export const counterpart = (type?: PieceType, size = 2): PieceType | undefined =>
   type && !isSmallTurn(type, size) ? COUNTERPARTS[type] : undefined;
 
-/** Shape of a piece; turns are `size` × `size` cells, every other piece has a fixed size. */
+/** How far an end channel's closed corners are cut (angled) or rounded, in cells; big enough to read as closed. */
+const END_CUT = 0.3;
+const END_RADIUS = 0.35;
+
+/** An end channel `n` cells long, open at its right end; its closed left end has rounded or angled corners. */
+function endChannelPath(n: number, angled: boolean) {
+  const [c, r] = [END_CUT, END_RADIUS];
+  return angled
+    ? `M${c} 0H${n}V1H${c}L0 ${1 - c}V${c}Z`
+    : `M${r} 0H${n}V1H${r}A${r} ${r} 0 0 1 0 ${1 - r}V${r}A${r} ${r} 0 0 1 ${r} 0Z`;
+}
+
+/** Shape of a piece; turns are `size` × `size` cells, open and end channels `size` long, others a fixed size. */
 export function pieceShape(type: PieceType, size = 2): PieceShape | undefined {
+  if (isEndChannel(type) || isOpenChannel(type)) {
+    const n = Math.max(1, size);
+    const d = isEndChannel(type) ? endChannelPath(n, type === 'end_angled') : `M0 0H${n}V1H0Z`;
+    return { label: PIECE_LABELS[type], w: n, h: 1, d };
+  }
   if (!isTurn(type)) return PIECE_SHAPES[type];
   const n = clampTurnSize(size);
   const d = n === 1 ? 'M0 0H1V1H0Z' : type === 'turn' ? roundedTurnPath(n) : angledTurnPath(n);
@@ -185,6 +212,10 @@ export const isMirrored = (piece: { sub?: PieceType; flip?: boolean }) =>
 
 /** A 1×1 turn is a plain square, the same part in either style. */
 export const isSmallTurn = (type: PieceType | undefined, size?: number) => isTurn(type) && size === 1;
+
+/** The part a piece is printed as: a 1×1 turn is the same in either style. */
+export const printedType = (type: PieceType, size: number): PieceType =>
+  isSmallTurn(type, size) ? 'turn' : type;
 const SMALL_TURN_LABEL = 'Channel, turn';
 
 /** Label of a piece; `size` is a turn's size, so a 1×1 turn has no style. */

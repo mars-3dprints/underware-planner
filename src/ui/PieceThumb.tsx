@@ -31,10 +31,11 @@ export function PieceThumb({ sub, len = 3, size = 34, flip = false }: PieceThumb
   }
   const linear = isLinear(sub);
   const shape = pieceShape(sub, len);
-  const w = linear ? Math.max(len, minLength(sub)) : (shape?.w ?? 1);
-  const h = linear ? 1 : (shape?.h ?? 1);
-  const d = linear ? `M0 0H${w}V1H0Z` : (shape?.d ?? '');
-  const ports = !linear && shape ? piecePorts(sub, shape.w) : [];
+  const w = shape?.w ?? (linear ? Math.max(len, minLength(sub)) : 1);
+  const h = shape?.h ?? 1;
+  const d = shape?.d ?? `M0 0H${w}V1H0Z`;
+  // Straights and bridges are plain bars; everything else shows its openings, as on the canvas.
+  const ports = shape ? piecePorts(sub, shape.w) : [];
   return (
     <svg
       width={size}

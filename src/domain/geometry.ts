@@ -13,7 +13,8 @@ export const applyMatrix = (m: Matrix, x: number, y: number): Cell => ({
 
 /**
  * Outline of a channel in its own frame, plus the matrix (rotation, mirror, position) that places it on the canvas.
- * Straights and bridges have no shape: their outline is their rectangle in world cells and `m` is null.
+ * Straights and bridges have no shape: their outline is their rectangle in world cells and `m` is null. Open and
+ * end channels are sized like straights but have a shape, so `rot` picks their open side or end.
  */
 export function channelGeometry(part: Part): { d: string; m: Matrix | null; sep?: string } {
   const shape = part.sub ? pieceShape(part.sub, Math.max(part.w, part.h)) : undefined;
@@ -35,23 +36,30 @@ export function channelGeometry(part: Part): { d: string; m: Matrix | null; sep?
 
 /** Openings of a channel: in its own frame with the matrix that places it, or in world cells (m = null). */
 export function channelPorts(part: Part): { ports: Port[]; m: Matrix | null } {
-  if (isLinear(part.sub)) {
-    const { x, y } = part;
-    const length = Math.max(part.w, part.h);
-    const ports: Port[] = isVertical(part)
-      ? [
-          [x + 0.5, y, 0, -1],
-          [x + 0.5, y + length, 0, 1],
-        ]
-      : [
-          [x, y + 0.5, -1, 0],
-          [x + length, y + 0.5, 1, 0],
-        ];
-    return { ports, m: null };
-  }
   const shape = part.sub ? pieceShape(part.sub, Math.max(part.w, part.h)) : undefined;
-  return {
-    ports: shape && part.sub ? piecePorts(part.sub, shape.w) : [],
-    m: shape ? channelGeometry(part).m : null,
-  };
+  if (shape) return { ports: piecePorts(part.sub!, shape.w), m: channelGeometry(part).m };
+  if (!isLinear(part.sub)) return { ports: [], m: null };
+  // Straights and bridges: open at both ends, in world cells.
+  const { x, y } = part;
+  const length = Math.max(part.w, part.h);
+  const ports: Port[] = isVertical(part)
+    ? [
+        [x + 0.5, y, 0, -1],
+        [x + 0.5, y + length, 0, 1],
+      ]
+    : [
+        [x, y + 0.5, -1, 0],
+        [x + length, y + 0.5, 1, 0],
+      ];
+  return { ports, m: null };
+}
+
+/** A channel's openings in world cells: position and outward direction (rounded to whole steps). */
+export function worldPorts(part: Part): Port[] {
+  const { ports, m } = channelPorts(part);
+  if (!m) return ports;
+  return ports.map(([x, y, dx, dy]) => {
+    const at = applyMatrix(m, x, y);
+    return [at.x, at.y, Math.round(m[0] * dx + m[2] * dy) + 0, Math.round(m[1] * dx + m[3] * dy) + 0];
+  });
 }

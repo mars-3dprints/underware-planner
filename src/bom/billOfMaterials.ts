@@ -7,7 +7,7 @@ import {
   SNAP_TYPES,
   isLinear,
   isMirrored,
-  isSmallTurn,
+  printedType,
   isTurn,
   PIECE_ORDER,
   pieceLabel,
@@ -105,9 +105,7 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
       continue;
     }
     if ((part.kind === 'raceway' || part.kind === 'snap') && part.sub) {
-      // Either style of 1×1 turn is the same print.
-      const sub = isSmallTurn(part.sub, Math.max(part.w, part.h)) ? 'turn' : part.sub;
-      const piece = { ...part, sub };
+      const piece = { ...part, sub: printedType(part.sub, Math.max(part.w, part.h)) };
       const key = pieceKey(piece);
       const entry = pieceLines.get(key) ?? pieceLine(piece, key);
       entry.qty++;

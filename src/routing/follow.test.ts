@@ -21,9 +21,8 @@ function through(o: Part, ia: number, ib: number): Cell[] {
 }
 
 it('follows the centerline of every shaped channel, in every orientation', () => {
-  const shaped = fixture().objects.filter(
-    (o) => o.kind === 'raceway' && o.sub !== 'straight' && o.sub !== 'bridge',
-  );
+  // Every channel drawn from a shape (placed by a matrix), including open channels.
+  const shaped = fixture().objects.filter((o) => o.kind === 'raceway' && channelPorts(o).m);
   const out: Record<string, string> = {};
   for (const base of shaped)
     for (let rot = 0; rot < 4; rot++)

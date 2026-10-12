@@ -126,9 +126,10 @@ function centerline(type: PieceType, n: number, ports: Port[], from: number, to:
       break;
     case 't':
     case 'cross':
-    case 'cross1':
     case 't_inline':
     case 'cross_inline':
+    case 'open':
+    case 'open_side':
     case 't_end': {
       // Junctions: straight across between opposite openings, a quarter arc otherwise. Already oriented.
       const [ax, ay, adx, ady] = ports[from];

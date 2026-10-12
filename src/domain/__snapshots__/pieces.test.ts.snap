@@ -15,6 +15,144 @@ exports[`part catalogue > has a shape and openings for every channel 1`] = `
     [],
   ],
   [
+    "open",
+    "Open channel",
+    {
+      "d": "M0 0H3V1H0Z",
+      "h": 1,
+      "label": "Open channel",
+      "w": 3,
+    },
+    [
+      [
+        0,
+        0.5,
+        -1,
+        0,
+      ],
+      [
+        3,
+        0.5,
+        1,
+        0,
+      ],
+      [
+        0.5,
+        0,
+        0,
+        -1,
+      ],
+      [
+        1.5,
+        0,
+        0,
+        -1,
+      ],
+      [
+        2.5,
+        0,
+        0,
+        -1,
+      ],
+      [
+        0.5,
+        1,
+        0,
+        1,
+      ],
+      [
+        1.5,
+        1,
+        0,
+        1,
+      ],
+      [
+        2.5,
+        1,
+        0,
+        1,
+      ],
+    ],
+  ],
+  [
+    "open_side",
+    "Open channel (one side)",
+    {
+      "d": "M0 0H3V1H0Z",
+      "h": 1,
+      "label": "Open channel (one side)",
+      "w": 3,
+    },
+    [
+      [
+        0,
+        0.5,
+        -1,
+        0,
+      ],
+      [
+        3,
+        0.5,
+        1,
+        0,
+      ],
+      [
+        0.5,
+        0,
+        0,
+        -1,
+      ],
+      [
+        1.5,
+        0,
+        0,
+        -1,
+      ],
+      [
+        2.5,
+        0,
+        0,
+        -1,
+      ],
+    ],
+  ],
+  [
+    "end_round",
+    "End channel (rounded)",
+    {
+      "d": "M0.35 0H3V1H0.35A0.35 0.35 0 0 1 0 0.65V0.35A0.35 0.35 0 0 1 0.35 0Z",
+      "h": 1,
+      "label": "End channel (rounded)",
+      "w": 3,
+    },
+    [
+      [
+        3,
+        0.5,
+        1,
+        0,
+      ],
+    ],
+  ],
+  [
+    "end_angled",
+    "End channel (angled)",
+    {
+      "d": "M0.3 0H3V1H0.3L0 0.7V0.3Z",
+      "h": 1,
+      "label": "End channel (angled)",
+      "w": 3,
+    },
+    [
+      [
+        3,
+        0.5,
+        1,
+        0,
+      ],
+    ],
+  ],
+  [
     "turn",
     "Channel, turn (rounded)",
     {
@@ -174,42 +312,6 @@ exports[`part catalogue > has a shape and openings for every channel 1`] = `
         2,
         1.5,
         1,
-        0,
-      ],
-    ],
-  ],
-  [
-    "cross1",
-    "Channel, 4-way junction (1×1)",
-    {
-      "d": "M0 0H1V1H0Z",
-      "h": 1,
-      "label": "Channel, 4-way junction (1×1)",
-      "w": 1,
-    },
-    [
-      [
-        0.5,
-        0,
-        0,
-        -1,
-      ],
-      [
-        1,
-        0.5,
-        1,
-        0,
-      ],
-      [
-        0.5,
-        1,
-        0,
-        1,
-      ],
-      [
-        0,
-        0.5,
-        -1,
         0,
       ],
     ],
