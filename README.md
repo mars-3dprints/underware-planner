@@ -51,7 +51,7 @@ Mirrored parts are different prints, so they are listed as separate BOM entries.
 - **Nudge:** arrow keys move the selection by one cell (Shift: five).
 - **Layers:** the layers button (or **1–4**) shows or hides tiles, objects, channels and cables. Hidden layers can't be selected, and placing a part shows its layer again. The bill of materials still counts everything.
 - **See through:** the eye button (or **P**) draws channels at 75 % opacity.
-- **Sidebar:** the toolbar button hides or shows the bill-of-materials panel.
+- **Sidebar:** the toolbar button (or **\\**) hides or shows the bill-of-materials panel.
 
 ### Shortcuts
 
@@ -65,6 +65,7 @@ Mirrored parts are different prints, so they are listed as separate BOM entries.
 | F | Flip (shaped channels) |
 | T | Switch rounded / angled |
 | P | See through channels |
+| \\ | Show / hide the sidebar |
 | 1 / 2 / 3 / 4 | Toggle layers: tiles / objects / channels / cables |
 | Arrow keys / Shift+arrows | Nudge selection by 1 / 5 cells |
 | Ctrl+A / C / V / D | Select all / copy / paste / duplicate |

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Canvas } from '../features/canvas/Canvas';
 import { InspectorPanel } from '../features/panels/InspectorPanel';
 import { LibraryPanel } from '../features/panels/LibraryPanel';
@@ -28,11 +27,11 @@ function Legend() {
 }
 
 export default function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const sidebarOpen = useStore((s) => s.sidebarOpen);
   useShortcuts();
   return (
     <div className={'app' + (sidebarOpen ? '' : ' noright')}>
-      <Toolbar sidebarOpen={sidebarOpen} onToggleSidebar={() => setSidebarOpen((v) => !v)} />
+      <Toolbar />
       <LibraryPanel />
       <main className="stage">
         <Canvas />

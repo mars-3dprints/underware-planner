@@ -71,6 +71,8 @@ function plainKey(e: KeyboardEvent, key: string) {
       return s.swapStyle();
     case 'p':
       return s.togglePeek();
+    case '\\':
+      return s.toggleSidebar();
     case 'delete':
     case 'backspace':
       e.preventDefault();

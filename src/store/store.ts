@@ -61,6 +61,8 @@ export interface EditorState {
   viewRestored: boolean;
   peek: boolean;
   hidden: Record<Layer, boolean>;
+  /** The right-hand panel (selection and bill of materials). */
+  sidebarOpen: boolean;
 
   commit(edit: (doc: Doc) => Doc, key?: string): void;
   beginLive(): void;
@@ -104,6 +106,7 @@ export interface EditorState {
 
   setView(view: View): void;
   togglePeek(): void;
+  toggleSidebar(): void;
   toggleLayer(layer: Layer): void;
   showLayers(...layers: Layer[]): void;
 }
@@ -219,6 +222,7 @@ export const useStore = create<EditorState>((set, get) => ({
   view: saved.view ?? { x: 0, y: 0, k: BASE_ZOOM },
   viewRestored: !!saved.view,
   peek: false,
+  sidebarOpen: true,
   hidden: { tiles: false, objects: false, channels: false, cables: false },
 
   // ---- layout and history ----
@@ -491,6 +495,7 @@ export const useStore = create<EditorState>((set, get) => ({
 
   setView: (view) => set({ view }),
   togglePeek: () => set((s) => ({ peek: !s.peek })),
+  toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
   toggleLayer: (layer) =>
     set((s) => {
       const hidden = { ...s.hidden, [layer]: !s.hidden[layer] };

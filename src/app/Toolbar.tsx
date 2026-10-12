@@ -98,14 +98,8 @@ function FileButtons() {
   );
 }
 
-export function Toolbar({
-  sidebarOpen,
-  onToggleSidebar,
-}: {
-  sidebarOpen: boolean;
-  onToggleSidebar: () => void;
-}) {
-  const { undo, redo, canUndo, canRedo, peek, togglePeek } = useStore(
+export function Toolbar() {
+  const { undo, redo, canUndo, canRedo, peek, togglePeek, sidebarOpen, toggleSidebar } = useStore(
     useShallow((s) => ({
       undo: s.undo,
       redo: s.redo,
@@ -113,6 +107,8 @@ export function Toolbar({
       canRedo: s.future.length > 0,
       peek: s.peek,
       togglePeek: s.togglePeek,
+      sidebarOpen: s.sidebarOpen,
+      toggleSidebar: s.toggleSidebar,
     })),
   );
   return (
@@ -138,9 +134,9 @@ export function Toolbar({
       <IconButton icon="peek" label="See through channels (P)" on={peek} onClick={togglePeek} />
       <IconButton
         icon="sidebar"
-        label={sidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+        label={`${sidebarOpen ? 'Hide' : 'Show'} sidebar (\\)`}
         on={sidebarOpen}
-        onClick={onToggleSidebar}
+        onClick={toggleSidebar}
       />
       <i className="vsep" />
       <FileButtons />
