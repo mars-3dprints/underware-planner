@@ -1,6 +1,6 @@
 import { CELL_MM, MAX_TURN_SIZE } from '../../domain/constants';
 import { patchCable, patchPart } from '../../domain/doc';
-import { selectionBounds } from '../../domain/group';
+import { drawnBounds } from '../../domain/group';
 import {
   clampTurnSize,
   COVER_TYPES,
@@ -18,8 +18,16 @@ import { plural } from '../../ui/plural';
 import { NumberField } from './NumberField';
 import { PieceButton } from './PieceButton';
 
-function GroupDetails({ parts, cables }: { parts: Part[]; cables: Cable[] }) {
-  const box = selectionBounds(parts, cables);
+function GroupDetails({
+  parts,
+  cables,
+  routes,
+}: {
+  parts: Part[];
+  cables: Cable[];
+  routes: Map<string, Route>;
+}) {
+  const box = drawnBounds(parts, cables, routes);
   const counts = [
     parts.length && plural(parts.length, 'object'),
     cables.length && plural(cables.length, 'cable'),
@@ -177,6 +185,7 @@ export function SelectionSection({ routes }: { routes: Map<string, Route> }) {
         <GroupDetails
           parts={doc.objects.filter((p) => selectedIds.includes(p.id))}
           cables={doc.cables.filter((c) => selectedCableIds.includes(c.id))}
+          routes={routes}
         />
       )}
       {part && <PartDetails part={part} />}

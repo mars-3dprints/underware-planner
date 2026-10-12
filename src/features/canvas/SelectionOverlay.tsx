@@ -1,4 +1,4 @@
-import { selectionBounds } from '../../domain/group';
+import { drawnBounds } from '../../domain/group';
 import { isLinear, isTurn } from '../../domain/pieces';
 import type { Cable, Part } from '../../domain/types';
 import { waypointHandle } from '../../routing/paths';
@@ -11,8 +11,16 @@ const canResize = (part: Part) =>
   part.kind === 'plate' || part.kind === 'object' || isLinear(part.sub) || isTurn(part.sub);
 
 /** Outline of each selected part and a dashed box around the whole group. */
-export function GroupOutline({ parts, cables }: { parts: Part[]; cables: Cable[] }) {
-  const box = selectionBounds(parts, cables);
+export function GroupOutline({
+  parts,
+  cables,
+  routes,
+}: {
+  parts: Part[];
+  cables: Cable[];
+  routes: Map<string, Route>;
+}) {
+  const box = drawnBounds(parts, cables, routes);
   return (
     <g pointerEvents="none">
       {parts.map((p) => (

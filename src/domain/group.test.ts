@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
+import { computeRoutes } from '../routing/route';
 import { fixture } from '../test/fixture';
 import {
   attachedCables,
   boundsOf,
+  drawnBounds,
   carriedCables,
   cloneItems,
   internalCables,
@@ -23,6 +25,14 @@ describe('group helpers', () => {
         d.cables.filter((c) => c.id === 'k6'),
       ),
     ).toEqual({ x: 2, y: 17, w: 11, h: 4 });
+  });
+
+  it('measures the drawn selection, including attached cable ends', () => {
+    const d = fixture();
+    const cables = d.cables.filter((c) => c.id === 'k1' || c.id === 'k2');
+    // Router's port (2, 1) to NAS's (14, 6); the movable points alone are just k2's waypoint.
+    expect(drawnBounds([], cables, computeRoutes(d))).toEqual({ x: 2, y: 1, w: 13, h: 6 });
+    expect(selectionBounds([], cables)).toEqual({ x: 10, y: 3, w: 1, h: 1 });
   });
 
   it('finds cables that travel with a selection', () => {

@@ -174,6 +174,7 @@ export function Canvas() {
             <GroupOutline
               parts={doc.objects.filter((p) => selectedIds.includes(p.id))}
               cables={doc.cables.filter((c) => selectedCableIds.includes(c.id))}
+              routes={routes}
             />
           )}
           {part && <PartOutline part={part} px={px} />}

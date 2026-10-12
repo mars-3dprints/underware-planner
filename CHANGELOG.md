@@ -9,6 +9,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 - Selecting an object highlights the cables connected to it and fades the rest.
 - Highlighted cables (hovered, or connected to the selected objects) glow in their own colour.
 
+### Fixed
+
+- The dashed box around a multi-selection now covers whole cables, not just their waypoints and loose ends; the size shown in the sidebar matches.
+
 ## [0.7.0] - 2026-10-12
 
 ### Added

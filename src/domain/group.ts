@@ -19,7 +19,10 @@ function boundsOfRects(rects: Bounds[]): Bounds {
 
 export const boundsOf = (parts: Part[]): Bounds => boundsOfRects(parts);
 
-/** Bounds of parts plus the points of cables (waypoints and loose ends), in cells. */
+/**
+ * Bounds of parts plus the points of cables (waypoints and loose ends), in cells: what moves, so the frame for
+ * rotating and pasting. Attached ends and routes don't count; `drawnBounds` measures what is drawn.
+ */
 export function selectionBounds(parts: Part[], cables: Cable[]): Bounds {
   const rects: Bounds[] = parts.map(({ x, y, w, h }) => ({ x, y, w, h }));
   for (const cable of cables) {
@@ -29,6 +32,15 @@ export function selectionBounds(parts: Part[], cables: Cable[]): Bounds {
     for (const p of [...cable.waypoints, ...looseEnds]) rects.push({ x: p.x, y: p.y, w: 1, h: 1 });
   }
   return boundsOfRects(rects);
+}
+
+/**
+ * Bounds of parts plus the cells their cables are drawn through, as the selection appears on the canvas.
+ * Unlike `selectionBounds`, attached cable ends and the route between points count.
+ */
+export function drawnBounds(parts: Part[], cables: Cable[], routes: Map<string, { draw: Cell[] }>): Bounds {
+  const cells = cables.flatMap((c) => routes.get(c.id)?.draw ?? []);
+  return boundsOfRects([...parts, ...cells.map(({ x, y }) => ({ x, y, w: 1, h: 1 }))]);
 }
 
 /** Cables running only between parts of a group: every attached end is in the group, and at least one is attached. */
