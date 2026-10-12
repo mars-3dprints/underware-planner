@@ -9,7 +9,7 @@ import {
   placeStamp,
   resizePart,
 } from '../../domain/doc';
-import { moveGroup } from '../../domain/group';
+import { moveGroup, pinCables } from '../../domain/group';
 import { layerOf } from '../../domain/layers';
 import { stampSize } from '../../domain/pieces';
 import type { Cell, Doc, Selection } from '../../domain/types';
@@ -41,7 +41,9 @@ type Drag =
       cids: string[];
       fx: number;
       fy: number;
+      /** The layout before the drag, and the same with the selected cables pinned to their paths. */
       base: Doc;
+      pinned: Doc;
       /** Offset last applied, so pointer moves within a cell do nothing. */
       dx: number;
       dy: number;
@@ -143,6 +145,8 @@ export function usePointerInput(options: PointerInputOptions) {
         fx: w.x,
         fy: w.y,
         base: s.doc,
+        // Selected cables keep the shape they have now and move with the selection.
+        pinned: pinCables(s.doc, cids, ids, routes.current),
         dx: 0,
         dy: 0,
         moved: false,
@@ -287,7 +291,8 @@ export function usePointerInput(options: PointerInputOptions) {
         if (dx === d.dx && dy === d.dy) break;
         d.dx = dx;
         d.dy = dy;
-        s.live(() => moveGroup(d.base, d.ids, d.cids, dx, dy));
+        // Back at the start, nothing has moved, so nothing is pinned either.
+        s.live(() => (dx || dy ? moveGroup(d.pinned, d.ids, d.cids, dx, dy) : d.base));
         break;
       }
       case 'marquee': {

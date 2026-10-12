@@ -9,6 +9,7 @@ import {
   cloneItems,
   internalCables,
   moveGroup,
+  pinCables,
   rotateGroup,
   selectionBounds,
 } from './group';
@@ -56,6 +57,22 @@ describe('group helpers', () => {
   it('rotates groups a quarter turn', () => {
     const d = fixture();
     expect(rotateGroup(d, ['o1', 'o2', 's1', 't1', 'y1'], ['k6'])).toMatchSnapshot();
+  });
+
+  it('moves selected cables as they are drawn, routing again only to an end left behind', () => {
+    const d = fixture();
+    const before = computeRoutes(d).get('k2')!.draw;
+    // k2 runs from the Switch (o2, moving) to the NAS (o3, staying put): all but its last bend shift with it.
+    const moved = moveGroup(pinCables(d, ['k2'], ['o2'], computeRoutes(d)), ['o2'], ['k2'], 0, 3);
+    const after = computeRoutes(moved).get('k2')!.draw;
+    const shifted = before.slice(0, -2).map((c) => ({ x: c.x, y: c.y + 3 }));
+    expect(after.slice(0, shifted.length)).toEqual(shifted);
+    expect(after.at(-1)).toEqual(before.at(-1));
+    // A cable moved on its own isn't pinned.
+    expect(pinCables(d, ['k2'], [], computeRoutes(d))).toBe(d);
+    // Pinning a cable already pinned to its path changes nothing.
+    const pinned = pinCables(d, ['k2'], ['o2', 'o3'], computeRoutes(d));
+    expect(pinCables(pinned, ['k2'], ['o2', 'o3'], computeRoutes(pinned))).toBe(pinned);
   });
 
   it('turns snaps in place, so slots and notches face the new way', () => {

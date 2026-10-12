@@ -1,6 +1,6 @@
 import { uid } from './id';
 import { pieceRot } from './pieces';
-import { anchorCell, partsById } from './anchors';
+import { anchorCell, partsById, sameCell } from './anchors';
 import type { Anchor, Bounds, Cable, Cell, Doc, Part } from './types';
 
 function boundsOfRects(rects: Bounds[]): Bounds {
@@ -73,6 +73,36 @@ function shiftCable(cable: Cable, dx: number, dy: number): Cable {
     b: mapLoose(cable.b, shift),
     waypoints: cable.waypoints.map(shift),
   };
+}
+
+/**
+ * Pins cables about to move with the parts `partIds` to the path they are drawn along now: their bends become
+ * their waypoints, so they keep their shape and shift with the selection instead of being routed afresh. An end
+ * left behind on a part that isn't moving drops its nearest bend, so the stretch to it is routed again directly.
+ * Only when parts move too: a cable moved on its own keeps its usual routing.
+ */
+export function pinCables(
+  doc: Doc,
+  cableIds: string[],
+  partIds: string[],
+  routes: Map<string, { draw: Cell[] }>,
+): Doc {
+  if (!partIds.length) return doc;
+  const ids = new Set(cableIds);
+  const moving = new Set(partIds);
+  const staysBehind = (end: Anchor) => end.objId !== undefined && !moving.has(end.objId);
+  let changed = false;
+  const cables = doc.cables.map((c) => {
+    const draw = ids.has(c.id) ? routes.get(c.id)?.draw : undefined;
+    if (!draw) return c;
+    const waypoints = draw.slice(staysBehind(c.a) ? 2 : 1, staysBehind(c.b) ? -2 : -1);
+    const same =
+      waypoints.length === c.waypoints.length && waypoints.every((p, i) => sameCell(p, c.waypoints[i]));
+    if (same) return c;
+    changed = true;
+    return { ...c, waypoints };
+  });
+  return changed ? { ...doc, cables } : doc;
 }
 
 export function moveGroup(doc: Doc, partIds: string[], cableIds: string[], dx: number, dy: number): Doc {

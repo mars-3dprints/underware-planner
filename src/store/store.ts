@@ -2,7 +2,14 @@ import { create } from 'zustand';
 import { partsById } from '../domain/anchors';
 import { BASE_ZOOM, DEFAULT_COLORS, PIECE_COLOR } from '../domain/constants';
 import { deleteWaypoint, isBomPart, moveCable, removePart, setInBom } from '../domain/doc';
-import { carriedCables, cloneItems, moveGroup, rotateGroup, selectionBounds } from '../domain/group';
+import {
+  carriedCables,
+  cloneItems,
+  moveGroup,
+  pinCables,
+  rotateGroup,
+  selectionBounds,
+} from '../domain/group';
 import { uid } from '../domain/id';
 import { type Layer, layerOf } from '../domain/layers';
 import { counterpart, flipped, isShaped, kindOfPiece, PIECE_LABELS } from '../domain/pieces';
@@ -19,6 +26,7 @@ import type {
   Tool,
   View,
 } from '../domain/types';
+import { routesFor } from '../routing/route';
 import { autosave, loadSaved } from './persistence';
 
 /** Undo steps kept. */
@@ -410,7 +418,11 @@ export const useStore = create<EditorState>((set, get) => ({
     const s = get();
     if (s.tool === 'place') return;
     const { partIds, cableIds } = targets(s);
-    if (partIds.length + cableIds.length) s.commit((d) => moveGroup(d, partIds, cableIds, dx, dy), 'nudge');
+    if (!partIds.length && !cableIds.length) return;
+    s.commit(
+      (d) => moveGroup(pinCables(d, cableIds, partIds, routesFor(d)), partIds, cableIds, dx, dy),
+      'nudge',
+    );
   },
   swapStyle: () => {
     const s = get();
