@@ -14,6 +14,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ### Changed
 
+- README screenshot retaken in light mode with a fuller layout and the new parts.
 - The "Tile covers" sections are now called "Snaps", and the plain tile cover is replaced by the channel grip snap. Snaps are drawn as they look, covering most of their tile cell.
 - The sidebars use one order: tiles, custom objects, channels, snaps, then cables. Channels in the bill of materials follow the library's groups, and the copied parts list has a separate Snaps section.
 - Channels in the bill of materials, the library and the copied parts list drop the repeated "Channel, " prefix ("Turn (rounded)").
