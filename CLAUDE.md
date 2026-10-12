@@ -23,7 +23,7 @@ Browser app for planning openGrid cable management (28 mm tiles) on an infinite 
 ## Concepts
 
 - **World unit = 1 cell = 28 mm** (`CELL_MM`). Everything snaps to integer cells. The canvas `<g>` is translated and scaled by the view.
-- **Parts** (`domain/types.ts` `Part`, stored in `doc.objects`): `kind` is `plate` (tile), `object` (custom device), `raceway` (channel) or `cover`. Pieces (channels and covers) have `sub` (`PieceType`), `rot` (quarter turns) and `flip`. The stored field names are the save/export format: don't rename them.
+- **Parts** (`domain/types.ts` `Part`, stored in `doc.objects`): `kind` is `plate` (tile), `object` (custom device), `raceway` (channel) or `snap` (tile cover, wall mount, Multiconnect). Pieces (channels and snaps) have `sub` (`PieceType`), `rot` (quarter turns) and `flip`. The stored field names are the save/export format: don't rename them.
 - **Cables**: `{ a, b, waypoints, slackMm, color }`. An anchor is `{ objId, dx, dy }` or a loose `{ x, y }`.
 - **Layers** (`tiles`, `objects`, `channels`, `cables`) are a view setting in the store (`hidden`), not part of the layout, export or undo. Hidden layers can't be selected, boxed or nudged, and placing a part shows its layer again.
 - **Storage:** `localStorage` key `underware-planner-v1` (`{ doc, view, palette }`). Export and import use `{ version: 1, doc }` JSON.

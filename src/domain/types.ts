@@ -5,9 +5,9 @@ export interface Cell {
 }
 
 /** Stored as `kind`: `plate` is an openGrid tile, `object` a custom device, `raceway` a channel. */
-export type PartKind = 'plate' | 'object' | 'raceway' | 'cover';
+export type PartKind = 'plate' | 'object' | 'raceway' | 'snap';
 
-/** Stored as `sub`: the type of a channel (raceway) or tile cover piece. */
+/** Stored as `sub`: the type of a channel (raceway) or snap piece. */
 export type PieceType =
   | 'straight'
   | 'bridge'

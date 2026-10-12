@@ -14,17 +14,6 @@ exports[`persistence > migrates older saves 1`] = `
   },
   {
     "color": "#000",
-    "h": 1,
-    "id": "b",
-    "kind": "cover",
-    "name": "Tile cover",
-    "sub": "hole",
-    "w": 1,
-    "x": 0,
-    "y": 0,
-  },
-  {
-    "color": "#000",
     "h": 3,
     "id": "c",
     "kind": "raceway",

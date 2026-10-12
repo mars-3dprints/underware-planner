@@ -75,14 +75,14 @@ export const CHANNEL_FAMILIES: { title: string; types: PieceType[] }[] = [
   { title: 'Offsets', types: ['jog_round', 'jog_angled'] },
 ];
 const CHANNEL_TYPES = CHANNEL_FAMILIES.flatMap((family) => family.types);
-export const COVER_TYPES: PieceType[] = ['hole', 'wall', 'multiconnect'];
-/** The hole through a tile cover, in cells, for covers that have one; Multiconnect's is threaded. */
-export const COVER_HOLES: Partial<Record<PieceType, { r: number; threaded?: boolean }>> = {
+export const SNAP_TYPES: PieceType[] = ['hole', 'wall', 'multiconnect'];
+/** The hole through a snap, in cells, for snaps that have one; Multiconnect's is threaded. */
+export const SNAP_HOLES: Partial<Record<PieceType, { r: number; threaded?: boolean }>> = {
   wall: { r: 0.085 },
   multiconnect: { r: 0.2, threaded: true },
 };
 /** Catalogue order, used to sort the bill of materials. */
-export const PIECE_ORDER: PieceType[] = [...CHANNEL_TYPES, ...COVER_TYPES];
+export const PIECE_ORDER: PieceType[] = [...CHANNEL_TYPES, ...SNAP_TYPES];
 
 export const PIECE_LABELS = {
   straight: 'Channel, straight',
@@ -109,7 +109,7 @@ const COUNTERPARTS: Partial<Record<PieceType, PieceType>> = {
   fork_angled: 'fork_round',
 };
 
-export const kindOfPiece = (type: PieceType): PartKind => (COVER_TYPES.includes(type) ? 'cover' : 'raceway');
+export const kindOfPiece = (type: PieceType): PartKind => (SNAP_TYPES.includes(type) ? 'snap' : 'raceway');
 export const isTurn = (type?: PieceType) => type === 'turn' || type === 'angled';
 /** Straights and bridges: sized by length, orientation from their footprint. */
 export const isLinear = (type?: PieceType) => type === 'straight' || type === 'bridge';

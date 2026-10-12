@@ -3,7 +3,7 @@ import { CELL_MM, DEFAULT_COLORS, MAX_TURN_SIZE, TILE_COLOR, TILE_LABEL } from '
 import {
   clampTurnSize,
   counterpart,
-  COVER_TYPES,
+  SNAP_TYPES,
   isLinear,
   isShaped,
   isSmallTurn,
@@ -35,7 +35,7 @@ function PlacingStatus() {
     'R rotate',
     stamp && isShaped(stamp.sub) && 'F flip',
     stamp && counterpart(stamp.sub, stamp.len) && 'T rounded/angled',
-    stamp && COVER_TYPES.includes(stamp.sub) && 'drag to paint',
+    stamp && SNAP_TYPES.includes(stamp.sub) && 'drag to paint',
     'Esc stop',
   ];
   return (
@@ -86,17 +86,17 @@ function TileSection() {
   );
 }
 
-function CoverSection({ active }: { active?: PieceType }) {
+function SnapSection({ active }: { active?: PieceType }) {
   const setStamp = useStore((s) => s.setStamp);
   return (
     <section>
       <h3>Snaps</h3>
       <div className="tiles">
-        {COVER_TYPES.map((sub) => (
+        {SNAP_TYPES.map((sub) => (
           <PieceButton key={sub} sub={sub} active={active === sub} onClick={() => setStamp(sub, 1)} />
         ))}
       </div>
-      <p className="hint">Tile holes stay open until a cover is placed.</p>
+      <p className="hint">Tile holes stay open until a snap is placed.</p>
     </section>
   );
 }
@@ -257,11 +257,11 @@ export function LibraryPanel() {
   return (
     <aside className="panel left">
       <PlacingStatus />
-      {/* Same order as the layers and the bill of materials: tiles, objects, channels, then covers. */}
+      {/* Same order as the layers and the bill of materials: tiles, objects, channels, then snaps. */}
       <TileSection />
       <DeviceSection />
       <ChannelSection active={active} />
-      <CoverSection active={active} />
+      <SnapSection active={active} />
     </aside>
   );
 }

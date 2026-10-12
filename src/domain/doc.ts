@@ -174,13 +174,13 @@ export function makePiece(
   };
 }
 
-/** Places a piece with its top-left corner on `cell`. A cover replaces any cover already on that hole. */
+/** Places a piece with its top-left corner on `cell`. A snap replaces any snap already on that hole. */
 export const placeStamp =
   (stamp: Stamp, cell: Cell) =>
   (doc: Doc): Doc => {
     const piece = makePiece(stamp.sub, cell.x, cell.y, stamp.len, stamp.rot, stamp.flip, stamp.color);
-    if (piece.kind === 'cover') {
-      const existing = doc.objects.find((p) => p.kind === 'cover' && p.x === cell.x && p.y === cell.y);
+    if (piece.kind === 'snap') {
+      const existing = doc.objects.find((p) => p.kind === 'snap' && p.x === cell.x && p.y === cell.y);
       if (existing) {
         if (existing.sub === stamp.sub && existing.color === stamp.color) return doc;
         const replaced = { ...existing, sub: stamp.sub, name: piece.name, color: stamp.color };

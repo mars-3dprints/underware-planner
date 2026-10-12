@@ -317,7 +317,7 @@ export function usePointerInput(options: PointerInputOptions) {
         s.live((doc) => resizePart(doc, d.id, cell));
         break;
       case 'paint': {
-        // Dragging paints 1×1 pieces (covers) onto every cell passed over.
+        // Dragging paints 1×1 pieces (snaps) onto every cell passed over.
         const key = cellKey(cell);
         const { stamp } = s;
         if (key === d.last || !stamp) break;

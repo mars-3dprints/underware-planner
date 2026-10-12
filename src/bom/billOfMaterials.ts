@@ -4,7 +4,7 @@ import { isBomPart } from '../domain/doc';
 import { boundsOf } from '../domain/group';
 import {
   channelLabel,
-  COVER_TYPES,
+  SNAP_TYPES,
   isLinear,
   isMirrored,
   isSmallTurn,
@@ -104,7 +104,7 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
       excluded++;
       continue;
     }
-    if ((part.kind === 'raceway' || part.kind === 'cover') && part.sub) {
+    if ((part.kind === 'raceway' || part.kind === 'snap') && part.sub) {
       // Either style of 1×1 turn is the same print.
       const sub = isSmallTurn(part.sub, Math.max(part.w, part.h)) ? 'turn' : part.sub;
       const piece = { ...part, sub };
@@ -143,8 +143,8 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
     plates: tiles.length,
     tiles: cells,
     connectors: countConnectors(allTiles),
-    channels: pieces.filter((line) => !COVER_TYPES.includes(line.sub)),
-    covers: pieces.filter((line) => COVER_TYPES.includes(line.sub)),
+    channels: pieces.filter((line) => !SNAP_TYPES.includes(line.sub)),
+    snaps: pieces.filter((line) => SNAP_TYPES.includes(line.sub)),
     bboxMm: tiles.length ? { w: footprint.w * CELL_MM, h: footprint.h * CELL_MM } : null,
     excluded,
     cables,
@@ -166,7 +166,7 @@ export function billOfMaterialsText(bom: BillOfMaterials) {
     '',
     'Channels:',
     ...(bom.channels.length ? bom.channels.map(line) : ['  none']),
-    ...(bom.covers.length ? ['', 'Snaps:', ...bom.covers.map(line)] : []),
+    ...(bom.snaps.length ? ['', 'Snaps:', ...bom.snaps.map(line)] : []),
     '',
     ...(bom.excluded ? [`Excluded parts: ${bom.excluded}`] : []),
     `Cables: ${bom.cables.length}, ${(bom.cableMm / 1000).toFixed(2)} m total`,

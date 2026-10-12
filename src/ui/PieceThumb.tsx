@@ -1,8 +1,8 @@
 import { useId } from 'react';
 import {
   circlePath,
-  COVER_HOLES,
-  COVER_TYPES,
+  SNAP_HOLES,
+  SNAP_TYPES,
   isLinear,
   minLength,
   pieceShape,
@@ -30,9 +30,9 @@ interface PieceThumbProps {
 /** Small picture of a piece, drawn from the same shapes the canvas uses. */
 export function PieceThumb({ sub, len = 3, size = 34, flip = false }: PieceThumbProps) {
   const maskId = useId();
-  if (COVER_TYPES.includes(sub)) {
-    const hole = COVER_HOLES[sub];
-    // The hole is cut out of the cover (even-odd), so the background shows through.
+  if (SNAP_TYPES.includes(sub)) {
+    const hole = SNAP_HOLES[sub];
+    // The hole is cut out of the snap (even-odd), so the background shows through.
     const cut = hole ? circlePath(hole.r) : '';
     return (
       <svg width={size} height={size} viewBox="0 0 1 1" aria-hidden="true">

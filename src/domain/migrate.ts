@@ -9,7 +9,6 @@ type LegacyType = 'turn2' | 'turn3' | 'branch_round' | 'branch_angled' | 'jog_ro
 function migratePart(part: Part): Part {
   const sub = part.sub as PieceType | LegacyType | undefined;
   if (part.kind === 'plate') return part.name === 'Plate' ? { ...part, name: TILE_LABEL } : part;
-  if (part.kind === 'cover') return part.name === 'Hole cover' ? { ...part, name: PIECE_LABELS.hole } : part;
   // Custom objects were briefly part of the bill of materials, and could be left out of it.
   if (!isBomPart(part) && part.noBom) {
     const { noBom: _, ...rest } = part;

@@ -37,7 +37,7 @@ Everything runs client-side. There is no backend and no account; your layout aut
 
 Mirrored parts are different prints, so they are listed as separate BOM entries. Overlapping channels are flagged with a dashed red outline. Turns, merges, offsets and forks each come in a rounded and an angled form; press **T** (or use the toolbar button) to switch a selected part, or the part you are placing, between them.
 
-**Snaps** — parts that snap into a tile hole: tile cover, wall mount and Multiconnect (a bigger, threaded hole). Tile holes stay open until a cover is placed.
+**Snaps** — parts that snap into a tile hole: tile cover, wall mount and Multiconnect (a bigger, threaded hole). Tile holes stay open until a snap is placed.
 
 **Cables** — length is cells × 28 mm plus optional extra slack. Cables have their own colour, name and slack setting and are listed with their lengths in the BOM.
 

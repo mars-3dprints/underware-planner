@@ -1,7 +1,7 @@
 import { memo, type SVGProps } from 'react';
 import { TILE_LABEL } from '../../domain/constants';
 import { channelGeometry, channelPorts, matrixAttr } from '../../domain/geometry';
-import { COVER_HOLES, isVertical, TILE_HOLE_PATH } from '../../domain/pieces';
+import { isVertical, SNAP_HOLES, TILE_HOLE_PATH } from '../../domain/pieces';
 import type { Part } from '../../domain/types';
 import { readableTextColor } from '../../ui/color';
 import { InsetMask } from '../../ui/InsetMask';
@@ -68,8 +68,8 @@ function TileShape({ part: p, overlapping, showLabel, props }: ShapeProps) {
   );
 }
 
-function CoverShape({ part: p, overlapping, props }: ShapeProps) {
-  const hole = p.sub && COVER_HOLES[p.sub];
+function SnapShape({ part: p, overlapping, props }: ShapeProps) {
+  const hole = p.sub && SNAP_HOLES[p.sub];
   return (
     <g transform={`translate(${p.x} ${p.y})`} {...props}>
       <path
@@ -227,7 +227,7 @@ function DeviceShape({ part: p, overlapping, showLabel, props }: ShapeProps) {
   );
 }
 
-const SHAPES = { plate: TileShape, cover: CoverShape, raceway: ChannelShape, object: DeviceShape };
+const SHAPES = { plate: TileShape, snap: SnapShape, raceway: ChannelShape, object: DeviceShape };
 
 /** Any part. Interactive parts carry `data-k="obj"` and `data-id` for pointer handling. */
 export const PartShape = memo(function PartShape({ part, ghost = false, ...rest }: PartShapeProps) {

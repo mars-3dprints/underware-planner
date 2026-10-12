@@ -12,7 +12,7 @@ interface PieceButtonProps {
 
 /** Catalogue button showing a piece's thumbnail. */
 export function PieceButton({ sub, len, flip, active, onClick }: PieceButtonProps) {
-  // Channels drop the "Channel, " prefix, as they sit under a Channels heading; covers have none.
+  // Channels drop the "Channel, " prefix, as they sit under a Channels heading; snaps have none.
   const label = channelLabel(
     isTurn(sub) ? `${pieceLabel(sub, { size: len })} ${len}×${len}` : pieceLabel(sub, { mirrored: flip }),
   );

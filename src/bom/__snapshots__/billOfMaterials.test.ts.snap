@@ -295,7 +295,32 @@ exports[`builds the bill of materials 1`] = `
     },
   ],
   "connectors": 14,
-  "covers": [
+  "excluded": 0,
+  "plates": 3,
+  "sizes": [
+    {
+      "color": "#b8c4bd",
+      "cols": 12,
+      "key": "8×12:#b8c4bd",
+      "qty": 1,
+      "rows": 8,
+    },
+    {
+      "color": "#b8c4bd",
+      "cols": 8,
+      "key": "4×8:#b8c4bd",
+      "qty": 1,
+      "rows": 4,
+    },
+    {
+      "color": "#9aa5c4",
+      "cols": 6,
+      "key": "3×6:#9aa5c4",
+      "qty": 1,
+      "rows": 3,
+    },
+  ],
+  "snaps": [
     {
       "color": "#343a40",
       "key": "hole:#343a40",
@@ -339,31 +364,6 @@ exports[`builds the bill of materials 1`] = `
       "qty": 1,
       "spec": "28 mm",
       "sub": "multiconnect",
-    },
-  ],
-  "excluded": 0,
-  "plates": 3,
-  "sizes": [
-    {
-      "color": "#b8c4bd",
-      "cols": 12,
-      "key": "8×12:#b8c4bd",
-      "qty": 1,
-      "rows": 8,
-    },
-    {
-      "color": "#b8c4bd",
-      "cols": 8,
-      "key": "4×8:#b8c4bd",
-      "qty": 1,
-      "rows": 4,
-    },
-    {
-      "color": "#9aa5c4",
-      "cols": 6,
-      "key": "3×6:#9aa5c4",
-      "qty": 1,
-      "rows": 3,
     },
   ],
   "tiles": 146,

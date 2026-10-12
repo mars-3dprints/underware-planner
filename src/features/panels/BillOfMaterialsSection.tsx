@@ -75,7 +75,7 @@ export function BillOfMaterialsSection({
   bom: BillOfMaterials;
   overlapCount: number;
 }) {
-  const { channels, covers } = bom;
+  const { channels, snaps } = bom;
   return (
     <section>
       <h3>
@@ -131,11 +131,11 @@ export function BillOfMaterialsSection({
           <p className="hint">No channels yet.</p>
         )}
       </div>
-      {covers.length > 0 && (
+      {snaps.length > 0 && (
         <div className="group">
           <span className="sub">Snaps</span>
-          <PieceTable lines={covers} />
-          <KeyValue label="Total snaps" value={total(covers)} />
+          <PieceTable lines={snaps} />
+          <KeyValue label="Total snaps" value={total(snaps)} />
         </div>
       )}
       {bom.excluded > 0 && (

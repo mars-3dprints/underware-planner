@@ -3,7 +3,7 @@ import { isNamed, patchCable, patchPart } from '../../domain/doc';
 import { drawnBounds } from '../../domain/group';
 import {
   clampTurnSize,
-  COVER_TYPES,
+  SNAP_TYPES,
   isLinear,
   isTurn,
   lengthPatch,
@@ -52,7 +52,7 @@ function GroupDetails({
 function PartDetails({ part }: { part: Part }) {
   const commit = useStore((s) => s.commit);
   const edit = (patch: Partial<Part>, key?: string) => commit((d) => patchPart(d, part.id, patch), key);
-  const isPiece = part.kind === 'raceway' || part.kind === 'cover';
+  const isPiece = part.kind === 'raceway' || part.kind === 'snap';
   const title =
     part.kind === 'plate'
       ? TILE_LABEL
@@ -101,9 +101,9 @@ function PartDetails({ part }: { part: Part }) {
           />
         )}
       </div>
-      {part.kind === 'cover' && (
+      {part.kind === 'snap' && (
         <div className="tiles">
-          {COVER_TYPES.map((sub) => (
+          {SNAP_TYPES.map((sub) => (
             <PieceButton
               key={sub}
               sub={sub}

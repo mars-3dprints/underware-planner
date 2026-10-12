@@ -45,7 +45,7 @@ describe('doc operations', () => {
     expect(moveCable(d, 'missing', 0)).toBe(d);
   });
 
-  it('stamps parts and replaces covers in place', () => {
+  it('stamps parts and replaces snaps in place', () => {
     const d = fixture();
     const st = { sub: 'turn' as const, len: 3, rot: 1, flip: false, color: '#000000' };
     expect(placeStamp(st, { x: 40, y: 40 })(d).objects.at(-1)).toMatchObject({
@@ -56,11 +56,11 @@ describe('doc operations', () => {
       rot: 1,
       x: 40,
     });
-    const cover = { sub: 'wall' as const, len: 1, rot: 0, flip: false, color: '#343a40' };
-    const replaced = placeStamp(cover, { x: 0, y: 0 })(d);
+    const snap = { sub: 'wall' as const, len: 1, rot: 0, flip: false, color: '#343a40' };
+    const replaced = placeStamp(snap, { x: 0, y: 0 })(d);
     expect(replaced.objects).toHaveLength(d.objects.length);
     expect(replaced.objects.find((o) => o.id === 'h1')).toMatchObject({ sub: 'wall', name: 'Wall mount' });
-    expect(placeStamp({ ...cover, sub: 'hole' }, { x: 0, y: 0 })(d)).toBe(d);
+    expect(placeStamp({ ...snap, sub: 'hole' }, { x: 0, y: 0 })(d)).toBe(d);
     const b = placeBlock(
       { kind: 'object', name: 'PC', w: 2, h: 4, color: '#fff' },
       { x: 10, y: 10 },

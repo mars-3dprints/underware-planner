@@ -23,7 +23,6 @@ describe('persistence', () => {
     const legacy: Doc = {
       objects: [
         { id: 'a', kind: 'plate', name: 'Plate', x: 0, y: 0, w: 2, h: 2, color: '#fff' },
-        { id: 'b', kind: 'cover', name: 'Hole cover', sub: 'hole', x: 0, y: 0, w: 1, h: 1, color: '#000' },
         { id: 'c', kind: 'raceway', name: 'x', sub: 'turn2' as never, x: 0, y: 0, w: 1, h: 1, color: '#000' },
         {
           id: 'd',

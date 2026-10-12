@@ -141,7 +141,7 @@ export function Canvas() {
         <CanvasGrid zoom={view.k} />
         <g transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
           {!hidden.tiles && ofKind('plate').map(shape)}
-          {!hidden.tiles && ofKind('cover').map(shape)}
+          {!hidden.tiles && ofKind('snap').map(shape)}
           {!hidden.objects && ofKind('object').map(shape)}
 
           {!hidden.cables &&
