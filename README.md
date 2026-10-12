@@ -17,7 +17,7 @@ Everything runs client-side. There is no backend and no account; your layout aut
 - **Cover cables with channels.** Channels are drawn over the cables they carry, so you can see exactly where cables are hidden and where they are exposed. Turn on see-through mode (**P**) to look at the cables underneath.
 - **Cables follow the channels.** Where a cable runs inside a shaped channel it follows that piece's real centerline (turn radius, diagonal, S-curve, junction arc). Outside channels it keeps the orthogonal look, and it falls back on its own if the channel is moved or removed.
 - **Focus with layers.** Show or hide tiles, objects, channels and cables independently, for example to look at just the tile plan.
-- **Count the parts.** A live bill of materials tracks tiles by size, connectors, each channel type, tile covers, objects and total cable length.
+- **Count the parts.** A live bill of materials tracks tiles by size, connectors, each channel type, tile covers, objects and total cable length. Leave out parts you already have by unticking **Include in bill of materials** for the selection; they're shown faded.
 
 ## Parts
 

@@ -180,6 +180,21 @@ describe('store actions', () => {
     expect(s().past.length).toBe(before - 1);
   });
 
+  it('includes the selected parts in, or leaves them out of, the bill of materials', async () => {
+    const { selectionInBom } = await import('./store');
+    s().selectItems([], ['k1']);
+    expect(selectionInBom(s())).toBeUndefined();
+    s().select({ type: 'obj', id: 'p1' });
+    expect(selectionInBom(s())).toBe(true);
+    s().setSelectionInBom(false);
+    expect(selectionInBom(s())).toBe(false);
+    s().selectItems(['p1', 'p2']);
+    expect(selectionInBom(s())).toBe('mixed');
+    s().setSelectionInBom(true);
+    expect(s().doc.objects.some((p) => p.noBom)).toBe(false);
+    expect(s().past).toHaveLength(2);
+  });
+
   it('places stamps and blocks', () => {
     s().toggleLayer('channels');
     s().setStamp('turn', 3);

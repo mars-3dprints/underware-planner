@@ -233,6 +233,10 @@ export const PartShape = memo(function PartShape({ part, ghost = false, ...rest 
   const Shape = SHAPES[part.kind];
   const props: SVGProps<SVGGElement> = ghost
     ? { opacity: 0.65, pointerEvents: 'none' }
-    : ({ 'data-k': 'obj', 'data-id': part.id } as SVGProps<SVGGElement>);
+    : ({
+        'data-k': 'obj',
+        'data-id': part.id,
+        className: part.noBom ? 'no-bom' : undefined,
+      } as SVGProps<SVGGElement>);
   return <Shape part={part} props={props} {...rest} />;
 });

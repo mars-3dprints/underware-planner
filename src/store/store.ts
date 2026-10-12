@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { partsById } from '../domain/anchors';
 import { BASE_ZOOM, DEFAULT_COLORS, PIECE_COLOR } from '../domain/constants';
-import { deleteWaypoint, removePart } from '../domain/doc';
+import { deleteWaypoint, removePart, setInBom } from '../domain/doc';
 import { carriedCables, cloneItems, moveGroup, rotateGroup, selectionBounds } from '../domain/group';
 import { uid } from '../domain/id';
 import { type Layer, layerOf } from '../domain/layers';
@@ -84,6 +84,8 @@ export interface EditorState {
   flipSelection(): void;
   nudgeSelection(dx: number, dy: number): void;
   swapStyle(): void;
+  /** Includes the selected parts in, or leaves them out of, the bill of materials. */
+  setSelectionInBom(include: boolean): void;
   copySelection(): void;
   pasteAt(cell: Cell | null): void;
   addCable(a: Anchor, b: Anchor, waypoints: Cell[]): void;
@@ -138,6 +140,20 @@ const swappable = (s: SelectionState) => {
 };
 export const canSwapStyle = (s: SelectionState) => swappable(s).length > 0;
 export const canFlip = (s: SelectionState) => isShaped(selectedPart(s)?.sub);
+
+/** Whether the selected parts are in the bill of materials: all, none, `mixed`, or `undefined` with no parts. */
+export const selectionInBom = (s: SelectionState): boolean | 'mixed' | undefined => {
+  const { partIds } = targets(s);
+  if (!partIds.length) return undefined;
+  const parts = new Set(partIds);
+  let state: boolean | undefined;
+  for (const p of s.doc.objects) {
+    if (!parts.has(p.id)) continue;
+    if (state === undefined) state = !p.noBom;
+    else if (state !== !p.noBom) return 'mixed';
+  }
+  return state;
+};
 
 /** Selection of these items, with the first part (or else the first cable) as primary. */
 function selectionOf(partIds: string[], cableIds: string[]): SelectionFields {
@@ -369,6 +385,10 @@ export const useStore = create<EditorState>((set, get) => ({
         return sub ? { ...p, sub, name: PIECE_LABELS[sub] ?? p.name } : p;
       }),
     }));
+  },
+  setSelectionInBom: (include) => {
+    const s = get();
+    s.commit((d) => setInBom(d, targets(s).partIds, include));
   },
   copySelection: () => {
     const s = get();

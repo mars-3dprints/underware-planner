@@ -12,6 +12,20 @@ it('builds the bill of materials', () => {
   expect(billOfMaterialsText(s)).toMatchSnapshot();
 });
 
+it('leaves out excluded parts, but counts connectors joining them to included tiles', () => {
+  const d = fixture();
+  const leftOut = new Set(['p1', 'p2', 's1', 'o1']);
+  const doc = { ...d, objects: d.objects.map((p) => (leftOut.has(p.id) ? { ...p, noBom: true } : p)) };
+  const full = billOfMaterials(d, computeRoutes(d));
+  const s = billOfMaterials(doc, computeRoutes(doc));
+  expect(s).toMatchObject({ plates: 1, tiles: 18, connectors: 6, objects: full.objects - 1, excluded: 4 });
+  expect(s.bboxMm).toEqual({ w: 6 * 28, h: 3 * 28 });
+  const straights = (b: typeof s) =>
+    b.addons.filter((a) => a.sub === 'straight').reduce((n, a) => n + a.qty, 0);
+  expect(straights(s)).toBe(straights(full) - 1);
+  expect(billOfMaterialsText(s)).toContain('Excluded parts: 4');
+});
+
 it('flags overlapping objects (channel shapes need a browser canvas)', () => {
   expect([...findOverlaps(fixture())].sort()).toEqual(['o5', 'o6']);
 });

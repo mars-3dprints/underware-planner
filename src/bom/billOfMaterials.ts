@@ -44,13 +44,17 @@ function pieceLine(piece: Part & { sub: PieceType }): PieceLine {
   return { sub, len, label: pieceLabel(sub, mirrored), spec, qty: 0, order, mirrored };
 }
 
-/** Joins between edge-adjacent tiles: one connector per cell of shared edge. */
+/**
+ * Joins between edge-adjacent tiles: one connector per cell of shared edge. A join to a tile left out of the bill
+ * of materials still needs connectors; a join between two left-out tiles doesn't.
+ */
 function countConnectors(tiles: Part[]) {
   let connectors = 0;
   for (let i = 0; i < tiles.length; i++) {
     for (let j = i + 1; j < tiles.length; j++) {
       const a = tiles[i];
       const b = tiles[j];
+      if (a.noBom && b.noBom) continue;
       const overlapX = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
       const overlapY = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
       if ((a.x + a.w === b.x || b.x + b.w === a.x) && overlapY > 0) connectors += overlapY;
@@ -64,8 +68,16 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
   const tileSizes = new Map<string, TileSize>();
   const pieceLines = new Map<string, PieceLine>();
   const tiles: Part[] = [];
+  const allTiles: Part[] = [];
   let cells = 0;
+  let objects = 0;
+  let excluded = 0;
   for (const part of doc.objects) {
+    if (part.kind === 'plate') allTiles.push(part);
+    if (part.noBom) {
+      excluded++;
+      continue;
+    }
     if ((part.kind === 'raceway' || part.kind === 'cover') && part.sub) {
       const piece = part as Part & { sub: PieceType };
       const key = pieceKey(piece);
@@ -74,6 +86,7 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
       pieceLines.set(key, entry);
       continue;
     }
+    if (part.kind === 'object') objects++;
     if (part.kind !== 'plate') continue;
     const rows = Math.min(part.w, part.h);
     const cols = Math.max(part.w, part.h);
@@ -97,10 +110,11 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
     sizes,
     plates: tiles.length,
     tiles: cells,
-    connectors: countConnectors(tiles),
+    connectors: countConnectors(allTiles),
     addons,
     bboxMm: tiles.length ? { w: footprint.w * CELL_MM, h: footprint.h * CELL_MM } : null,
-    objects: doc.objects.filter((p) => p.kind === 'object').length,
+    objects,
+    excluded,
     cables,
     cableMm: cables.reduce((n, c) => n + c.mm, 0),
   };
@@ -120,6 +134,7 @@ export function billOfMaterialsText(bom: BillOfMaterials) {
     ...(bom.addons.length ? bom.addons.map((a) => `  ${a.label} (${a.spec}) × ${a.qty}`) : ['  none']),
     '',
     `Objects: ${bom.objects}`,
+    ...(bom.excluded ? [`Excluded parts: ${bom.excluded}`] : []),
     `Cables: ${bom.cables.length}, ${(bom.cableMm / 1000).toFixed(2)} m total`,
     ...bom.cables.map((c) => `  ${c.name}: ${c.mm} mm`),
   ].join('\n');

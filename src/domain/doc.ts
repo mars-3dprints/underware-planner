@@ -46,6 +46,20 @@ export function patchPart(doc: Doc, id: string, patch: Partial<Part>): Doc {
   return { objects: doc.objects.map((p) => (p.id === id ? next : p)), cables };
 }
 
+/** Includes parts in, or leaves them out of, the bill of materials. Returns `doc` itself when nothing changes. */
+export function setInBom(doc: Doc, ids: string[], include: boolean): Doc {
+  const targets = new Set(ids);
+  let changed = false;
+  const objects = doc.objects.map((p) => {
+    if (!targets.has(p.id) || !p.noBom === include) return p;
+    changed = true;
+    if (!include) return { ...p, noBom: true };
+    const { noBom: _, ...rest } = p;
+    return rest;
+  });
+  return changed ? { ...doc, objects } : doc;
+}
+
 /** Removes a part; cable ends attached to it stay where they were as loose ends. */
 export function removePart(doc: Doc, id: string): Doc {
   const part = doc.objects.find((p) => p.id === id);

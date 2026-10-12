@@ -17,6 +17,10 @@
   border-radius: 6px;
   pointer-events: none;
 }
+/* Parts left out of the bill of materials. */
+.no-bom {
+  opacity: 0.45;
+}
 /* Inline rename over a tile or custom object. */
 .rename {
   position: absolute;

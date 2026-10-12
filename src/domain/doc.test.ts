@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { fixture } from '../test/fixture';
-import { patchPart, placeBlock, placeStamp, removePart } from './doc';
+import { patchPart, placeBlock, placeStamp, removePart, setInBom } from './doc';
 
 describe('doc operations', () => {
   it('patches objects, rounding and clamping attached cable ends', () => {
@@ -10,6 +10,17 @@ describe('doc operations', () => {
     const n = patchPart(d, 'o2', { w: 1.2, x: 3.6 });
     expect(n.objects.find((o) => o.id === 'o2')).toMatchObject({ x: 4, w: 1 });
     expect(n.cables.find((c) => c.id === 'k2')!.a).toEqual({ objId: 'o2', dx: 0, dy: 0 });
+  });
+
+  it('includes parts in, and leaves them out of, the bill of materials', () => {
+    const d = fixture();
+    expect(setInBom(d, ['p1', 'missing'], true)).toBe(d);
+    const out = setInBom(d, ['p1', 's1'], false);
+    expect(out.objects.filter((p) => p.noBom).map((p) => p.id)).toEqual(['p1', 's1']);
+    expect(setInBom(out, ['p1'], false)).toBe(out);
+    const back = setInBom(out, ['p1', 's1'], true);
+    expect(back.objects).toEqual(d.objects);
+    expect('noBom' in back.objects[0]).toBe(false);
   });
 
   it('leaves loose cable ends behind when an object is removed', () => {

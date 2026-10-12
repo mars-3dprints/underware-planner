@@ -7,6 +7,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 ### Added
 
 - Links to openGrid and Underware for openGrid on MakerWorld, in the README and a "Related" group in the version menu.
+- "Include in bill of materials" checkbox for the selection, to leave out parts you already have. Excluded parts are shown faded.
 
 ## [0.5.0] - 2026-10-12
 

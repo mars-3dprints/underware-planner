@@ -99,6 +99,18 @@ input:focus {
 .row2 .field {
   flex: 1 1 40%;
 }
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.check input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--accent);
+}
 
 /* Buttons */
 .btn {

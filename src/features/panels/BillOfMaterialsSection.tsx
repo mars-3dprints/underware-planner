@@ -3,6 +3,7 @@ import { type BillOfMaterials, billOfMaterialsText, type PieceLine } from '../..
 import { CELL_MM } from '../../domain/constants';
 import { COVER_TYPES } from '../../domain/pieces';
 import { PieceThumb } from '../../ui/PieceThumb';
+import { plural } from '../../ui/plural';
 
 const COPIED_MS = 1500;
 
@@ -134,6 +135,9 @@ export function BillOfMaterialsSection({
         </div>
       )}
       <KeyValue label="Objects" value={bom.objects} />
+      {bom.excluded > 0 && (
+        <p className="hint">{plural(bom.excluded, 'excluded part')} (shown faded) not counted.</p>
+      )}
     </section>
   );
 }

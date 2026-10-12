@@ -13,11 +13,10 @@ import {
 import type { Anchor, Cable, Part } from '../../domain/types';
 import type { Route } from '../../routing/route';
 import { useShallow } from 'zustand/react/shallow';
-import { isGroupSelected, selectedCable, selectedPart, useStore } from '../../store/store';
+import { isGroupSelected, selectedCable, selectedPart, selectionInBom, useStore } from '../../store/store';
+import { plural } from '../../ui/plural';
 import { NumberField } from './NumberField';
 import { PieceButton } from './PieceButton';
-
-const plural = (n: number, word: string) => `${n} ${word}${n > 1 ? 's' : ''}`;
 
 function GroupDetails({ parts, cables }: { parts: Part[]; cables: Cable[] }) {
   const box = selectionBounds(parts, cables);
@@ -138,6 +137,26 @@ function CableDetails({ cable, route }: { cable: Cable; route?: Route }) {
   );
 }
 
+/** Includes the selected parts in, or leaves them out of, the bill of materials. */
+function BomToggle() {
+  const inBom = useStore(selectionInBom);
+  const setSelectionInBom = useStore((s) => s.setSelectionInBom);
+  if (inBom === undefined) return null;
+  return (
+    <label className="check">
+      <input
+        type="checkbox"
+        checked={inBom === true}
+        ref={(el) => {
+          if (el) el.indeterminate = inBom === 'mixed';
+        }}
+        onChange={() => setSelectionInBom(inBom !== true)}
+      />
+      <span>Include in bill of materials</span>
+    </label>
+  );
+}
+
 /** Details and fields for the selection. */
 export function SelectionSection({ routes }: { routes: Map<string, Route> }) {
   const { doc, selectedIds, selectedCableIds, isGroup, part, cable } = useStore(
@@ -162,6 +181,7 @@ export function SelectionSection({ routes }: { routes: Map<string, Route> }) {
       )}
       {part && <PartDetails part={part} />}
       {cable && <CableDetails cable={cable} route={routes.get(cable.id)} />}
+      <BomToggle />
     </section>
   );
 }

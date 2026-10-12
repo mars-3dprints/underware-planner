@@ -44,6 +44,8 @@ export interface Part {
   rot?: number;
   /** Pieces only: mirrored. */
   flip?: boolean;
+  /** Left out of the bill of materials (for example, parts already printed). */
+  noBom?: boolean;
 }
 
 /** A cable end: attached to a part (and follows it) or loose on a cell. */

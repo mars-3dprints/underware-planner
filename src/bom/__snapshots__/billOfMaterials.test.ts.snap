@@ -219,6 +219,7 @@ exports[`builds the bill of materials 1`] = `
     },
   ],
   "connectors": 14,
+  "excluded": 0,
   "objects": 6,
   "plates": 3,
   "sizes": [
