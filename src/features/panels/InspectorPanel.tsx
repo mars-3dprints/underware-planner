@@ -4,6 +4,7 @@ import { billOfMaterials, type BillOfMaterials } from '../../bom/billOfMaterials
 import { overlapsFor } from '../../bom/overlaps';
 import { routesFor } from '../../routing/route';
 import { useStore } from '../../store/store';
+import { Icon } from '../../ui/Icon';
 import { BillOfMaterialsSection } from './BillOfMaterialsSection';
 import { SelectionSection } from './SelectionSection';
 
@@ -14,9 +15,13 @@ interface CableDrag {
   to: number;
 }
 
-/** The drop indicator's class for list item `i`: a line on the side of the cable it would land next to. */
-function dropClass(drag: CableDrag | null, i: number) {
-  if (!drag || drag.to !== i || drag.to === drag.from) return '';
+/**
+ * Drag classes for list item `i`: the dragged row, or a drop line on the side of the cable it would land next to.
+ */
+function dragClass(drag: CableDrag | null, i: number) {
+  if (!drag) return '';
+  if (drag.from === i) return ' dragging';
+  if (drag.to !== i) return '';
   return drag.to < drag.from ? ' drop-before' : ' drop-after';
 }
 
@@ -41,8 +46,8 @@ function CablesSection({ bom }: { bom: BillOfMaterials }) {
           {bom.cables.map((cable, i) => (
             <li
               key={cable.id}
-              className={(selectedCableIds.includes(cable.id) ? 'on' : '') + dropClass(drag, i)}
-              title="Drag to reorder. Cables lower in the list are drawn on top."
+              className={(selectedCableIds.includes(cable.id) ? 'on' : '') + dragClass(drag, i)}
+              title="Cables lower in the list are drawn on top."
               draggable
               onClick={() => select({ type: 'cable', id: cable.id })}
               onMouseEnter={() => setHoverCables([cable.id])}
@@ -67,6 +72,7 @@ function CablesSection({ bom }: { bom: BillOfMaterials }) {
               }}
               onDragEnd={() => setDrag(null)}
             >
+              <Icon name="grip" size={14} />
               <i style={{ background: cable.color }} />
               <div className="cabname">
                 {cable.name}

@@ -221,7 +221,7 @@
   gap: 8px;
   padding: 6px 8px;
   border-radius: 6px;
-  cursor: pointer;
+  cursor: grab;
 }
 .list li:hover,
 .list li.on {
@@ -249,6 +249,20 @@
   .tiles {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+/* Cables reorder by dragging: a grip on hover and a faded row while dragging. */
+.list li.dragging {
+  opacity: 0.5;
+}
+/* The grip (the row's only direct svg child) keeps its space while hidden, so rows don't shift. */
+.list li > svg {
+  margin: 0 -4px 0 -6px;
+  color: var(--muted);
+  visibility: hidden;
+}
+.list li:hover > svg,
+.list li.dragging > svg {
+  visibility: visible;
 }
 /* Where a dragged cable will land. */
 .list li.drop-before {

@@ -88,6 +88,8 @@ const PATHS = {
     </>
   ),
   trash: <path d="M4 6h12M8 6V4h4v2M6 6l.8 10.5h6.4L14 6M8.5 9v5M11.5 9v5" />,
+  /** Drag handle: two columns of dots (zero-length strokes with round caps). */
+  grip: <path d="M7.5 5h0M12.5 5h0M7.5 10h0M12.5 10h0M7.5 15h0M12.5 15h0" strokeWidth={2.6} />,
 } satisfies Record<string, ReactElement>;
 
 export type IconName = keyof typeof PATHS;
