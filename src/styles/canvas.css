@@ -50,12 +50,8 @@
   display: block;
   margin-bottom: 2px;
 }
-.cabtip i {
-  display: inline-block;
-  width: 9px;
-  height: 9px;
+.cabtip .dot {
   margin-right: 6px;
-  border-radius: 50%;
 }
 .cabtip small {
   display: block;

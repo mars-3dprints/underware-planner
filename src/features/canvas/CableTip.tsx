@@ -2,6 +2,7 @@ import { type RefObject, useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { cableRoute, partsById } from '../../domain/anchors';
 import { useStore } from '../../store/store';
+import { ColorDot } from '../../ui/ColorDot';
 
 const OFFSET = 14;
 
@@ -72,7 +73,7 @@ export function CableTip({ svgRef }: { svgRef: RefObject<SVGSVGElement | null> }
       <b>{shown.length === 1 ? '1 cable' : `${shown.length} cables`}</b>
       {shown.map((c) => (
         <div key={c.id}>
-          <i style={{ background: c.color }} />
+          <ColorDot color={c.color} />
           {c.name}
           <small>{cableRoute(c, parts)}</small>
         </div>

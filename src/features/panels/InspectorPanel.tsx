@@ -4,6 +4,7 @@ import { billOfMaterials, type BillOfMaterials } from '../../bom/billOfMaterials
 import { overlapsFor } from '../../bom/overlaps';
 import { routesFor } from '../../routing/route';
 import { useStore } from '../../store/store';
+import { ColorDot } from '../../ui/ColorDot';
 import { Icon } from '../../ui/Icon';
 import { BillOfMaterialsSection } from './BillOfMaterialsSection';
 import { SelectionSection } from './SelectionSection';
@@ -73,7 +74,7 @@ function CablesSection({ bom }: { bom: BillOfMaterials }) {
               onDragEnd={() => setDrag(null)}
             >
               <Icon name="grip" size={14} />
-              <i style={{ background: cable.color }} />
+              <ColorDot color={cable.color} />
               <div className="cabname">
                 {cable.name}
                 <small>{cable.route}</small>

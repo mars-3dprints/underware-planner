@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { type BillOfMaterials, billOfMaterialsText, type PieceLine } from '../../bom/billOfMaterials';
 import { CELL_MM } from '../../domain/constants';
 import { COVER_TYPES } from '../../domain/pieces';
+import { ColorDot } from '../../ui/ColorDot';
 import { PieceThumb } from '../../ui/PieceThumb';
 import { plural } from '../../ui/plural';
 
@@ -28,9 +29,12 @@ function PieceTable({ lines }: { lines: PieceLine[] }) {
       </thead>
       <tbody>
         {lines.map((line) => (
-          <tr key={line.label + line.spec}>
+          <tr key={line.key}>
             <td className="thumbcell">
-              <PieceThumb sub={line.sub} len={line.len} size={30} flip={line.mirrored} />
+              <div>
+                <ColorDot color={line.color} />
+                <PieceThumb sub={line.sub} len={line.len} size={30} flip={line.mirrored} />
+              </div>
             </td>
             <td>
               {line.label}
@@ -95,8 +99,9 @@ export function BillOfMaterialsSection({
               </thead>
               <tbody>
                 {bom.sizes.map((size) => (
-                  <tr key={size.rows + 'x' + size.cols}>
+                  <tr key={size.key}>
                     <td>
+                      <ColorDot color={size.color} />
                       {size.rows} × {size.cols}
                     </td>
                     <td>

@@ -4,6 +4,8 @@ exports[`builds the bill of materials 1`] = `
 {
   "addons": [
     {
+      "color": "#2a9d8f",
+      "key": "straight:1:#2a9d8f",
       "label": "Channel, straight",
       "len": 1,
       "mirrored": false,
@@ -13,6 +15,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "straight",
     },
     {
+      "color": "#343a40",
+      "key": "straight:4:#343a40",
       "label": "Channel, straight",
       "len": 4,
       "mirrored": false,
@@ -22,6 +26,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "straight",
     },
     {
+      "color": "#343a40",
+      "key": "straight:5:#343a40",
       "label": "Channel, straight",
       "len": 5,
       "mirrored": false,
@@ -31,6 +37,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "straight",
     },
     {
+      "color": "#4361ee",
+      "key": "bridge:4:#4361ee",
       "label": "Channel, bridge",
       "len": 4,
       "mirrored": false,
@@ -40,6 +48,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "bridge",
     },
     {
+      "color": "#343a40",
+      "key": "turn:1:#343a40",
       "label": "Channel, turn (rounded)",
       "len": 1,
       "mirrored": false,
@@ -49,6 +59,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "turn",
     },
     {
+      "color": "#343a40",
+      "key": "turn:3:#343a40",
       "label": "Channel, turn (rounded)",
       "len": 3,
       "mirrored": false,
@@ -58,6 +70,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "turn",
     },
     {
+      "color": "#343a40",
+      "key": "angled:4:#343a40",
       "label": "Channel, turn (angled)",
       "len": 4,
       "mirrored": false,
@@ -67,6 +81,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "angled",
     },
     {
+      "color": "#343a40",
+      "key": "y_round:#343a40",
       "label": "Channel, merge/branch (rounded)",
       "len": 3,
       "mirrored": false,
@@ -76,6 +92,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "y_round",
     },
     {
+      "color": "#343a40",
+      "key": "y_angled:m:#343a40",
       "label": "Channel, merge/branch (angled, mirrored)",
       "len": 3,
       "mirrored": true,
@@ -85,6 +103,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "y_angled",
     },
     {
+      "color": "#343a40",
+      "key": "jog_round:#343a40",
       "label": "Channel, offset (rounded)",
       "len": 3,
       "mirrored": false,
@@ -94,6 +114,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "jog_round",
     },
     {
+      "color": "#343a40",
+      "key": "jog_angled:m:#343a40",
       "label": "Channel, offset (angled, mirrored)",
       "len": 3,
       "mirrored": true,
@@ -103,6 +125,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "jog_angled",
     },
     {
+      "color": "#343a40",
+      "key": "t:#343a40",
       "label": "Channel, 3-way junction",
       "len": 3,
       "mirrored": false,
@@ -112,6 +136,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "t",
     },
     {
+      "color": "#343a40",
+      "key": "cross1:#343a40",
       "label": "Channel, 4-way junction (1×1)",
       "len": 1,
       "mirrored": false,
@@ -121,6 +147,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "cross1",
     },
     {
+      "color": "#343a40",
+      "key": "cross:#343a40",
       "label": "Channel, 4-way junction",
       "len": 3,
       "mirrored": false,
@@ -130,6 +158,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "cross",
     },
     {
+      "color": "#343a40",
+      "key": "fork_round:#343a40",
       "label": "Channel, fork (rounded)",
       "len": 3,
       "mirrored": false,
@@ -139,6 +169,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "fork_round",
     },
     {
+      "color": "#343a40",
+      "key": "fork_angled:#343a40",
       "label": "Channel, fork (angled)",
       "len": 3,
       "mirrored": false,
@@ -148,6 +180,8 @@ exports[`builds the bill of materials 1`] = `
       "sub": "fork_angled",
     },
     {
+      "color": "#343a40",
+      "key": "cap:#343a40",
       "label": "Channel, short turn",
       "len": 2,
       "mirrored": false,
@@ -157,15 +191,30 @@ exports[`builds the bill of materials 1`] = `
       "sub": "cap",
     },
     {
+      "color": "#343a40",
+      "key": "hole:#343a40",
       "label": "Tile cover",
       "len": 1,
       "mirrored": false,
       "order": 14001,
-      "qty": 2,
+      "qty": 1,
       "spec": "28 mm",
       "sub": "hole",
     },
     {
+      "color": "#e76f51",
+      "key": "hole:#e76f51",
+      "label": "Tile cover",
+      "len": 1,
+      "mirrored": false,
+      "order": 14001,
+      "qty": 1,
+      "spec": "28 mm",
+      "sub": "hole",
+    },
+    {
+      "color": "#343a40",
+      "key": "wall:#343a40",
       "label": "Wall mount",
       "len": 1,
       "mirrored": false,
@@ -229,17 +278,23 @@ exports[`builds the bill of materials 1`] = `
   "plates": 3,
   "sizes": [
     {
+      "color": "#b8c4bd",
       "cols": 12,
+      "key": "8×12:#b8c4bd",
       "qty": 1,
       "rows": 8,
     },
     {
+      "color": "#b8c4bd",
       "cols": 8,
+      "key": "4×8:#b8c4bd",
       "qty": 1,
       "rows": 4,
     },
     {
+      "color": "#9aa5c4",
       "cols": 6,
+      "key": "3×6:#9aa5c4",
       "qty": 1,
       "rows": 3,
     },
@@ -251,33 +306,34 @@ exports[`builds the bill of materials 1`] = `
 exports[`builds the bill of materials 2`] = `
 "Bill of materials
 
-openGrid tiles (rows×cols × qty):
-  8×12 × 1
-  4×8 × 1
-  3×6 × 1
+openGrid tiles, rows×cols (colour) × qty:
+  8×12 (#b8c4bd) × 1
+  4×8 (#b8c4bd) × 1
+  3×6 (#9aa5c4) × 1
   Total: 3 tiles, 146 cells
   Connectors: 14
 
 Channels and tile covers:
-  Channel, straight (1 cells · 28 mm) × 1
-  Channel, straight (4 cells · 112 mm) × 1
-  Channel, straight (5 cells · 140 mm) × 1
-  Channel, bridge (4 cells · 112 mm) × 1
-  Channel, turn (rounded) (1×1 cells · 28×28 mm) × 1
-  Channel, turn (rounded) (3×3 cells · 84×84 mm) × 1
-  Channel, turn (angled) (4×4 cells · 112×112 mm) × 1
-  Channel, merge/branch (rounded) (2×3 cells · 56×84 mm) × 1
-  Channel, merge/branch (angled, mirrored) (2×3 cells · 56×84 mm) × 1
-  Channel, offset (rounded) (2×3 cells · 56×84 mm) × 1
-  Channel, offset (angled, mirrored) (2×3 cells · 56×84 mm) × 1
-  Channel, 3-way junction (2×3 cells · 56×84 mm) × 1
-  Channel, 4-way junction (1×1) (1×1 cells · 28×28 mm) × 1
-  Channel, 4-way junction (3×3 cells · 84×84 mm) × 1
-  Channel, fork (rounded) (3×3 cells · 84×84 mm) × 1
-  Channel, fork (angled) (3×3 cells · 84×84 mm) × 1
-  Channel, short turn (2×1 cells · 56×28 mm) × 1
-  Tile cover (28 mm) × 2
-  Wall mount (28 mm) × 1
+  Channel, straight (1 cells · 28 mm, #2a9d8f) × 1
+  Channel, straight (4 cells · 112 mm, #343a40) × 1
+  Channel, straight (5 cells · 140 mm, #343a40) × 1
+  Channel, bridge (4 cells · 112 mm, #4361ee) × 1
+  Channel, turn (rounded) (1×1 cells · 28×28 mm, #343a40) × 1
+  Channel, turn (rounded) (3×3 cells · 84×84 mm, #343a40) × 1
+  Channel, turn (angled) (4×4 cells · 112×112 mm, #343a40) × 1
+  Channel, merge/branch (rounded) (2×3 cells · 56×84 mm, #343a40) × 1
+  Channel, merge/branch (angled, mirrored) (2×3 cells · 56×84 mm, #343a40) × 1
+  Channel, offset (rounded) (2×3 cells · 56×84 mm, #343a40) × 1
+  Channel, offset (angled, mirrored) (2×3 cells · 56×84 mm, #343a40) × 1
+  Channel, 3-way junction (2×3 cells · 56×84 mm, #343a40) × 1
+  Channel, 4-way junction (1×1) (1×1 cells · 28×28 mm, #343a40) × 1
+  Channel, 4-way junction (3×3 cells · 84×84 mm, #343a40) × 1
+  Channel, fork (rounded) (3×3 cells · 84×84 mm, #343a40) × 1
+  Channel, fork (angled) (3×3 cells · 84×84 mm, #343a40) × 1
+  Channel, short turn (2×1 cells · 56×28 mm, #343a40) × 1
+  Tile cover (28 mm, #343a40) × 1
+  Tile cover (28 mm, #e76f51) × 1
+  Wall mount (28 mm, #343a40) × 1
 
 Cables: 6, 1.61 m total
   Cable 1: Router ↔ Switch, 140 mm

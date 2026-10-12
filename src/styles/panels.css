@@ -178,11 +178,19 @@
   font-variant-numeric: tabular-nums;
 }
 .thumbcell {
-  width: 38px;
+  width: 54px;
   color: var(--text);
+}
+/* The colour dot leads, as in the tile and cable lists, then the thumbnail. */
+.thumbcell > div {
+  display: flex;
+  align-items: center;
 }
 .thumbcell svg {
   display: block;
+}
+.tbl .dot {
+  margin-right: 6px;
 }
 .spec {
   display: block;
@@ -229,11 +237,6 @@
 .list li:hover,
 .list li.on {
   background: var(--field);
-}
-.list li i {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
 }
 .list li span {
   margin-left: auto;
