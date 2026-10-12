@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  channelLabel,
   counterpart,
   flipped,
   isMirrored,
@@ -47,6 +48,9 @@ describe('part catalogue', () => {
     expect(pieceLabel('straight')).toBe('Channel, straight');
     expect(pieceLabel('angled', { size: 1 })).toBe('Channel, turn');
     expect(pieceLabel('angled', { size: 2 })).toBe('Channel, turn (angled)');
+    expect(channelLabel('Channel, 3-way junction (inline)')).toBe('3-way junction (inline)');
+    expect(channelLabel('Channel, turn (rounded)')).toBe('Turn (rounded)');
+    expect(channelLabel('Tile cover')).toBe('Tile cover');
   });
 
   it('keeps straight orientation in step with rotation', () => {

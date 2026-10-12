@@ -10,6 +10,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ### Changed
 
+- Channels in the bill of materials and the library drop the repeated "Channel, " prefix ("Turn (rounded)"); the copied parts list keeps it.
 - Library and bill-of-materials pictures of shaped channels show where their openings are, as on the canvas.
 
 ### Fixed

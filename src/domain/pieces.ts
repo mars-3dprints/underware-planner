@@ -154,6 +154,10 @@ export function pieceLabel(
   return label.endsWith(')') ? label.slice(0, -1) + ', mirrored)' : label + ' (mirrored)';
 }
 
+/** A label shown under a "Channels" heading, without the repeated "Channel, " prefix: "Turn (rounded)". */
+export const channelLabel = (label: string) =>
+  label.replace(/^Channel, (.)/, (_, c: string) => c.toUpperCase());
+
 /** Footprint, in cells, of a piece placed with a given length and quarter-turn count. */
 export function stampSize(stamp: { sub: PieceType; len: number; rot: number }) {
   const { sub, len, rot } = stamp;

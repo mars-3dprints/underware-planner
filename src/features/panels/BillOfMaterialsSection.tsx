@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { type BillOfMaterials, billOfMaterialsText, type PieceLine } from '../../bom/billOfMaterials';
 import { CELL_MM } from '../../domain/constants';
-import { COVER_TYPES } from '../../domain/pieces';
+import { channelLabel, COVER_TYPES } from '../../domain/pieces';
 import { ColorDot } from '../../ui/ColorDot';
 import { PieceThumb } from '../../ui/PieceThumb';
 import { plural } from '../../ui/plural';
@@ -37,7 +37,7 @@ function PieceTable({ lines }: { lines: PieceLine[] }) {
               </div>
             </td>
             <td>
-              {line.label}
+              {channelLabel(line.label)}
               <small className="spec">{line.spec}</small>
             </td>
             <td className="r">{line.qty}</td>
