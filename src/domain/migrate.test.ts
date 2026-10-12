@@ -8,6 +8,8 @@ it('reads layouts from saves and exported files, migrating old ones', () => {
     cables: [],
   };
   expect(readLayout(old)!.objects[0].name).toBe('Tile');
+  const device = { id: 'o', kind: 'object', name: 'NAS', x: 0, y: 0, w: 1, h: 1, color: '#fff', noBom: true };
+  expect(readLayout({ objects: [device], cables: [] })!.objects[0]).not.toHaveProperty('noBom');
   expect(readLayout(fixture())).toEqual(fixture());
   expect(readLayout({ objects: [] })).toBeNull();
   expect(readLayout(undefined)).toBeNull();

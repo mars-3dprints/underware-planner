@@ -1,4 +1,4 @@
-import { isDoc } from './doc';
+import { isBomPart, isDoc } from './doc';
 import { isTurn, PIECE_LABELS, PIECE_SHAPES, stampSize } from './pieces';
 import type { Doc, Part, PieceType } from './types';
 
@@ -9,6 +9,11 @@ function migratePart(part: Part): Part {
   const sub = part.sub as PieceType | LegacyType | undefined;
   if (part.kind === 'plate') return part.name === 'Plate' ? { ...part, name: 'Tile' } : part;
   if (part.kind === 'cover') return part.name === 'Hole cover' ? { ...part, name: PIECE_LABELS.hole } : part;
+  // Custom objects were briefly part of the bill of materials, and could be left out of it.
+  if (!isBomPart(part) && part.noBom) {
+    const { noBom: _, ...rest } = part;
+    return rest;
+  }
   if (part.kind !== 'raceway' || !sub) return part;
 
   // Earlier fixed-size turns.

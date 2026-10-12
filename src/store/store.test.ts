@@ -184,6 +184,8 @@ describe('store actions', () => {
     const { selectionInBom } = await import('./store');
     s().selectItems([], ['k1']);
     expect(selectionInBom(s())).toBeUndefined();
+    s().select({ type: 'obj', id: 'o1' });
+    expect(selectionInBom(s())).toBeUndefined();
     s().select({ type: 'obj', id: 'p1' });
     expect(selectionInBom(s())).toBe(true);
     s().setSelectionInBom(false);

@@ -1,5 +1,6 @@
 import { cableRoute, partsById } from '../domain/anchors';
 import { CELL_MM } from '../domain/constants';
+import { isBomPart } from '../domain/doc';
 import { boundsOf } from '../domain/group';
 import { isLinear, isMirrored, isTurn, PIECE_ORDER, pieceLabel, pieceShape } from '../domain/pieces';
 import type { Doc, Part, PieceType } from '../domain/types';
@@ -71,9 +72,9 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
   const tiles: Part[] = [];
   const allTiles: Part[] = [];
   let cells = 0;
-  let objects = 0;
   let excluded = 0;
   for (const part of doc.objects) {
+    if (!isBomPart(part)) continue;
     if (part.kind === 'plate') allTiles.push(part);
     if (part.noBom) {
       excluded++;
@@ -87,7 +88,6 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
       pieceLines.set(key, entry);
       continue;
     }
-    if (part.kind === 'object') objects++;
     if (part.kind !== 'plate') continue;
     const rows = Math.min(part.w, part.h);
     const cols = Math.max(part.w, part.h);
@@ -116,7 +116,6 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
     connectors: countConnectors(allTiles),
     addons,
     bboxMm: tiles.length ? { w: footprint.w * CELL_MM, h: footprint.h * CELL_MM } : null,
-    objects,
     excluded,
     cables,
     cableMm: cables.reduce((n, c) => n + c.mm, 0),
@@ -136,7 +135,6 @@ export function billOfMaterialsText(bom: BillOfMaterials) {
     'Channels and tile covers:',
     ...(bom.addons.length ? bom.addons.map((a) => `  ${a.label} (${a.spec}) × ${a.qty}`) : ['  none']),
     '',
-    `Objects: ${bom.objects}`,
     ...(bom.excluded ? [`Excluded parts: ${bom.excluded}`] : []),
     `Cables: ${bom.cables.length}, ${(bom.cableMm / 1000).toFixed(2)} m total`,
     ...bom.cables.map((c) => `  ${c.name}: ${c.route}, ${c.mm} mm`),

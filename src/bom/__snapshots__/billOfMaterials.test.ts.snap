@@ -226,7 +226,6 @@ exports[`builds the bill of materials 1`] = `
   ],
   "connectors": 14,
   "excluded": 0,
-  "objects": 6,
   "plates": 3,
   "sizes": [
     {
@@ -280,7 +279,6 @@ Channels and tile covers:
   Tile cover (28 mm) × 2
   Wall mount (28 mm) × 1
 
-Objects: 6
 Cables: 6, 1.61 m total
   Cable 1: Router ↔ Switch, 140 mm
   Uplink: Switch ↔ NAS, 458 mm

@@ -134,7 +134,6 @@ export function BillOfMaterialsSection({
           <KeyValue label="Total covers" value={total(covers)} />
         </div>
       )}
-      <KeyValue label="Objects" value={bom.objects} />
       {bom.excluded > 0 && (
         <p className="hint">{plural(bom.excluded, 'excluded part')} (shown faded) not counted.</p>
       )}

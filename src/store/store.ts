@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { partsById } from '../domain/anchors';
 import { BASE_ZOOM, DEFAULT_COLORS, PIECE_COLOR } from '../domain/constants';
-import { deleteWaypoint, moveCable, removePart, setInBom } from '../domain/doc';
+import { deleteWaypoint, isBomPart, moveCable, removePart, setInBom } from '../domain/doc';
 import { carriedCables, cloneItems, moveGroup, rotateGroup, selectionBounds } from '../domain/group';
 import { uid } from '../domain/id';
 import { type Layer, layerOf } from '../domain/layers';
@@ -156,7 +156,7 @@ export const selectionInBom = (s: SelectionState): boolean | 'mixed' | undefined
   const parts = new Set(partIds);
   let state: boolean | undefined;
   for (const p of s.doc.objects) {
-    if (!parts.has(p.id)) continue;
+    if (!parts.has(p.id) || !isBomPart(p)) continue;
     if (state === undefined) state = !p.noBom;
     else if (state !== !p.noBom) return 'mixed';
   }

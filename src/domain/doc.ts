@@ -46,12 +46,18 @@ export function patchPart(doc: Doc, id: string, patch: Partial<Part>): Doc {
   return { objects: doc.objects.map((p) => (p.id === id ? next : p)), cables };
 }
 
-/** Includes parts in, or leaves them out of, the bill of materials. Returns `doc` itself when nothing changes. */
+/** Parts the bill of materials counts: everything but custom objects, which are your own devices. */
+export const isBomPart = (part: Part) => part.kind !== 'object';
+
+/**
+ * Includes parts in, or leaves them out of, the bill of materials; custom objects are skipped. Returns `doc` itself
+ * when nothing changes.
+ */
 export function setInBom(doc: Doc, ids: string[], include: boolean): Doc {
   const targets = new Set(ids);
   let changed = false;
   const objects = doc.objects.map((p) => {
-    if (!targets.has(p.id) || !p.noBom === include) return p;
+    if (!targets.has(p.id) || !isBomPart(p) || !p.noBom === include) return p;
     changed = true;
     if (!include) return { ...p, noBom: true };
     const { noBom: _, ...rest } = p;

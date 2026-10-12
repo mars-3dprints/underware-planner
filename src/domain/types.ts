@@ -44,7 +44,7 @@ export interface Part {
   rot?: number;
   /** Pieces only: mirrored. */
   flip?: boolean;
-  /** Left out of the bill of materials (for example, parts already printed). */
+  /** Left out of the bill of materials (for example, parts already printed). Never set on custom objects. */
   noBom?: boolean;
 }
 
