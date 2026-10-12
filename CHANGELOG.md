@@ -14,6 +14,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ### Fixed
 
+- A 1×1 turn is labelled just "Channel, turn", and counts as one part whichever style it was placed or resized as.
 - The short turn has a mirrored version in the library, counted as its own part in the bill of materials.
 - Flipping a channel turned sideways mirrored it top to bottom; flipping now always mirrors left to right on screen.
 

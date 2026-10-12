@@ -126,7 +126,7 @@ export const minLength = (type: PieceType) => (type === 'bridge' ? 3 : 1);
 
 /** Rounded <-> angled counterpart with the same size and openings, if there is one. A 1×1 turn has none. */
 export const counterpart = (type?: PieceType, size = 2): PieceType | undefined =>
-  type && !(type === 'turn' && size < 2) ? COUNTERPARTS[type] : undefined;
+  type && !isSmallTurn(type, size) ? COUNTERPARTS[type] : undefined;
 
 /** Shape of a piece; turns are `size` × `size` cells, every other piece has a fixed size. */
 export function pieceShape(type: PieceType, size = 2): PieceShape | undefined {
@@ -139,7 +139,16 @@ export function pieceShape(type: PieceType, size = 2): PieceShape | undefined {
 export const isMirrored = (piece: { sub?: PieceType; flip?: boolean }) =>
   !!piece.flip && !!piece.sub && CHIRAL_PIECES.includes(piece.sub);
 
-export function pieceLabel(type: PieceType, mirrored = false) {
+/** A 1×1 turn is a plain square, the same part in either style. */
+export const isSmallTurn = (type: PieceType | undefined, size?: number) => isTurn(type) && size === 1;
+const SMALL_TURN_LABEL = 'Channel, turn';
+
+/** Label of a piece; `size` is a turn's size, so a 1×1 turn has no style. */
+export function pieceLabel(
+  type: PieceType,
+  { mirrored = false, size }: { mirrored?: boolean; size?: number } = {},
+) {
+  if (isSmallTurn(type, size)) return SMALL_TURN_LABEL;
   const label = PIECE_LABELS[type];
   if (!mirrored) return label;
   return label.endsWith(')') ? label.slice(0, -1) + ', mirrored)' : label + ' (mirrored)';

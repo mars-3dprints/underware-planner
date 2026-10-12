@@ -6,8 +6,9 @@ import {
   COVER_TYPES,
   isLinear,
   isShaped,
+  isSmallTurn,
   isTurn,
-  PIECE_LABELS,
+  pieceLabel,
 } from '../../domain/pieces';
 import type { PieceType } from '../../domain/types';
 import { useShallow } from 'zustand/react/shallow';
@@ -23,7 +24,11 @@ function PlacingStatus() {
     useShallow((s) => ({ tool: s.tool, block: s.block, stamp: s.stamp })),
   );
   if (tool !== 'place') return null;
-  const label = block ? `${block.name} ${block.h}×${block.w}` : stamp ? PIECE_LABELS[stamp.sub] : '';
+  const label = block
+    ? `${block.name} ${block.h}×${block.w}`
+    : stamp
+      ? pieceLabel(stamp.sub, { size: stamp.len })
+      : '';
   if (!label) return null;
   const hints = [
     'Click to place',
@@ -106,7 +111,7 @@ function ChannelSection({ active }: { active?: PieceType }) {
   const buttons = (group: ChannelGroup) =>
     group.entries.flatMap(({ sub, flip }) =>
       isTurn(sub)
-        ? TURN_SIZES.filter((n) => sub === 'turn' || n > 1).map((n) => (
+        ? TURN_SIZES.filter((n) => sub === 'turn' || !isSmallTurn(sub, n)).map((n) => (
             <PieceButton
               key={sub + n}
               sub={sub}

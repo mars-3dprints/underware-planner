@@ -9,6 +9,7 @@ import {
   lengthPatch,
   minLength,
   PIECE_LABELS,
+  pieceLabel,
 } from '../../domain/pieces';
 import type { Anchor, Cable, Part } from '../../domain/types';
 import type { Route } from '../../routing/route';
@@ -52,7 +53,12 @@ function PartDetails({ part }: { part: Part }) {
   const commit = useStore((s) => s.commit);
   const edit = (patch: Partial<Part>, key?: string) => commit((d) => patchPart(d, part.id, patch), key);
   const isPiece = part.kind === 'raceway' || part.kind === 'cover';
-  const title = part.kind === 'plate' ? TILE_LABEL : isPiece ? PIECE_LABELS[part.sub!] : 'Object';
+  const title =
+    part.kind === 'plate'
+      ? TILE_LABEL
+      : isPiece
+        ? pieceLabel(part.sub!, { size: Math.max(part.w, part.h) })
+        : 'Object';
   return (
     <>
       <div>

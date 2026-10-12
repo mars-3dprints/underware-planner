@@ -1,4 +1,5 @@
 import { expect, it } from 'vitest';
+import { makePiece } from '../domain/doc';
 import { computeRoutes } from '../routing/route';
 import { fixture } from '../test/fixture';
 import { readableTextColor } from '../ui/color';
@@ -34,4 +35,11 @@ it('flags overlapping objects (channel shapes need a browser canvas)', () => {
 it('picks readable text colours', () => {
   expect(readableTextColor('#ffffff')).toBe('#1b1b1b');
   expect(readableTextColor('#343a40')).toBe('#ffffff');
+});
+
+it('counts a 1×1 turn as one part, whichever style', () => {
+  const doc = { objects: [makePiece('turn', 0, 0, 1), makePiece('angled', 2, 0, 1)], cables: [] };
+  const turns = billOfMaterials(doc, computeRoutes(doc)).addons;
+  expect(turns).toHaveLength(1);
+  expect(turns[0]).toMatchObject({ sub: 'turn', label: 'Channel, turn', qty: 2 });
 });

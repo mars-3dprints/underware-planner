@@ -42,9 +42,11 @@ describe('part catalogue', () => {
   });
 
   it('labels mirrored parts', () => {
-    expect(pieceLabel('y_round', true)).toBe('Channel, merge/branch (rounded, mirrored)');
-    expect(pieceLabel('straight', true)).toBe('Channel, straight (mirrored)');
+    expect(pieceLabel('y_round', { mirrored: true })).toBe('Channel, merge/branch (rounded, mirrored)');
+    expect(pieceLabel('straight', { mirrored: true })).toBe('Channel, straight (mirrored)');
     expect(pieceLabel('straight')).toBe('Channel, straight');
+    expect(pieceLabel('angled', { size: 1 })).toBe('Channel, turn');
+    expect(pieceLabel('angled', { size: 2 })).toBe('Channel, turn (angled)');
   });
 
   it('keeps straight orientation in step with rotation', () => {

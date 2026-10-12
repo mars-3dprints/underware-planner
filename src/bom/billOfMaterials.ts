@@ -2,7 +2,15 @@ import { cableRoute, partsById } from '../domain/anchors';
 import { CELL_MM } from '../domain/constants';
 import { isBomPart } from '../domain/doc';
 import { boundsOf } from '../domain/group';
-import { isLinear, isMirrored, isTurn, PIECE_ORDER, pieceLabel, pieceShape } from '../domain/pieces';
+import {
+  isLinear,
+  isMirrored,
+  isSmallTurn,
+  isTurn,
+  PIECE_ORDER,
+  pieceLabel,
+  pieceShape,
+} from '../domain/pieces';
 import type { Doc, Part, PieceType } from '../domain/types';
 import type { Route } from '../routing/route';
 
@@ -51,7 +59,7 @@ function pieceLine(piece: Part & { sub: PieceType }, key: string): PieceLine {
     key,
     sub,
     len,
-    label: pieceLabel(sub, mirrored),
+    label: pieceLabel(sub, { mirrored, size: len }),
     spec,
     color: piece.color,
     qty: 0,
@@ -95,7 +103,9 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
       continue;
     }
     if ((part.kind === 'raceway' || part.kind === 'cover') && part.sub) {
-      const piece = part as Part & { sub: PieceType };
+      // Either style of 1×1 turn is the same print.
+      const sub = isSmallTurn(part.sub, Math.max(part.w, part.h)) ? 'turn' : part.sub;
+      const piece = { ...part, sub };
       const key = pieceKey(piece);
       const entry = pieceLines.get(key) ?? pieceLine(piece, key);
       entry.qty++;

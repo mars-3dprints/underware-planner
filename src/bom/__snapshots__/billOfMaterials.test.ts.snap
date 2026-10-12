@@ -50,7 +50,7 @@ exports[`builds the bill of materials 1`] = `
     {
       "color": "#343a40",
       "key": "turn:1:#343a40",
-      "label": "Channel, turn (rounded)",
+      "label": "Channel, turn",
       "len": 1,
       "mirrored": false,
       "order": 2001,
@@ -372,7 +372,7 @@ Channels and tile covers:
   Channel, straight (4 cells · 112 mm, #343a40) × 1
   Channel, straight (5 cells · 140 mm, #343a40) × 1
   Channel, bridge (4 cells · 112 mm, #4361ee) × 1
-  Channel, turn (rounded) (1×1 cells · 28×28 mm, #343a40) × 1
+  Channel, turn (1×1 cells · 28×28 mm, #343a40) × 1
   Channel, turn (rounded) (3×3 cells · 84×84 mm, #343a40) × 1
   Channel, turn (angled) (4×4 cells · 112×112 mm, #343a40) × 1
   Channel, merge/branch (rounded) (2×3 cells · 56×84 mm, #343a40) × 1
