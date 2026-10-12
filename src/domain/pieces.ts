@@ -63,25 +63,18 @@ export const PIECE_SHAPES: Partial<Record<PieceType, PieceShape>> = {
   cap: { label: 'Channel, short turn', w: 2, h: 1, d: 'M0 0H1A1 1 0 0 1 2 1H0Z' },
 };
 
-const CHANNEL_TYPES: PieceType[] = [
-  'straight',
-  'bridge',
-  'turn',
-  'angled',
-  'y_round',
-  'y_angled',
-  'jog_round',
-  'jog_angled',
-  't',
-  'cross1',
-  'cross',
-  't_inline',
-  'cross_inline',
-  't_end',
-  'fork_round',
-  'fork_angled',
-  'cap',
+/** Channels by family, in the order the library and the bill of materials list them. */
+export const CHANNEL_FAMILIES: { title: string; types: PieceType[] }[] = [
+  { title: 'Straight', types: ['straight', 'bridge'] },
+  { title: 'Turns', types: ['turn', 'angled', 'cap'] },
+  { title: 'Merge and branch', types: ['y_round', 'y_angled'] },
+  {
+    title: 'Junctions',
+    types: ['t', 'cross1', 'cross', 't_inline', 'cross_inline', 't_end', 'fork_round', 'fork_angled'],
+  },
+  { title: 'Offsets', types: ['jog_round', 'jog_angled'] },
 ];
+const CHANNEL_TYPES = CHANNEL_FAMILIES.flatMap((family) => family.types);
 export const COVER_TYPES: PieceType[] = ['hole', 'wall', 'multiconnect'];
 /** The hole through a tile cover, in cells, for covers that have one; Multiconnect's is threaded. */
 export const COVER_HOLES: Partial<Record<PieceType, { r: number; threaded?: boolean }>> = {

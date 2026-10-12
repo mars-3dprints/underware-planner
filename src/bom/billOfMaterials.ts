@@ -3,6 +3,7 @@ import { CELL_MM } from '../domain/constants';
 import { isBomPart } from '../domain/doc';
 import { boundsOf } from '../domain/group';
 import {
+  COVER_TYPES,
   isLinear,
   isMirrored,
   isSmallTurn,
@@ -127,7 +128,7 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
   const sizes = [...tileSizes.values()].sort(
     (a, b) => b.rows * b.cols - a.rows * a.cols || b.rows - a.rows || a.color.localeCompare(b.color),
   );
-  const addons = [...pieceLines.values()].sort((a, b) => a.order - b.order || a.color.localeCompare(b.color));
+  const pieces = [...pieceLines.values()].sort((a, b) => a.order - b.order || a.color.localeCompare(b.color));
   const byId = partsById(doc.objects);
   const cables = doc.cables.map((c) => ({
     id: c.id,
@@ -141,7 +142,8 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
     plates: tiles.length,
     tiles: cells,
     connectors: countConnectors(allTiles),
-    addons,
+    channels: pieces.filter((line) => !COVER_TYPES.includes(line.sub)),
+    covers: pieces.filter((line) => COVER_TYPES.includes(line.sub)),
     bboxMm: tiles.length ? { w: footprint.w * CELL_MM, h: footprint.h * CELL_MM } : null,
     excluded,
     cables,
@@ -151,6 +153,7 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
 
 /** Plain-text bill of materials for the clipboard. */
 export function billOfMaterialsText(bom: BillOfMaterials) {
+  const line = (a: PieceLine) => `  ${a.label} (${a.spec}, ${a.color}) × ${a.qty}`;
   return [
     'Bill of materials',
     '',
@@ -159,10 +162,9 @@ export function billOfMaterialsText(bom: BillOfMaterials) {
     `  Total: ${bom.plates} tiles, ${bom.tiles} cells`,
     `  Connectors: ${bom.connectors}`,
     '',
-    'Channels and tile covers:',
-    ...(bom.addons.length
-      ? bom.addons.map((a) => `  ${a.label} (${a.spec}, ${a.color}) × ${a.qty}`)
-      : ['  none']),
+    'Channels:',
+    ...(bom.channels.length ? bom.channels.map(line) : ['  none']),
+    ...(bom.covers.length ? ['', 'Tile covers:', ...bom.covers.map(line)] : []),
     '',
     ...(bom.excluded ? [`Excluded parts: ${bom.excluded}`] : []),
     `Cables: ${bom.cables.length}, ${(bom.cableMm / 1000).toFixed(2)} m total`,

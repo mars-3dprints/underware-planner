@@ -2,7 +2,77 @@
 
 exports[`builds the bill of materials 1`] = `
 {
-  "addons": [
+  "bboxMm": {
+    "h": 308,
+    "w": 448,
+  },
+  "cableMm": 1998,
+  "cables": [
+    {
+      "color": "#e76f51",
+      "id": "k1",
+      "mm": 140,
+      "name": "Cable 1",
+      "route": "Router ↔ Switch",
+    },
+    {
+      "color": "#f4a261",
+      "id": "k2",
+      "mm": 458,
+      "name": "Uplink",
+      "route": "Switch ↔ NAS",
+    },
+    {
+      "color": "#4cc9f0",
+      "id": "k3",
+      "mm": 252,
+      "name": "Through turn",
+      "route": "Loose cable",
+    },
+    {
+      "color": "#9d4edd",
+      "id": "k4",
+      "mm": 140,
+      "name": "Through cross",
+      "route": "Loose cable",
+    },
+    {
+      "color": "#2a9d8f",
+      "id": "k5",
+      "mm": 168,
+      "name": "Through fork",
+      "route": "Loose cable",
+    },
+    {
+      "color": "#343a40",
+      "id": "k6",
+      "mm": 448,
+      "name": "Loose",
+      "route": "Loose cable",
+    },
+    {
+      "color": "#e76f51",
+      "id": "k7",
+      "mm": 140,
+      "name": "Through inline T",
+      "route": "Loose cable",
+    },
+    {
+      "color": "#4cc9f0",
+      "id": "k8",
+      "mm": 112,
+      "name": "Through inline cross",
+      "route": "Loose cable",
+    },
+    {
+      "color": "#9d4edd",
+      "id": "k9",
+      "mm": 140,
+      "name": "Through end T",
+      "route": "Loose cable",
+    },
+  ],
+  "channels": [
     {
       "color": "#2a9d8f",
       "key": "straight:1:#2a9d8f",
@@ -82,11 +152,22 @@ exports[`builds the bill of materials 1`] = `
     },
     {
       "color": "#343a40",
+      "key": "cap:#343a40",
+      "label": "Channel, short turn",
+      "len": 2,
+      "mirrored": false,
+      "order": 4002,
+      "qty": 1,
+      "spec": "2×1 cells · 56×28 mm",
+      "sub": "cap",
+    },
+    {
+      "color": "#343a40",
       "key": "y_round:#343a40",
       "label": "Channel, merge/branch (rounded)",
       "len": 3,
       "mirrored": false,
-      "order": 4003,
+      "order": 5003,
       "qty": 1,
       "spec": "2×3 cells · 56×84 mm",
       "sub": "y_round",
@@ -97,32 +178,10 @@ exports[`builds the bill of materials 1`] = `
       "label": "Channel, merge/branch (angled, mirrored)",
       "len": 3,
       "mirrored": true,
-      "order": 5003.5,
+      "order": 6003.5,
       "qty": 1,
       "spec": "2×3 cells · 56×84 mm",
       "sub": "y_angled",
-    },
-    {
-      "color": "#343a40",
-      "key": "jog_round:#343a40",
-      "label": "Channel, offset (rounded)",
-      "len": 3,
-      "mirrored": false,
-      "order": 6003,
-      "qty": 1,
-      "spec": "2×3 cells · 56×84 mm",
-      "sub": "jog_round",
-    },
-    {
-      "color": "#343a40",
-      "key": "jog_angled:m:#343a40",
-      "label": "Channel, offset (angled, mirrored)",
-      "len": 3,
-      "mirrored": true,
-      "order": 7003.5,
-      "qty": 1,
-      "spec": "2×3 cells · 56×84 mm",
-      "sub": "jog_angled",
     },
     {
       "color": "#343a40",
@@ -130,7 +189,7 @@ exports[`builds the bill of materials 1`] = `
       "label": "Channel, 3-way junction",
       "len": 3,
       "mirrored": false,
-      "order": 8003,
+      "order": 7003,
       "qty": 1,
       "spec": "2×3 cells · 56×84 mm",
       "sub": "t",
@@ -141,7 +200,7 @@ exports[`builds the bill of materials 1`] = `
       "label": "Channel, 4-way junction (1×1)",
       "len": 1,
       "mirrored": false,
-      "order": 9001,
+      "order": 8001,
       "qty": 1,
       "spec": "1×1 cells · 28×28 mm",
       "sub": "cross1",
@@ -152,7 +211,7 @@ exports[`builds the bill of materials 1`] = `
       "label": "Channel, 4-way junction",
       "len": 3,
       "mirrored": false,
-      "order": 10003,
+      "order": 9003,
       "qty": 1,
       "spec": "3×3 cells · 84×84 mm",
       "sub": "cross",
@@ -163,7 +222,7 @@ exports[`builds the bill of materials 1`] = `
       "label": "Channel, 3-way junction (inline)",
       "len": 3,
       "mirrored": false,
-      "order": 11003,
+      "order": 10003,
       "qty": 1,
       "spec": "3×1 cells · 84×28 mm",
       "sub": "t_inline",
@@ -174,7 +233,7 @@ exports[`builds the bill of materials 1`] = `
       "label": "Channel, 4-way junction (inline)",
       "len": 3,
       "mirrored": false,
-      "order": 12003,
+      "order": 11003,
       "qty": 1,
       "spec": "3×1 cells · 84×28 mm",
       "sub": "cross_inline",
@@ -185,7 +244,7 @@ exports[`builds the bill of materials 1`] = `
       "label": "Channel, 3-way junction (end)",
       "len": 2,
       "mirrored": false,
-      "order": 13002,
+      "order": 12002,
       "qty": 1,
       "spec": "2×1 cells · 56×28 mm",
       "sub": "t_end",
@@ -196,7 +255,7 @@ exports[`builds the bill of materials 1`] = `
       "label": "Channel, fork (rounded)",
       "len": 3,
       "mirrored": false,
-      "order": 14003,
+      "order": 13003,
       "qty": 1,
       "spec": "3×3 cells · 84×84 mm",
       "sub": "fork_round",
@@ -207,22 +266,36 @@ exports[`builds the bill of materials 1`] = `
       "label": "Channel, fork (angled)",
       "len": 3,
       "mirrored": false,
-      "order": 15003,
+      "order": 14003,
       "qty": 1,
       "spec": "3×3 cells · 84×84 mm",
       "sub": "fork_angled",
     },
     {
       "color": "#343a40",
-      "key": "cap:#343a40",
-      "label": "Channel, short turn",
-      "len": 2,
+      "key": "jog_round:#343a40",
+      "label": "Channel, offset (rounded)",
+      "len": 3,
       "mirrored": false,
-      "order": 16002,
+      "order": 15003,
       "qty": 1,
-      "spec": "2×1 cells · 56×28 mm",
-      "sub": "cap",
+      "spec": "2×3 cells · 56×84 mm",
+      "sub": "jog_round",
     },
+    {
+      "color": "#343a40",
+      "key": "jog_angled:m:#343a40",
+      "label": "Channel, offset (angled, mirrored)",
+      "len": 3,
+      "mirrored": true,
+      "order": 16003.5,
+      "qty": 1,
+      "spec": "2×3 cells · 56×84 mm",
+      "sub": "jog_angled",
+    },
+  ],
+  "connectors": 14,
+  "covers": [
     {
       "color": "#343a40",
       "key": "hole:#343a40",
@@ -268,77 +341,6 @@ exports[`builds the bill of materials 1`] = `
       "sub": "multiconnect",
     },
   ],
-  "bboxMm": {
-    "h": 308,
-    "w": 448,
-  },
-  "cableMm": 1998,
-  "cables": [
-    {
-      "color": "#e76f51",
-      "id": "k1",
-      "mm": 140,
-      "name": "Cable 1",
-      "route": "Router ↔ Switch",
-    },
-    {
-      "color": "#f4a261",
-      "id": "k2",
-      "mm": 458,
-      "name": "Uplink",
-      "route": "Switch ↔ NAS",
-    },
-    {
-      "color": "#4cc9f0",
-      "id": "k3",
-      "mm": 252,
-      "name": "Through turn",
-      "route": "Loose cable",
-    },
-    {
-      "color": "#9d4edd",
-      "id": "k4",
-      "mm": 140,
-      "name": "Through cross",
-      "route": "Loose cable",
-    },
-    {
-      "color": "#2a9d8f",
-      "id": "k5",
-      "mm": 168,
-      "name": "Through fork",
-      "route": "Loose cable",
-    },
-    {
-      "color": "#343a40",
-      "id": "k6",
-      "mm": 448,
-      "name": "Loose",
-      "route": "Loose cable",
-    },
-    {
-      "color": "#e76f51",
-      "id": "k7",
-      "mm": 140,
-      "name": "Through inline T",
-      "route": "Loose cable",
-    },
-    {
-      "color": "#4cc9f0",
-      "id": "k8",
-      "mm": 112,
-      "name": "Through inline cross",
-      "route": "Loose cable",
-    },
-    {
-      "color": "#9d4edd",
-      "id": "k9",
-      "mm": 140,
-      "name": "Through end T",
-      "route": "Loose cable",
-    },
-  ],
-  "connectors": 14,
   "excluded": 0,
   "plates": 3,
   "sizes": [
@@ -378,7 +380,7 @@ openGrid tiles, rows×cols (colour) × qty:
   Total: 3 tiles, 146 cells
   Connectors: 14
 
-Channels and tile covers:
+Channels:
   Channel, straight (1 cells · 28 mm, #2a9d8f) × 1
   Channel, straight (4 cells · 112 mm, #343a40) × 1
   Channel, straight (5 cells · 140 mm, #343a40) × 1
@@ -386,10 +388,9 @@ Channels and tile covers:
   Channel, turn (1×1 cells · 28×28 mm, #343a40) × 1
   Channel, turn (rounded) (3×3 cells · 84×84 mm, #343a40) × 1
   Channel, turn (angled) (4×4 cells · 112×112 mm, #343a40) × 1
+  Channel, short turn (2×1 cells · 56×28 mm, #343a40) × 1
   Channel, merge/branch (rounded) (2×3 cells · 56×84 mm, #343a40) × 1
   Channel, merge/branch (angled, mirrored) (2×3 cells · 56×84 mm, #343a40) × 1
-  Channel, offset (rounded) (2×3 cells · 56×84 mm, #343a40) × 1
-  Channel, offset (angled, mirrored) (2×3 cells · 56×84 mm, #343a40) × 1
   Channel, 3-way junction (2×3 cells · 56×84 mm, #343a40) × 1
   Channel, 4-way junction (1×1) (1×1 cells · 28×28 mm, #343a40) × 1
   Channel, 4-way junction (3×3 cells · 84×84 mm, #343a40) × 1
@@ -398,7 +399,10 @@ Channels and tile covers:
   Channel, 3-way junction (end) (2×1 cells · 56×28 mm, #343a40) × 1
   Channel, fork (rounded) (3×3 cells · 84×84 mm, #343a40) × 1
   Channel, fork (angled) (3×3 cells · 84×84 mm, #343a40) × 1
-  Channel, short turn (2×1 cells · 56×28 mm, #343a40) × 1
+  Channel, offset (rounded) (2×3 cells · 56×84 mm, #343a40) × 1
+  Channel, offset (angled, mirrored) (2×3 cells · 56×84 mm, #343a40) × 1
+
+Tile covers:
   Tile cover (28 mm, #343a40) × 1
   Tile cover (28 mm, #e76f51) × 1
   Wall mount (28 mm, #343a40) × 1

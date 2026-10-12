@@ -54,7 +54,7 @@ function TileSection() {
   const [cols, setCols] = useState(4);
   return (
     <section>
-      <h3>Tile</h3>
+      <h3>Tiles</h3>
       <div className="row2">
         <NumberField
           label="Rows"
@@ -187,7 +187,7 @@ function DeviceSection() {
   const [color, setColor] = useState(DEFAULT_COLORS[4]);
   return (
     <section>
-      <h3>Custom object</h3>
+      <h3>Custom objects</h3>
       <label className="field">
         <span>Name</span>
         <input
@@ -257,10 +257,11 @@ export function LibraryPanel() {
   return (
     <aside className="panel left">
       <PlacingStatus />
+      {/* Same order as the layers and the bill of materials: tiles, objects, channels, then covers. */}
       <TileSection />
-      <CoverSection active={active} />
-      <ChannelSection active={active} />
       <DeviceSection />
+      <ChannelSection active={active} />
+      <CoverSection active={active} />
     </aside>
   );
 }

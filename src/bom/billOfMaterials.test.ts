@@ -23,7 +23,7 @@ it('leaves out excluded parts, but counts connectors joining them to included ti
   expect(s).toMatchObject({ plates: 1, tiles: 18, connectors: 6, excluded: 3 });
   expect(s.bboxMm).toEqual({ w: 6 * 28, h: 3 * 28 });
   const straights = (b: typeof s) =>
-    b.addons.filter((a) => a.sub === 'straight').reduce((n, a) => n + a.qty, 0);
+    b.channels.filter((a) => a.sub === 'straight').reduce((n, a) => n + a.qty, 0);
   expect(straights(s)).toBe(straights(full) - 1);
   expect(billOfMaterialsText(s)).toContain('Excluded parts: 3');
 });
@@ -39,7 +39,7 @@ it('picks readable text colours', () => {
 
 it('counts a 1×1 turn as one part, whichever style', () => {
   const doc = { objects: [makePiece('turn', 0, 0, 1), makePiece('angled', 2, 0, 1)], cables: [] };
-  const turns = billOfMaterials(doc, computeRoutes(doc)).addons;
+  const turns = billOfMaterials(doc, computeRoutes(doc)).channels;
   expect(turns).toHaveLength(1);
   expect(turns[0]).toMatchObject({ sub: 'turn', label: 'Channel, turn', qty: 2 });
 });

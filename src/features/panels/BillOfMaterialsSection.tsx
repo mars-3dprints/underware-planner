@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { type BillOfMaterials, billOfMaterialsText, type PieceLine } from '../../bom/billOfMaterials';
 import { CELL_MM } from '../../domain/constants';
-import { channelLabel, COVER_TYPES } from '../../domain/pieces';
+import { channelLabel } from '../../domain/pieces';
 import { ColorDot } from '../../ui/ColorDot';
 import { PieceThumb } from '../../ui/PieceThumb';
 import { plural } from '../../ui/plural';
@@ -75,8 +75,7 @@ export function BillOfMaterialsSection({
   bom: BillOfMaterials;
   overlapCount: number;
 }) {
-  const covers = bom.addons.filter((line) => COVER_TYPES.includes(line.sub));
-  const channels = bom.addons.filter((line) => !COVER_TYPES.includes(line.sub));
+  const { channels, covers } = bom;
   return (
     <section>
       <h3>
