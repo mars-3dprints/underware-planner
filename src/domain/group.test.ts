@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { fixture } from '../test/fixture';
 import {
+  attachedCables,
   boundsOf,
   carriedCables,
   cloneItems,
@@ -27,6 +28,8 @@ describe('group helpers', () => {
   it('finds cables that travel with a selection', () => {
     const d = fixture();
     expect(ids(internalCables(d.cables, new Set(['o1', 'o2'])))).toEqual(['k1']);
+    expect(ids(attachedCables(d.cables, new Set(['o2'])))).toEqual(['k1', 'k2']);
+    expect(ids(attachedCables(d.cables, new Set(['o4'])))).toEqual([]);
     expect(ids(carriedCables(d.cables, new Set(['o1', 'o2']), new Set(['k6'])))).toEqual(['k1', 'k6']);
   });
 

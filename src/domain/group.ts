@@ -39,6 +39,10 @@ export const internalCables = (cables: Cable[], partIds: Set<string>) =>
       [c.a, c.b].every((end) => end.objId === undefined || partIds.has(end.objId)),
   );
 
+/** Cables with at least one end attached to a part in the set. */
+export const attachedCables = (cables: Cable[], partIds: Set<string>) =>
+  cables.filter((c) => [c.a, c.b].some((end) => end.objId !== undefined && partIds.has(end.objId)));
+
 /** Cables that travel with a selection: the selected ones plus the internal ones. */
 export function carriedCables(cables: Cable[], partIds: Set<string>, cableIds: Set<string>) {
   const internal = new Set(internalCables(cables, partIds).map((c) => c.id));

@@ -4,6 +4,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Selecting an object highlights the cables connected to it and fades the rest.
+
 ## [0.7.0] - 2026-10-12
 
 ### Added

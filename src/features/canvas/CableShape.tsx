@@ -7,7 +7,7 @@ interface CableShapeProps {
   cable: Cable;
   route: Route;
   selected: boolean;
-  /** Fades the cable while others are being inspected. */
+  /** Fades the cable while others are in focus (hovered, or attached to the selected objects). */
   dim: boolean;
   /** Stroke width in cells. */
   width: number;

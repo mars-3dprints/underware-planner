@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { overlapsFor } from '../../bom/overlaps';
 import { deviceAt } from '../../domain/anchors';
 import { blockPart, makePiece } from '../../domain/doc';
+import { attachedCables } from '../../domain/group';
 import type { Cell, Part } from '../../domain/types';
 import { cellPath } from '../../routing/paths';
 import { routesFor } from '../../routing/route';
@@ -74,6 +75,12 @@ export function Canvas() {
   const [marquee, setMarquee] = useState<Marquee | null>(null);
   const [renaming, setRenaming] = useState<string | null>(null);
   const draft = useCableDraft(hover);
+  // Cables in focus, the rest fade: the hovered ones, else those attached to the selected objects.
+  const focus = useMemo(() => {
+    if (hoverCableIds.length) return new Set(hoverCableIds);
+    const attached = attachedCables(doc.cables, new Set(selectedIds));
+    return attached.length ? new Set([...attached.map((c) => c.id), ...selectedCableIds]) : null;
+  }, [doc.cables, selectedIds, selectedCableIds, hoverCableIds]);
   const ghost = useGhost(hover);
 
   useWheelPanZoom(svgRef);
@@ -147,7 +154,7 @@ export function Canvas() {
                     cable={c}
                     route={route}
                     selected={selectedCableIds.includes(c.id)}
-                    dim={hoverCableIds.length > 0 && !hoverCableIds.includes(c.id)}
+                    dim={!!focus && !focus.has(c.id)}
                     width={cableWidth}
                     zoom={view.k}
                     interactive={tool === 'select'}
