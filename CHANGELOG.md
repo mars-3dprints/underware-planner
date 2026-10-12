@@ -12,6 +12,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ### Changed
 
+- Tiles can no longer be renamed, like channels; they're labelled "Tile" with their size.
 - Custom objects are no longer counted in the bill of materials, and no longer have the "Include in bill of materials" option.
 
 ### Fixed

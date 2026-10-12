@@ -2,6 +2,7 @@ import { type MouseEvent, type PointerEvent, type RefObject, useRef } from 'reac
 import { sameCell } from '../../domain/anchors';
 import {
   insertWaypoint,
+  isNamed,
   moveCableEnd,
   moveWaypoint,
   placeBlock,
@@ -237,8 +238,11 @@ export function usePointerInput(options: PointerInputOptions) {
       const inGroup = groupSelected && s.selectedIds.includes(id);
       if (!inGroup) s.select({ type: 'obj', id });
       const now = Date.now();
-      const renamable = part.kind === 'object' || part.kind === 'plate';
-      if (renamable && lastPartClick.current.id === id && now - lastPartClick.current.at < DOUBLE_CLICK_MS) {
+      if (
+        isNamed(part) &&
+        lastPartClick.current.id === id &&
+        now - lastPartClick.current.at < DOUBLE_CLICK_MS
+      ) {
         lastPartClick.current = { id: '', at: 0 };
         e.preventDefault();
         startRename(id);

@@ -3,18 +3,14 @@ import { patchPart } from '../../domain/doc';
 import type { Part, View } from '../../domain/types';
 import { useStore } from '../../store/store';
 
-/** Inline name editor over a tile (top-left) or custom object (centred). Enter or blur saves, Esc cancels. */
+/** Inline name editor, centred over a custom object. Enter or blur saves, Esc cancels. */
 export function RenameInput({ part, view, onDone }: { part: Part; view: View; onDone: () => void }) {
   const cancelled = useRef(false);
-  const left = view.x + part.x * view.k + 4;
-  const style =
-    part.kind === 'plate'
-      ? { left, top: view.y + part.y * view.k + 4, width: Math.max(120, Math.min(part.w * view.k - 8, 240)) }
-      : {
-          left,
-          top: view.y + (part.y + part.h / 2) * view.k - 14,
-          width: Math.max(100, part.w * view.k - 8),
-        };
+  const style = {
+    left: view.x + part.x * view.k + 4,
+    top: view.y + (part.y + part.h / 2) * view.k - 14,
+    width: Math.max(100, part.w * view.k - 8),
+  };
 
   const save = (value: string) => {
     const name = value.trim();

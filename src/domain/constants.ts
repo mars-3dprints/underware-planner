@@ -4,6 +4,8 @@ export const CELL_MM = 28;
 /** Built-in swatches, also the cable colour cycle. */
 export const DEFAULT_COLORS = ['#e76f51', '#f4a261', '#2a9d8f', '#4cc9f0', '#4361ee', '#9d4edd', '#343a40'];
 export const TILE_COLOR = '#b8c4bd';
+/** What a tile is called: tiles have no names of their own. */
+export const TILE_LABEL = 'Tile';
 export const PIECE_COLOR = '#343a40';
 
 /** Zoom (pixels per cell) shown as 100 %. */

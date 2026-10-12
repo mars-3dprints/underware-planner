@@ -21,7 +21,7 @@
 .no-bom {
   opacity: 0.45;
 }
-/* Inline rename over a tile or custom object. */
+/* Inline rename over a custom object. */
 .rename {
   position: absolute;
   z-index: 5;

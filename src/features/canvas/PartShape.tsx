@@ -1,4 +1,5 @@
 import { memo, type SVGProps } from 'react';
+import { TILE_LABEL } from '../../domain/constants';
 import { channelGeometry, channelPorts, matrixAttr } from '../../domain/geometry';
 import { isVertical, TILE_HOLE_PATH } from '../../domain/pieces';
 import { openingsMaskPath } from '../../domain/ports';
@@ -58,7 +59,8 @@ function TileShape({ part: p, overlapping, showLabel, props }: ShapeProps) {
       />
       {showLabel && (
         <text x={p.x + 0.12} y={p.y + 0.3} fontSize={0.24} fill="rgba(0,0,0,.6)" style={noPointer}>
-          {p.name} {p.h}×{p.w}
+          {/* Tiles aren't named; a name from an older save is kept in the layout but not shown. */}
+          {TILE_LABEL} {p.h}×{p.w}
         </text>
       )}
     </g>

@@ -46,6 +46,9 @@ export function patchPart(doc: Doc, id: string, patch: Partial<Part>): Doc {
   return { objects: doc.objects.map((p) => (p.id === id ? next : p)), cables };
 }
 
+/** Parts with a name of their own: custom objects. Tiles and pieces are labelled by type. */
+export const isNamed = (part: Part) => part.kind === 'object';
+
 /** Parts the bill of materials counts: everything but custom objects, which are your own devices. */
 export const isBomPart = (part: Part) => part.kind !== 'object';
 

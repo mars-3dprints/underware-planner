@@ -1,4 +1,4 @@
-import { TILE_COLOR } from './constants';
+import { TILE_COLOR, TILE_LABEL } from './constants';
 import { makePiece } from './doc';
 import { uid } from './id';
 import type { Cable, Doc, Part } from './types';
@@ -6,7 +6,7 @@ import type { Cable, Doc, Part } from './types';
 const tile = (x: number, y: number, rows: number, cols: number): Part => ({
   id: uid(),
   kind: 'plate',
-  name: 'Tile',
+  name: TILE_LABEL,
   x,
   y,
   w: cols,

@@ -1,5 +1,5 @@
-import { CELL_MM, MAX_TURN_SIZE } from '../../domain/constants';
-import { patchCable, patchPart } from '../../domain/doc';
+import { CELL_MM, MAX_TURN_SIZE, TILE_LABEL } from '../../domain/constants';
+import { isNamed, patchCable, patchPart } from '../../domain/doc';
 import { drawnBounds } from '../../domain/group';
 import {
   clampTurnSize,
@@ -52,7 +52,7 @@ function PartDetails({ part }: { part: Part }) {
   const commit = useStore((s) => s.commit);
   const edit = (patch: Partial<Part>, key?: string) => commit((d) => patchPart(d, part.id, patch), key);
   const isPiece = part.kind === 'raceway' || part.kind === 'cover';
-  const title = part.kind === 'plate' ? 'Tile' : isPiece ? PIECE_LABELS[part.sub!] : 'Object';
+  const title = part.kind === 'plate' ? TILE_LABEL : isPiece ? PIECE_LABELS[part.sub!] : 'Object';
   return (
     <>
       <div>
@@ -61,7 +61,7 @@ function PartDetails({ part }: { part: Part }) {
           {part.w * CELL_MM} × {part.h * CELL_MM} mm
         </p>
       </div>
-      {!isPiece && (
+      {isNamed(part) && (
         <label className="field">
           <span>Name</span>
           <input value={part.name} onChange={(e) => edit({ name: e.target.value }, 'n' + part.id)} />

@@ -1,3 +1,4 @@
+import { TILE_LABEL } from './constants';
 import { isBomPart, isDoc } from './doc';
 import { isTurn, PIECE_LABELS, PIECE_SHAPES, stampSize } from './pieces';
 import type { Doc, Part, PieceType } from './types';
@@ -7,7 +8,7 @@ type LegacyType = 'turn2' | 'turn3' | 'branch_round' | 'branch_angled' | 'jog_ro
 
 function migratePart(part: Part): Part {
   const sub = part.sub as PieceType | LegacyType | undefined;
-  if (part.kind === 'plate') return part.name === 'Plate' ? { ...part, name: 'Tile' } : part;
+  if (part.kind === 'plate') return part.name === 'Plate' ? { ...part, name: TILE_LABEL } : part;
   if (part.kind === 'cover') return part.name === 'Hole cover' ? { ...part, name: PIECE_LABELS.hole } : part;
   // Custom objects were briefly part of the bill of materials, and could be left out of it.
   if (!isBomPart(part) && part.noBom) {

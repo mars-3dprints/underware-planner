@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CELL_MM, DEFAULT_COLORS, MAX_TURN_SIZE, TILE_COLOR } from '../../domain/constants';
+import { CELL_MM, DEFAULT_COLORS, MAX_TURN_SIZE, TILE_COLOR, TILE_LABEL } from '../../domain/constants';
 import {
   clampTurnSize,
   counterpart,
@@ -73,7 +73,7 @@ function TileSection() {
       </p>
       <button
         className={'btn block' + (block?.kind === 'plate' ? ' on' : ' primary')}
-        onClick={() => setBlock({ kind: 'plate', name: 'Tile', w: cols, h: rows, color: TILE_COLOR })}
+        onClick={() => setBlock({ kind: 'plate', name: TILE_LABEL, w: cols, h: rows, color: TILE_COLOR })}
       >
         Add tile
       </button>
