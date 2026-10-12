@@ -4,6 +4,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Hover cables to see which ones share a path: a tooltip lists them and the rest fade. Hovering a cable in the list traces it.
+
 ## [0.6.0] - 2026-10-12
 
 ### Added

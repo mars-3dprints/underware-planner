@@ -45,6 +45,7 @@ Mirrored parts are different prints, so they are listed as separate BOM entries.
 
 - **Place a part:** pick it in the left panel, move the cursor to position the ghost, and click to place. Changes to name, size or colour show on the ghost straight away and keep its rotation. Esc or right-click stops placing.
 - **Draw a cable:** press **C**, click an object (or an empty cell for a loose end), click empty cells for waypoints, then click another object to finish. Select a cable and drag its line to add waypoints, or drag a handle to move it.
+- **Inspect shared paths:** hover a path to list every cable running there while the rest fade, however many overlap. Hover a cable in the right-hand list to trace its route.
 - **Select:** click, shift-click to add, or drag a box on empty canvas. Move, rotate, flip, copy, duplicate, recolour and delete work on the whole selection, including cables.
 - **Colour:** the toolbar colour button recolours the current selection. A default palette is always available, and you can add your own colours.
 - **Undo and redo** select the parts they changed.
