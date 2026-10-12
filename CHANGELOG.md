@@ -12,7 +12,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 ### Changed
 
 - The sidebars use one order: tiles, custom objects, channels, tile covers, then cables. Channels in the bill of materials follow the library's groups, and the copied parts list has a separate Tile covers section.
-- Channels in the bill of materials and the library drop the repeated "Channel, " prefix ("Turn (rounded)"); the copied parts list keeps it.
+- Channels in the bill of materials, the library and the copied parts list drop the repeated "Channel, " prefix ("Turn (rounded)").
 - Library and bill-of-materials pictures of shaped channels show where their openings are, as on the canvas.
 
 ### Fixed

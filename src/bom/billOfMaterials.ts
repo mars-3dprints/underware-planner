@@ -3,6 +3,7 @@ import { CELL_MM } from '../domain/constants';
 import { isBomPart } from '../domain/doc';
 import { boundsOf } from '../domain/group';
 import {
+  channelLabel,
   COVER_TYPES,
   isLinear,
   isMirrored,
@@ -153,7 +154,8 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
 
 /** Plain-text bill of materials for the clipboard. */
 export function billOfMaterialsText(bom: BillOfMaterials) {
-  const line = (a: PieceLine) => `  ${a.label} (${a.spec}, ${a.color}) × ${a.qty}`;
+  // Listed under Channels and Tile covers headings, so channels drop the "Channel, " prefix.
+  const line = (a: PieceLine) => `  ${channelLabel(a.label)} (${a.spec}, ${a.color}) × ${a.qty}`;
   return [
     'Bill of materials',
     '',
