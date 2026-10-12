@@ -133,9 +133,9 @@ export function BillOfMaterialsSection({
       </div>
       {covers.length > 0 && (
         <div className="group">
-          <span className="sub">Tile covers</span>
+          <span className="sub">Snaps</span>
           <PieceTable lines={covers} />
-          <KeyValue label="Total covers" value={total(covers)} />
+          <KeyValue label="Total snaps" value={total(covers)} />
         </div>
       )}
       {bom.excluded > 0 && (

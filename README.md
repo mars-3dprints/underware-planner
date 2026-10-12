@@ -12,12 +12,12 @@ Everything runs client-side. There is no backend and no account; your layout aut
 
 ## What it does
 
-- **Plan the layout.** Place openGrid tiles, your own devices, cable channels and tile covers on a Figma-style infinite canvas. Everything snaps to the 28 mm grid (1 cell = 28 mm).
+- **Plan the layout.** Place openGrid tiles, your own devices, cable channels and snaps (tile covers and mounts) on a Figma-style infinite canvas. Everything snaps to the 28 mm grid (1 cell = 28 mm).
 - **Route cables.** Draw a cable between two objects and it auto-routes orthogonally around obstacles on the grid, using the fewest bends. Add waypoints to steer it, or leave an end loose.
 - **Cover cables with channels.** Channels are drawn over the cables they carry, so you can see exactly where cables are hidden and where they are exposed. Turn on see-through mode (**P**) to look at the cables underneath.
 - **Cables follow the channels.** Where a cable runs inside a shaped channel it follows that piece's real centerline (turn radius, diagonal, S-curve, junction arc). Outside channels it keeps the orthogonal look, and it falls back on its own if the channel is moved or removed.
 - **Focus with layers.** Show or hide tiles, objects, channels and cables independently, for example to look at just the tile plan.
-- **Count the parts.** A live bill of materials tracks tiles by size, connectors, each channel type, tile covers and total cable length, with a separate line for each colour (custom objects are your own devices, so they aren't counted). Leave out parts you already have by unticking **Include in bill of materials** for the selection; they're shown faded.
+- **Count the parts.** A live bill of materials tracks tiles by size, connectors, each channel type, snaps and total cable length, with a separate line for each colour (custom objects are your own devices, so they aren't counted). Leave out parts you already have by unticking **Include in bill of materials** for the selection; they're shown faded.
 
 ## Parts
 
@@ -37,7 +37,7 @@ Everything runs client-side. There is no backend and no account; your layout aut
 
 Mirrored parts are different prints, so they are listed as separate BOM entries. Overlapping channels are flagged with a dashed red outline. Turns, merges, offsets and forks each come in a rounded and an angled form; press **T** (or use the toolbar button) to switch a selected part, or the part you are placing, between them.
 
-**Tile covers** — cover, wall mount and Multiconnect (a bigger, threaded hole). Tile holes stay open until a cover is placed.
+**Snaps** — parts that snap into a tile hole: tile cover, wall mount and Multiconnect (a bigger, threaded hole). Tile holes stay open until a cover is placed.
 
 **Cables** — length is cells × 28 mm plus optional extra slack. Cables have their own colour, name and slack setting and are listed with their lengths in the BOM.
 

@@ -1,6 +1,6 @@
 import type { PartKind } from './types';
 
-/** View layers that can be shown or hidden. Tile covers and wall mounts belong to `tiles`. */
+/** View layers that can be shown or hidden. Snaps (tile covers, wall mounts, Multiconnect) belong to `tiles`. */
 export type Layer = 'tiles' | 'objects' | 'channels' | 'cables';
 
 export const LAYERS: { id: Layer; label: string }[] = [

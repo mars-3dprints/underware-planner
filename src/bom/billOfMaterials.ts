@@ -154,7 +154,7 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
 
 /** Plain-text bill of materials for the clipboard. */
 export function billOfMaterialsText(bom: BillOfMaterials) {
-  // Listed under Channels and Tile covers headings, so channels drop the "Channel, " prefix.
+  // Listed under Channels and Snaps headings, so channels drop the "Channel, " prefix.
   const line = (a: PieceLine) => `  ${channelLabel(a.label)} (${a.spec}, ${a.color}) × ${a.qty}`;
   return [
     'Bill of materials',
@@ -166,7 +166,7 @@ export function billOfMaterialsText(bom: BillOfMaterials) {
     '',
     'Channels:',
     ...(bom.channels.length ? bom.channels.map(line) : ['  none']),
-    ...(bom.covers.length ? ['', 'Tile covers:', ...bom.covers.map(line)] : []),
+    ...(bom.covers.length ? ['', 'Snaps:', ...bom.covers.map(line)] : []),
     '',
     ...(bom.excluded ? [`Excluded parts: ${bom.excluded}`] : []),
     `Cables: ${bom.cables.length}, ${(bom.cableMm / 1000).toFixed(2)} m total`,

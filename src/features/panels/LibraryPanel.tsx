@@ -90,7 +90,7 @@ function CoverSection({ active }: { active?: PieceType }) {
   const setStamp = useStore((s) => s.setStamp);
   return (
     <section>
-      <h3>Tile covers</h3>
+      <h3>Snaps</h3>
       <div className="tiles">
         {COVER_TYPES.map((sub) => (
           <PieceButton key={sub} sub={sub} active={active === sub} onClick={() => setStamp(sub, 1)} />
