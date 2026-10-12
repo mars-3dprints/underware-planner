@@ -30,7 +30,7 @@ Everything runs client-side. There is no backend and no account; your layout aut
 | Group | Parts |
 | --- | --- |
 | Straight | Straight (any length), bridge (min. 3 cells, passes over other channels) |
-| Turns | Rounded and angled turns (resizable, 1–12 cells), short turn (open on two sides, no arm) |
+| Turns | Rounded and angled turns (resizable, 1–12 cells), short turn (open on two sides, no arm), plus its mirrored version |
 | Merge and branch | Rounded and angled, plus the mirrored versions |
 | Junctions | 3-way, 4-way (3×3), compact 4-way (1×1), rounded and angled forks |
 | Offsets | Rounded and angled, plus the mirrored versions |

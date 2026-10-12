@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   counterpart,
   flipped,
+  isMirrored,
   isShaped,
   isVertical,
   lengthPatch,
@@ -12,7 +13,9 @@ import {
   stampSize,
 } from './pieces';
 import { piecePorts } from './ports';
+import type { Part } from './types';
 import { makePiece } from './doc';
+import { shapedChannels } from '../routing/follow';
 import { applyMatrix, channelGeometry } from './geometry';
 
 describe('part catalogue', () => {
@@ -54,6 +57,20 @@ describe('part catalogue', () => {
 });
 
 describe('flipping', () => {
+  it('treats exactly the pieces that rotating cannot reproduce as chiral', () => {
+    // World openings, relative to the footprint.
+    const openings = (p: Part) =>
+      shapedChannels([p])[0]
+        .ports.map(({ point, dx, dy }) => [point.x.toFixed(3), point.y.toFixed(3), dx, dy].join())
+        .sort()
+        .join(' ');
+    for (const sub of PIECE_ORDER.filter(isShaped)) {
+      const mirror = openings(makePiece(sub, 0, 0, 3, 0, true));
+      const byRotating = [0, 1, 2, 3].some((rot) => openings(makePiece(sub, 0, 0, 3, rot)) === mirror);
+      expect(isMirrored({ sub, flip: true }), sub).toBe(!byRotating);
+    }
+  });
+
   it('mirrors every shaped piece left to right on screen, whatever its rotation', () => {
     for (const sub of PIECE_ORDER.filter(isShaped)) {
       for (let rot = 0; rot < 4; rot++) {

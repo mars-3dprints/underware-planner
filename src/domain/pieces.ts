@@ -86,7 +86,7 @@ export const PIECE_LABELS = {
 } as Record<PieceType, string>;
 
 /** Pieces whose mirror image is a different part to print (rotating never changes this, flipping does). */
-const CHIRAL_PIECES: PieceType[] = ['y_round', 'y_angled', 'jog_round', 'jog_angled'];
+const CHIRAL_PIECES: PieceType[] = ['y_round', 'y_angled', 'jog_round', 'jog_angled', 'cap'];
 
 const COUNTERPARTS: Partial<Record<PieceType, PieceType>> = {
   turn: 'angled',

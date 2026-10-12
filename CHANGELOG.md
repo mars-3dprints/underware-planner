@@ -6,6 +6,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ### Fixed
 
+- The short turn has a mirrored version in the library, counted as its own part in the bill of materials.
 - Flipping a channel turned sideways mirrored it top to bottom; flipping now always mirrors left to right on screen.
 
 ## [0.8.1] - 2026-10-12

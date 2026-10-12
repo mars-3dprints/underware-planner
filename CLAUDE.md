@@ -59,7 +59,7 @@ Pure logic (no React) lives in `domain/`, `routing/` and `bom/`; React lives in 
 
 - **Shapes are defined in their own frame** (`PIECE_SHAPES[...].d`, `piecePorts`), then placed by the matrix from `channelGeometry` (rotation, flip, position). New channel types need a shape, ports, a centerline in `routing/follow.ts` (`centerline`), a label, a catalogue entry (`features/panels/catalog.ts`) and test coverage (add it to the fixture).
 - **Straight channels** derive orientation from width/height, and from `rot` parity when 1×1 (`isVertical`). Use `lengthPatch` when changing length, and keep `rot` parity in step when rotating.
-- **Mirrored chiral parts** (merge/branch, offsets) are different prints, so they are separate BOM entries.
+- **Mirrored chiral parts** (merge/branch, offsets, short turn) are different prints, so they are separate BOM entries.
 - **Cable path** = cells from `routing/route.ts` plus centerlines from `routing/follow.ts`. Cable length (BOM) is still counted in grid steps (`steps * CELL_MM + slack`), not along the curves. Waypoint handles sit on grid cells.
 - Peek mode is just channel group opacity 0.75. Channels are drawn inset (`CHANNEL_INSET`) with their openings flush.
 - Chromium and Playwright are in the cloud sandbox: seed `localStorage` with the export JSON via `context.addInitScript`, then `vite preview` (served at `/underware-planner/`) and screenshot (dark scheme: `colorScheme: 'dark'`).
