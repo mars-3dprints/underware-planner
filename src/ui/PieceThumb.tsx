@@ -1,7 +1,16 @@
 import { useId } from 'react';
-import { isLinear, minLength, pieceShape, TILE_HOLE_PATH } from '../domain/pieces';
+import {
+  circlePath,
+  COVER_HOLES,
+  COVER_TYPES,
+  isLinear,
+  minLength,
+  pieceShape,
+  TILE_HOLE_PATH,
+} from '../domain/pieces';
 import { piecePorts } from '../domain/ports';
 import { InsetMask } from './InsetMask';
+import { ThreadRing } from './ThreadRing';
 import type { PieceType } from '../domain/types';
 
 const PAD = 0.15;
@@ -10,7 +19,6 @@ const PAD = 0.15;
  * straight run show. Deeper than the canvas inset so it reads at thumbnail size. Straights and bridges stay plain bars.
  */
 const INSET = 0.1;
-const WALL_MOUNT_PATH = `${TILE_HOLE_PATH}M.4 .5a.1 .1 0 1 0 .2 0a.1 .1 0 1 0 -.2 0Z`;
 
 interface PieceThumbProps {
   sub: PieceType;
@@ -22,15 +30,16 @@ interface PieceThumbProps {
 /** Small picture of a piece, drawn from the same shapes the canvas uses. */
 export function PieceThumb({ sub, len = 3, size = 34, flip = false }: PieceThumbProps) {
   const maskId = useId();
-  if (sub === 'hole' || sub === 'wall') {
+  if (COVER_TYPES.includes(sub)) {
+    const hole = COVER_HOLES[sub];
+    // The hole is cut out of the cover (even-odd), so the background shows through.
+    const cut = hole ? circlePath(hole.r) : '';
     return (
       <svg width={size} height={size} viewBox="0 0 1 1" aria-hidden="true">
-        <path
-          d={sub === 'wall' ? WALL_MOUNT_PATH : TILE_HOLE_PATH}
-          transform="translate(.5 .5) scale(1.3) translate(-.5 -.5)"
-          fill="currentColor"
-          fillRule="evenodd"
-        />
+        <g transform="translate(.5 .5) scale(1.3) translate(-.5 -.5)">
+          <path d={TILE_HOLE_PATH + cut} fill="currentColor" fillRule="evenodd" />
+          {hole?.threaded && <ThreadRing r={hole.r} stroke="currentColor" />}
+        </g>
       </svg>
     );
   }

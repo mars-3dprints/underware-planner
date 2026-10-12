@@ -1,10 +1,11 @@
 import { memo, type SVGProps } from 'react';
 import { TILE_LABEL } from '../../domain/constants';
 import { channelGeometry, channelPorts, matrixAttr } from '../../domain/geometry';
-import { isVertical, TILE_HOLE_PATH } from '../../domain/pieces';
+import { COVER_HOLES, isVertical, TILE_HOLE_PATH } from '../../domain/pieces';
 import type { Part } from '../../domain/types';
 import { readableTextColor } from '../../ui/color';
 import { InsetMask } from '../../ui/InsetMask';
+import { ThreadRing } from '../../ui/ThreadRing';
 import { wrapText } from './wrapText';
 
 /** Channels are drawn this much narrower (cells) on each side, with their openings kept flush. */
@@ -68,6 +69,7 @@ function TileShape({ part: p, overlapping, showLabel, props }: ShapeProps) {
 }
 
 function CoverShape({ part: p, overlapping, props }: ShapeProps) {
+  const hole = p.sub && COVER_HOLES[p.sub];
   return (
     <g transform={`translate(${p.x} ${p.y})`} {...props}>
       <path
@@ -78,16 +80,19 @@ function CoverShape({ part: p, overlapping, props }: ShapeProps) {
         strokeWidth={1}
         vectorEffect="non-scaling-stroke"
       />
-      {p.sub === 'wall' && (
-        <circle
-          cx={0.5}
-          cy={0.5}
-          r={0.085}
-          fill="var(--canvas)"
-          stroke="rgba(0,0,0,.65)"
-          strokeWidth={1}
-          vectorEffect="non-scaling-stroke"
-        />
+      {hole && (
+        <>
+          <circle
+            cx={0.5}
+            cy={0.5}
+            r={hole.r}
+            fill="var(--canvas)"
+            stroke="rgba(0,0,0,.65)"
+            strokeWidth={1}
+            vectorEffect="non-scaling-stroke"
+          />
+          {hole.threaded && <ThreadRing r={hole.r} stroke={p.color} />}
+        </>
       )}
     </g>
   );

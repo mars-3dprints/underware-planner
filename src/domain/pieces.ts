@@ -16,6 +16,10 @@ export interface PieceShape {
 /** Octagonal hole of an openGrid tile, in a unit cell. */
 export const TILE_HOLE_PATH = 'M.36 .2H.64L.8 .36V.64L.64 .8H.36L.2 .64V.36Z';
 
+/** Circle of radius `r` centred in a unit cell, as path data. */
+export const circlePath = (r: number) =>
+  `M${0.5 - r} .5a${r} ${r} 0 1 0 ${r * 2} 0a${r} ${r} 0 1 0 ${-r * 2} 0Z`;
+
 const roundedTurnPath = (n: number) =>
   `M0 0H1A${n - 1} ${n - 1} 0 0 1 ${n} ${n - 1}V${n}H${n - 1}V${n - 1}${n > 2 ? `A${n - 2} ${n - 2} 0 0 0 1 1` : ''}H0Z`;
 const angledTurnPath = (n: number) => `M0 0H1L${n} ${n - 1}V${n}H${n - 1}V${n - 1}L1 1H0Z`;
@@ -78,7 +82,12 @@ const CHANNEL_TYPES: PieceType[] = [
   'fork_angled',
   'cap',
 ];
-export const COVER_TYPES: PieceType[] = ['hole', 'wall'];
+export const COVER_TYPES: PieceType[] = ['hole', 'wall', 'multiconnect'];
+/** The hole through a tile cover, in cells, for covers that have one; Multiconnect's is threaded. */
+export const COVER_HOLES: Partial<Record<PieceType, { r: number; threaded?: boolean }>> = {
+  wall: { r: 0.085 },
+  multiconnect: { r: 0.2, threaded: true },
+};
 /** Catalogue order, used to sort the bill of materials. */
 export const PIECE_ORDER: PieceType[] = [...CHANNEL_TYPES, ...COVER_TYPES];
 
@@ -89,6 +98,7 @@ export const PIECE_LABELS = {
   angled: 'Channel, turn (angled)',
   hole: 'Tile cover',
   wall: 'Wall mount',
+  multiconnect: 'Multiconnect',
   ...Object.fromEntries(Object.entries(PIECE_SHAPES).map(([type, shape]) => [type, shape.label])),
 } as Record<PieceType, string>;
 

@@ -6,6 +6,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ### Added
 
+- Multiconnect tile cover: like the wall mount, with a bigger threaded hole.
 - Inline junctions: 3-way and 4-way (3×1) with openings in the side walls, and an end 3-way (2×1).
 
 ### Changed

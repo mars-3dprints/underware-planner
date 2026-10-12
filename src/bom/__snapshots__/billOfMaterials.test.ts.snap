@@ -256,6 +256,17 @@ exports[`builds the bill of materials 1`] = `
       "spec": "28 mm",
       "sub": "wall",
     },
+    {
+      "color": "#343a40",
+      "key": "multiconnect:#343a40",
+      "label": "Multiconnect",
+      "len": 1,
+      "mirrored": false,
+      "order": 19001,
+      "qty": 1,
+      "spec": "28 mm",
+      "sub": "multiconnect",
+    },
   ],
   "bboxMm": {
     "h": 308,
@@ -391,6 +402,7 @@ Channels and tile covers:
   Tile cover (28 mm, #343a40) × 1
   Tile cover (28 mm, #e76f51) × 1
   Wall mount (28 mm, #343a40) × 1
+  Multiconnect (28 mm, #343a40) × 1
 
 Cables: 9, 2.00 m total
   Cable 1: Router ↔ Switch, 140 mm

@@ -466,5 +466,11 @@ exports[`part catalogue > has a shape and openings for every channel 1`] = `
     undefined,
     [],
   ],
+  [
+    "multiconnect",
+    "Multiconnect",
+    undefined,
+    [],
+  ],
 ]
 `;

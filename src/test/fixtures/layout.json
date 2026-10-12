@@ -41,6 +41,19 @@
         "flip": false
       },
       {
+        "id": "h4",
+        "kind": "cover",
+        "sub": "multiconnect",
+        "name": "Multiconnect",
+        "x": 10,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "color": "#343a40",
+        "rot": 0,
+        "flip": false
+      },
+      {
         "id": "h3",
         "kind": "cover",
         "sub": "hole",

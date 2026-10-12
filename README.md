@@ -23,7 +23,7 @@ Everything runs client-side. There is no backend and no account; your layout aut
 
 **Tiles** — any rows × columns. The BOM counts tiles per size (orientation-independent), total cells, and the connectors needed where tiles touch.
 
-**Tile covers** — cover and wall mount. Tile holes stay open until a cover is placed.
+**Tile covers** — cover, wall mount and Multiconnect (a bigger, threaded hole). Tile holes stay open until a cover is placed.
 
 **Channels**
 
