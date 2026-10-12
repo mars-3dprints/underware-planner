@@ -105,6 +105,14 @@ export const isTurn = (type?: PieceType) => type === 'turn' || type === 'angled'
 export const isLinear = (type?: PieceType) => type === 'straight' || type === 'bridge';
 /** Pieces drawn from a shape (turns and fixed-size pieces), which can be flipped. */
 export const isShaped = (type?: PieceType) => isTurn(type) || (!!type && !!PIECE_SHAPES[type]);
+/**
+ * Mirror a shaped piece left to right on screen. `flip` mirrors the piece in its own frame, which is top to bottom
+ * when it is turned a quarter, so a sideways piece also turns half way round. The footprint doesn't change.
+ */
+export const flipped = ({ rot = 0, flip = false }: { rot?: number; flip?: boolean }) => ({
+  flip: !flip,
+  rot: rot % 2 ? (rot + 2) % 4 : rot,
+});
 /** Turn size kept within 1 to `MAX_TURN_SIZE` cells. */
 export const clampTurnSize = (n: number) => Math.max(1, Math.min(MAX_TURN_SIZE, n));
 export const minLength = (type: PieceType) => (type === 'bridge' ? 3 : 1);

@@ -5,7 +5,7 @@ import { deleteWaypoint, isBomPart, moveCable, removePart, setInBom } from '../d
 import { carriedCables, cloneItems, moveGroup, rotateGroup, selectionBounds } from '../domain/group';
 import { uid } from '../domain/id';
 import { type Layer, layerOf } from '../domain/layers';
-import { counterpart, isShaped, kindOfPiece, PIECE_LABELS } from '../domain/pieces';
+import { counterpart, flipped, isShaped, kindOfPiece, PIECE_LABELS } from '../domain/pieces';
 import type {
   Anchor,
   Block,
@@ -403,7 +403,7 @@ export const useStore = create<EditorState>((set, get) => ({
     if (!part || !isShaped(part.sub)) return;
     s.commit((d) => ({
       ...d,
-      objects: d.objects.map((p) => (p.id === part.id ? { ...p, flip: !p.flip } : p)),
+      objects: d.objects.map((p) => (p.id === part.id ? { ...p, ...flipped(p) } : p)),
     }));
   },
   nudgeSelection: (dx, dy) => {
@@ -504,7 +504,7 @@ export const useStore = create<EditorState>((set, get) => ({
       if (s.stamp) return { stamp: { ...s.stamp, rot: (s.stamp.rot + (counterClockwise ? 3 : 1)) % 4 } };
       return {};
     }),
-  flipStamp: () => set((s) => (s.stamp ? { stamp: { ...s.stamp, flip: !s.stamp.flip } } : {})),
+  flipStamp: () => set((s) => (s.stamp ? { stamp: { ...s.stamp, ...flipped(s.stamp) } } : {})),
   setBlock: (block) =>
     set((s) => ({
       ...NO_SELECTION,

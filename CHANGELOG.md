@@ -4,6 +4,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Fixed
+
+- Flipping a channel turned sideways mirrored it top to bottom; flipping now always mirrors left to right on screen.
+
 ## [0.8.1] - 2026-10-12
 
 ### Changed

@@ -220,7 +220,8 @@ describe('store actions', () => {
     s().flipStamp();
     s().swapStyle();
     s().resizeStamp(5);
-    expect(s().stamp).toMatchObject({ sub: 'angled', len: 5, rot: 3, flip: true });
+    // A sideways piece also turns half way when flipped (see `flipped`).
+    expect(s().stamp).toMatchObject({ sub: 'angled', len: 5, rot: 1, flip: true });
     s().setPieceColor('#123456');
     expect(s().stamp!.color).toBe('#123456');
     s().setBlock({ kind: 'plate', name: 'Tile', w: 4, h: 2, color: '#fff' });
