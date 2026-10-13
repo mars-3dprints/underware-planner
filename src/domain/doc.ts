@@ -81,6 +81,9 @@ export function removePart(doc: Doc, id: string): Doc {
   };
 }
 
+/** Whether a layout has nothing in it. */
+export const isEmptyDoc = (doc: Doc) => !doc.objects.length && !doc.cables.length;
+
 export const isDoc = (value: unknown): value is Doc =>
   !!value && Array.isArray((value as Doc).objects) && Array.isArray((value as Doc).cables);
 

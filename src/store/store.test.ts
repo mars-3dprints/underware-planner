@@ -69,8 +69,74 @@ describe('persistence', () => {
     const { useStore } = await freshStore({ doc: fixture(), view: null, palette: [] });
     useStore.getState().commit((d) => ({ ...d, cables: [] }));
     vi.advanceTimersByTime(400);
-    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).doc.cables).toEqual([]);
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).files[0].doc.cables).toEqual([]);
     vi.useRealTimers();
+  });
+});
+
+describe('files', () => {
+  it('saves and restores several files', async () => {
+    vi.useFakeTimers();
+    const { useStore } = await freshStore({ doc: fixture(), view: null, palette: [] });
+    const s = () => useStore.getState();
+    s().addFile();
+    s().commit((d) => ({ ...d, objects: fixture().objects.slice(0, 1) }));
+    vi.advanceTimersByTime(400);
+    vi.useRealTimers();
+    const again = (await freshStore(JSON.parse(localStorage.getItem(STORAGE_KEY)!))).useStore.getState();
+    expect(again.files.map((f) => f.name)).toEqual(['File 1', 'File 2']);
+    expect(again.activeFileId).toBe(s().activeFileId);
+    expect(again.doc.objects).toHaveLength(1);
+    expect(again.parked[again.files[0].id].doc).toEqual(fixture());
+  });
+
+  it('keeps each file its own layout and undo history', async () => {
+    const { useStore } = await freshStore({ doc: fixture(), view: null, palette: [] });
+    const s = () => useStore.getState();
+    const first = s().activeFileId;
+    s().commit((d) => ({ ...d, cables: [] }));
+    s().addFile();
+    expect(s().doc).toEqual({ objects: [], cables: [] });
+    expect(s().past).toEqual([]);
+    s().switchFile(first);
+    expect(s().doc.cables).toEqual([]);
+    expect(s().past).toHaveLength(1);
+    s().undo();
+    expect(s().doc).toEqual(fixture());
+  });
+
+  it('names new files after the lowest free number, and clears the selection on switch', async () => {
+    const { useStore } = await freshStore({ doc: fixture(), view: null, palette: [] });
+    const s = () => useStore.getState();
+    s().addFile();
+    s().addFile();
+    s().deleteFile(s().files[1].id);
+    s().addFile();
+    expect(s().files.map((f) => f.name)).toEqual(['File 1', 'File 3', 'File 2']);
+    s().select({ type: 'obj', id: 'o1' });
+    s().switchFile(s().files[0].id);
+    expect(s().selection).toBeNull();
+  });
+
+  it('closes files, opening the neighbour, but never the last one', async () => {
+    const { useStore } = await freshStore({ doc: fixture(), view: null, palette: [] });
+    const s = () => useStore.getState();
+    const [first] = s().files;
+    s().addFile();
+    const second = s().activeFileId;
+    s().deleteFile(second);
+    expect(s().activeFileId).toBe(first.id);
+    expect(s().parked).toEqual({});
+    s().deleteFile(first.id);
+    expect(s().files).toHaveLength(1);
+  });
+
+  it('renames a file, ignoring blank names', async () => {
+    const { useStore } = await freshStore();
+    const s = () => useStore.getState();
+    s().renameFile(s().activeFileId, '  Desk  ');
+    s().renameFile(s().activeFileId, ' ');
+    expect(s().files[0].name).toBe('Desk');
   });
 });
 

@@ -27,14 +27,34 @@ import type {
   View,
 } from '../domain/types';
 import { routesFor } from '../routing/route';
-import { autosave, loadSaved } from './persistence';
+import { autosave, loadSaved, nextFileName } from './persistence';
 
 /** Undo steps kept. */
 const HISTORY_LIMIT = 100;
 /** Commits sharing a key within this window are one undo step. */
 const COALESCE_MS = 1000;
 
+/** An open file: a tab holding its own layout, undo history and view. */
+export interface FileTab {
+  id: string;
+  name: string;
+}
+
+/** What a file keeps while it isn't the active one (the active file lives in the store's own fields). */
+interface ParkedFile {
+  doc: Doc;
+  past: Doc[];
+  future: Doc[];
+  /** Null until the file has been viewed, so it is framed when first opened. */
+  view: View | null;
+}
+
 export interface EditorState {
+  // Open files
+  files: FileTab[];
+  activeFileId: string;
+  parked: Record<string, ParkedFile>;
+
   // Layout and history
   doc: Doc;
   past: Doc[];
@@ -85,6 +105,12 @@ export interface EditorState {
   redo(): void;
   replaceDoc(doc: Doc): void;
 
+  addFile(): void;
+  switchFile(id: string): void;
+  renameFile(id: string, name: string): void;
+  /** Closes a file; the last one can't be closed. */
+  deleteFile(id: string): void;
+
   select(selection: Selection): void;
   selectItems(partIds: string[], cableIds?: string[]): void;
   togglePart(id: string): void;
@@ -129,6 +155,10 @@ export interface EditorState {
 
 type SelectionFields = Pick<EditorState, 'selection' | 'selectedIds' | 'selectedCableIds' | 'activeWaypoint'>;
 type SelectionState = Pick<EditorState, 'doc' | 'selection' | 'selectedIds' | 'selectedCableIds'>;
+
+/** Name of the active file. */
+export const activeFileName = (s: Pick<EditorState, 'files' | 'activeFileId'>) =>
+  s.files.find((f) => f.id === s.activeFileId)?.name ?? '';
 
 export const isGroupSelected = (s: SelectionState) => s.selectedIds.length + s.selectedCableIds.length > 1;
 
@@ -250,10 +280,40 @@ function changedIn(from: Doc, to: Doc, hidden: Record<Layer, boolean>): Selectio
 
 const pushHistory = (past: Doc[], doc: Doc) => [...past.slice(-(HISTORY_LIMIT - 1)), doc];
 
+/** Opens parked file `id`. The current file is parked in its place, unless `park` is false (it is being closed). */
+function openFile(s: EditorState, id: string, park = true): Partial<EditorState> {
+  const { [id]: file, ...rest } = s.parked;
+  return {
+    activeFileId: id,
+    parked: park
+      ? { ...rest, [s.activeFileId]: { doc: s.doc, past: s.past, future: s.future, view: s.view } }
+      : rest,
+    doc: file.doc,
+    past: file.past,
+    future: file.future,
+    view: file.view ?? { x: 0, y: 0, k: BASE_ZOOM },
+    viewRestored: !!file.view,
+    ...NO_SELECTION,
+    hoverCableIds: [],
+    hoverPartIds: [],
+    dragBase: null,
+    coalesceKey: '',
+    lastPasteAt: '',
+  };
+}
+
 const saved = loadSaved();
+const active = saved.files.find((f) => f.id === saved.activeId)!;
 
 export const useStore = create<EditorState>((set, get) => ({
-  doc: saved.doc,
+  files: saved.files.map(({ id, name }) => ({ id, name })),
+  activeFileId: active.id,
+  parked: Object.fromEntries(
+    saved.files
+      .filter((f) => f !== active)
+      .map((f) => [f.id, { doc: f.doc, past: [], future: [], view: f.view }]),
+  ),
+  doc: active.doc,
   past: [],
   future: [],
   coalesceKey: '',
@@ -268,8 +328,8 @@ export const useStore = create<EditorState>((set, get) => ({
   pieceColor: PIECE_COLOR,
   cableColor: DEFAULT_COLORS[0],
   palette: saved.palette,
-  view: saved.view ?? { x: 0, y: 0, k: BASE_ZOOM },
-  viewRestored: !!saved.view,
+  view: active.view ?? { x: 0, y: 0, k: BASE_ZOOM },
+  viewRestored: !!active.view,
   peek: false,
   hoverCableIds: [],
   hoverPartIds: [],
@@ -332,6 +392,39 @@ export const useStore = create<EditorState>((set, get) => ({
   replaceDoc: (doc) => {
     get().commit(() => doc);
     set({ selection: null, selectedIds: [], selectedCableIds: [] });
+  },
+
+  // ---- files ----
+
+  addFile: () => {
+    const s = get();
+    const id = uid();
+    set({
+      files: [...s.files, { id, name: nextFileName(s.files.map((f) => f.name)) }],
+      parked: { ...s.parked, [id]: { doc: { objects: [], cables: [] }, past: [], future: [], view: null } },
+    });
+    get().switchFile(id);
+  },
+  switchFile: (id) => {
+    const s = get();
+    if (id !== s.activeFileId && s.parked[id]) set(openFile(s, id));
+  },
+  renameFile: (id, name) => {
+    const trimmed = name.trim();
+    if (trimmed) set((s) => ({ files: s.files.map((f) => (f.id === id ? { ...f, name: trimmed } : f)) }));
+  },
+  deleteFile: (id) => {
+    const s = get();
+    if (s.files.length < 2) return;
+    const i = s.files.findIndex((f) => f.id === id);
+    const files = s.files.filter((f) => f.id !== id);
+    if (id === s.activeFileId) {
+      // Open the neighbour that takes its place in the tab bar.
+      set({ ...openFile(s, files[Math.min(i, files.length - 1)].id, false), files });
+    } else {
+      const { [id]: _, ...parked } = s.parked;
+      set({ files, parked });
+    }
   },
 
   // ---- selection ----
@@ -608,4 +701,21 @@ function addCopies(copies: { parts: Part[]; cables: Cable[] }) {
   );
 }
 
-autosave(useStore);
+autosave(
+  useStore,
+  (s) => ({
+    files: s.files.map(({ id, name }) => {
+      const file = id === s.activeFileId ? { doc: s.doc, view: s.view } : s.parked[id];
+      return { id, name, doc: file.doc, view: file.view };
+    }),
+    activeId: s.activeFileId,
+    palette: s.palette,
+  }),
+  (s, prev) =>
+    s.doc !== prev.doc ||
+    s.view !== prev.view ||
+    s.palette !== prev.palette ||
+    s.files !== prev.files ||
+    s.activeFileId !== prev.activeFileId ||
+    s.parked !== prev.parked,
+);
