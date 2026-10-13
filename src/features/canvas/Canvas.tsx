@@ -14,7 +14,7 @@ import { CableTip } from './CableTip';
 import { CanvasDefs, CanvasGrid } from './CanvasDefs';
 import { PartShape } from './PartShape';
 import { RenameInput } from './RenameInput';
-import { CableHandles, CableOutline, GroupOutline, PartOutline } from './SelectionOverlay';
+import { CableHandles, CableOutline, GroupOutline, HoverOutline, PartOutline } from './SelectionOverlay';
 import { useCableDraft } from './useCableDraft';
 import { type Marquee, usePointerInput } from './usePointerInput';
 import { useCanvasKeys, useWheelPanZoom } from './useViewportControls';
@@ -48,6 +48,7 @@ export function Canvas() {
     selectedCableIds,
     peek,
     hoverCableIds,
+    hoverPartIds,
     hidden,
     isGroup,
     part,
@@ -62,6 +63,7 @@ export function Canvas() {
       selectedCableIds: s.selectedCableIds,
       peek: s.peek,
       hoverCableIds: s.hoverCableIds,
+      hoverPartIds: s.hoverPartIds,
       hidden: s.hidden,
       isGroup: isGroupSelected(s),
       part: selectedPart(s),
@@ -169,6 +171,9 @@ export function Canvas() {
             {channels.filter((p) => p.sub === 'bridge').map(shape)}
           </g>
 
+          {hoverPartIds.length > 0 && (
+            <HoverOutline parts={doc.objects.filter((p) => hoverPartIds.includes(p.id))} />
+          )}
           {selectedRoute && <CableOutline route={selectedRoute} />}
           {isGroup && (
             <GroupOutline

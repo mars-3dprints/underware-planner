@@ -22,6 +22,8 @@ interface TileSize {
   cols: number;
   color: string;
   qty: number;
+  /** The parts counted, for finding them on the canvas. */
+  ids: string[];
 }
 
 export interface PieceLine {
@@ -34,6 +36,7 @@ export interface PieceLine {
   qty: number;
   order: number;
   mirrored: boolean;
+  ids: string[];
 }
 
 export type BillOfMaterials = ReturnType<typeof billOfMaterials>;
@@ -67,6 +70,7 @@ function pieceLine(piece: Part & { sub: PieceType }, key: string): PieceLine {
     qty: 0,
     order,
     mirrored,
+    ids: [],
   };
 }
 
@@ -109,6 +113,7 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
       const key = pieceKey(piece);
       const entry = pieceLines.get(key) ?? pieceLine(piece, key);
       entry.qty++;
+      entry.ids.push(part.id);
       pieceLines.set(key, entry);
       continue;
     }
@@ -116,8 +121,9 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
     const rows = Math.min(part.w, part.h);
     const cols = Math.max(part.w, part.h);
     const key = `${rows}×${cols}:${part.color}`;
-    const entry = tileSizes.get(key) ?? { key, rows, cols, color: part.color, qty: 0 };
+    const entry = tileSizes.get(key) ?? { key, rows, cols, color: part.color, qty: 0, ids: [] };
     entry.qty++;
+    entry.ids.push(part.id);
     tileSizes.set(key, entry);
     cells += part.w * part.h;
     tiles.push(part);

@@ -70,6 +70,8 @@ export interface EditorState {
   peek: boolean;
   /** Cables under the pointer (or hovered in the list). View-only: not saved or undone. */
   hoverCableIds: string[];
+  /** Parts hovered in the bill of materials. View-only: not saved or undone. */
+  hoverPartIds: string[];
   hidden: Record<Layer, boolean>;
   /** The right-hand panel (selection and bill of materials). */
   sidebarOpen: boolean;
@@ -119,6 +121,7 @@ export interface EditorState {
   setView(view: View): void;
   togglePeek(): void;
   setHoverCables(ids: string[]): void;
+  setHoverParts(ids: string[]): void;
   toggleSidebar(): void;
   toggleLayer(layer: Layer): void;
   showLayers(...layers: Layer[]): void;
@@ -269,6 +272,7 @@ export const useStore = create<EditorState>((set, get) => ({
   viewRestored: !!saved.view,
   peek: false,
   hoverCableIds: [],
+  hoverPartIds: [],
   sidebarOpen: true,
   hidden: { tiles: false, objects: false, channels: false, cables: false },
 
@@ -552,6 +556,12 @@ export const useStore = create<EditorState>((set, get) => ({
       ids.length === s.hoverCableIds.length && ids.every((id, i) => id === s.hoverCableIds[i])
         ? s
         : { hoverCableIds: ids },
+    ),
+  setHoverParts: (ids) =>
+    set((s) =>
+      ids.length === s.hoverPartIds.length && ids.every((id, i) => id === s.hoverPartIds[i])
+        ? s
+        : { hoverPartIds: ids },
     ),
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
   toggleLayer: (layer) =>

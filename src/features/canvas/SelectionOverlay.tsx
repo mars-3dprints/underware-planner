@@ -153,3 +153,25 @@ export function CableHandles({ cable, route, activeWaypoint, px }: CableHandlesP
     </>
   );
 }
+
+/** Translucent highlight over parts hovered in the bill of materials. */
+export function HoverOutline({ parts }: { parts: Part[] }) {
+  return (
+    <g pointerEvents="none">
+      {parts.map((p) => (
+        <rect
+          key={p.id}
+          x={p.x}
+          y={p.y}
+          width={p.w}
+          height={p.h}
+          fill="var(--accent)"
+          fillOpacity={0.3}
+          stroke="var(--accent)"
+          strokeWidth={2}
+          vectorEffect="non-scaling-stroke"
+        />
+      ))}
+    </g>
+  );
+}

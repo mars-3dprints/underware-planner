@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { type BillOfMaterials, billOfMaterialsText, type PieceLine } from '../../bom/billOfMaterials';
 import { CELL_MM } from '../../domain/constants';
+import { layerOf } from '../../domain/layers';
 import { channelLabel } from '../../domain/pieces';
+import { useStore } from '../../store/store';
 import { ColorDot } from '../../ui/ColorDot';
 import { PieceThumb } from '../../ui/PieceThumb';
 import { plural } from '../../ui/plural';
@@ -17,7 +20,29 @@ function KeyValue({ label, value }: { label: string; value: string | number }) {
   );
 }
 
+/** Row props for a line of parts: click selects them on the canvas, hover highlights them. */
+function useLineFocus() {
+  const { selectedIds, selectItems, setHoverParts } = useStore(
+    useShallow((s) => ({
+      selectedIds: s.selectedIds,
+      selectItems: s.selectItems,
+      setHoverParts: s.setHoverParts,
+    })),
+  );
+  return (ids: string[]) => ({
+    className: 'pick' + (ids.length && ids.every((id) => selectedIds.includes(id)) ? ' on' : ''),
+    onClick: () => {
+      const { doc, hidden } = useStore.getState();
+      const visible = new Set(doc.objects.filter((p) => !hidden[layerOf(p)]).map((p) => p.id));
+      selectItems(ids.filter((id) => visible.has(id)));
+    },
+    onMouseEnter: () => setHoverParts(ids),
+    onMouseLeave: () => setHoverParts([]),
+  });
+}
+
 function PieceTable({ lines }: { lines: PieceLine[] }) {
+  const focus = useLineFocus();
   return (
     <table className="tbl">
       <thead>
@@ -29,7 +54,7 @@ function PieceTable({ lines }: { lines: PieceLine[] }) {
       </thead>
       <tbody>
         {lines.map((line) => (
-          <tr key={line.key}>
+          <tr key={line.key} {...focus(line.ids)}>
             <td className="thumbcell">
               <div>
                 <ColorDot color={line.color} />
@@ -76,6 +101,7 @@ export function BillOfMaterialsSection({
   overlapCount: number;
 }) {
   const { channels, snaps } = bom;
+  const focus = useLineFocus();
   return (
     <section>
       <h3>
@@ -98,7 +124,7 @@ export function BillOfMaterialsSection({
               </thead>
               <tbody>
                 {bom.sizes.map((size) => (
-                  <tr key={size.key}>
+                  <tr key={size.key} {...focus(size.ids)}>
                     <td>
                       <ColorDot color={size.color} />
                       {size.rows} × {size.cols}
