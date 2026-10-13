@@ -27,7 +27,7 @@ function Legend() {
   );
 }
 
-export default function App() {
+function Workspace() {
   const sidebarOpen = useStore((s) => s.sidebarOpen);
   useShortcuts();
   return (
@@ -42,4 +42,9 @@ export default function App() {
       {sidebarOpen && <InspectorPanel />}
     </div>
   );
+}
+
+/** Keyed by the reset count, so resetting the workspace remounts everything with fresh local state. */
+export default function App() {
+  return <Workspace key={useStore((s) => s.epoch)} />;
 }

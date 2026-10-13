@@ -51,6 +51,8 @@ interface ParkedFile {
 
 export interface EditorState {
   // Open files
+  /** Bumped by a workspace reset, to remount the UI with fresh local state. */
+  epoch: number;
   files: FileTab[];
   activeFileId: string;
   parked: Record<string, ParkedFile>;
@@ -112,7 +114,7 @@ export interface EditorState {
   deleteFile(id: string): void;
   /** Closes every file but `id`, which becomes the active one. */
   closeOtherFiles(id: string): void;
-  /** Closes every file and starts over with one empty file. */
+  /** Closes every file and puts everything else back as when the app is first opened, apart from an empty file. */
   resetWorkspace(): void;
 
   select(selection: Selection): void;
@@ -306,18 +308,8 @@ function openFile(s: EditorState, id: string, park = true): Partial<EditorState>
   };
 }
 
-const saved = loadSaved();
-const active = saved.files.find((f) => f.id === saved.activeId)!;
-
-export const useStore = create<EditorState>((set, get) => ({
-  files: saved.files.map(({ id, name }) => ({ id, name })),
-  activeFileId: active.id,
-  parked: Object.fromEntries(
-    saved.files
-      .filter((f) => f !== active)
-      .map((f) => [f.id, { doc: f.doc, past: [], future: [], view: f.view }]),
-  ),
-  doc: active.doc,
+/** Everything that isn't saved or per file, as it is when the app is first opened. */
+const FRESH_SESSION = {
   past: [],
   future: [],
   coalesceKey: '',
@@ -331,14 +323,30 @@ export const useStore = create<EditorState>((set, get) => ({
   block: null,
   pieceColor: PIECE_COLOR,
   cableColor: DEFAULT_COLORS[0],
-  palette: saved.palette,
-  view: active.view ?? { x: 0, y: 0, k: BASE_ZOOM },
-  viewRestored: !!active.view,
   peek: false,
   hoverCableIds: [],
   hoverPartIds: [],
   sidebarOpen: true,
   hidden: { tiles: false, objects: false, channels: false, cables: false },
+} satisfies Partial<EditorState>;
+
+const saved = loadSaved();
+const active = saved.files.find((f) => f.id === saved.activeId)!;
+
+export const useStore = create<EditorState>((set, get) => ({
+  files: saved.files.map(({ id, name }) => ({ id, name })),
+  activeFileId: active.id,
+  parked: Object.fromEntries(
+    saved.files
+      .filter((f) => f !== active)
+      .map((f) => [f.id, { doc: f.doc, past: [], future: [], view: f.view }]),
+  ),
+  doc: active.doc,
+  ...FRESH_SESSION,
+  epoch: 0,
+  palette: saved.palette,
+  view: active.view ?? { x: 0, y: 0, k: BASE_ZOOM },
+  viewRestored: !!active.view,
 
   // ---- layout and history ----
 
@@ -441,8 +449,11 @@ export const useStore = create<EditorState>((set, get) => ({
     const empty: ParkedFile = { doc: { objects: [], cables: [] }, past: [], future: [], view: null };
     set({
       ...openFile({ ...s, parked: { [id]: empty } }, id, false),
+      ...FRESH_SESSION,
       files: [{ id, name: nextFileName([]) }],
       parked: {},
+      palette: [],
+      epoch: s.epoch + 1,
     });
   },
 
