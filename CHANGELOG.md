@@ -6,7 +6,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ### Added
 
-- Files: tabs along the bottom to work on several layouts at once, each with its own view and undo history. Export saves the active file, and Import replaces it after a confirmation.
+- Files: tabs along the bottom to work on several layouts at once, each with its own view and undo history. Export saves the active file, and Import replaces it after a confirmation. Right-click a tab to rename or close it, close the other files, or reset the workspace.
 - Bill of materials: hover a tile, channel or snap line to highlight where it's used, and click to select those parts.
 
 ## [0.9.0] - 2026-10-13

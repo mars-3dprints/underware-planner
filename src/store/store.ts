@@ -110,6 +110,10 @@ export interface EditorState {
   renameFile(id: string, name: string): void;
   /** Closes a file; the last one can't be closed. */
   deleteFile(id: string): void;
+  /** Closes every file but `id`, which becomes the active one. */
+  closeOtherFiles(id: string): void;
+  /** Closes every file and starts over with one empty file. */
+  resetWorkspace(): void;
 
   select(selection: Selection): void;
   selectItems(partIds: string[], cableIds?: string[]): void;
@@ -425,6 +429,21 @@ export const useStore = create<EditorState>((set, get) => ({
       const { [id]: _, ...parked } = s.parked;
       set({ files, parked });
     }
+  },
+  closeOtherFiles: (id) => {
+    const s = get();
+    const file = s.files.find((f) => f.id === id);
+    if (file) set({ ...(id === s.activeFileId ? {} : openFile(s, id, false)), files: [file], parked: {} });
+  },
+  resetWorkspace: () => {
+    const s = get();
+    const id = uid();
+    const empty: ParkedFile = { doc: { objects: [], cables: [] }, past: [], future: [], view: null };
+    set({
+      ...openFile({ ...s, parked: { [id]: empty } }, id, false),
+      files: [{ id, name: nextFileName([]) }],
+      parked: {},
+    });
   },
 
   // ---- selection ----

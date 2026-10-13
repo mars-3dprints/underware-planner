@@ -117,3 +117,14 @@
 .filetabs .ibtn:hover {
   color: var(--text);
 }
+/* Right-click menu on a tab, opening upwards from the pointer. */
+.pop.ctxmenu {
+  position: fixed;
+  top: auto;
+  width: 200px;
+  gap: 2px;
+  padding: 6px;
+}
+.ctxmenu .layerrow {
+  display: block;
+}

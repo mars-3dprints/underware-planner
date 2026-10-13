@@ -131,6 +131,25 @@ describe('files', () => {
     expect(s().files).toHaveLength(1);
   });
 
+  it('closes the other files, or resets the whole workspace', async () => {
+    const { useStore } = await freshStore({ doc: fixture(), view: null, palette: [] });
+    const s = () => useStore.getState();
+    const first = s().activeFileId;
+    s().addFile();
+    s().addFile();
+    s().closeOtherFiles(first);
+    expect(s().files.map((f) => f.id)).toEqual([first]);
+    expect(s().activeFileId).toBe(first);
+    expect(s().parked).toEqual({});
+    expect(s().doc).toEqual(fixture());
+    s().addFile();
+    s().resetWorkspace();
+    expect(s().files.map((f) => f.name)).toEqual(['File 1']);
+    expect(s().doc).toEqual({ objects: [], cables: [] });
+    expect(s().past).toEqual([]);
+    expect(s().parked).toEqual({});
+  });
+
   it('renames a file, ignoring blank names', async () => {
     const { useStore } = await freshStore();
     const s = () => useStore.getState();

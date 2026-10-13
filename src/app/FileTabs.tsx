@@ -1,16 +1,25 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { isEmptyDoc } from '../domain/doc';
 import { type FileTab, useStore } from '../store/store';
 import { fitToContent } from '../store/view';
 import { Icon } from '../ui/Icon';
 import { IconButton } from '../ui/IconButton';
+import { useDismiss } from '../ui/useDismiss';
 
 /** Asks before closing a file that has something in it. */
 function confirmClose(id: string, name: string) {
   const s = useStore.getState();
   const doc = id === s.activeFileId ? s.doc : s.parked[id].doc;
   return isEmptyDoc(doc) || window.confirm(`Close "${name}" and its layout?`);
+}
+
+/** Asks before closing every file but `keepId`, when any of them has something in it. */
+function confirmCloseOthers(keepId: string) {
+  const s = useStore.getState();
+  const others = s.files.filter((f) => f.id !== keepId);
+  const filled = others.some((f) => !isEmptyDoc(f.id === s.activeFileId ? s.doc : s.parked[f.id].doc));
+  return !filled || window.confirm(`Close ${others.length} other file(s) and their layouts?`);
 }
 
 /** Frames a file that is being opened for the first time. */
@@ -21,7 +30,16 @@ function framed(action: () => void) {
 
 /** Tabs along the bottom, one per open file: click to open, double-click to rename. */
 export function FileTabs() {
-  const { files, activeFileId, switchFile, addFile, renameFile, deleteFile } = useStore(
+  const {
+    files,
+    activeFileId,
+    switchFile,
+    addFile,
+    renameFile,
+    deleteFile,
+    closeOtherFiles,
+    resetWorkspace,
+  } = useStore(
     useShallow((s) => ({
       files: s.files,
       activeFileId: s.activeFileId,
@@ -29,9 +47,19 @@ export function FileTabs() {
       addFile: s.addFile,
       renameFile: s.renameFile,
       deleteFile: s.deleteFile,
+      closeOtherFiles: s.closeOtherFiles,
+      resetWorkspace: s.resetWorkspace,
     })),
   );
   const [renaming, setRenaming] = useState<string | null>(null);
+  const [menu, setMenu] = useState<{ id: string; x: number; y: number } | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const dismiss = useCallback(() => setMenu(null), []);
+  useDismiss(menuRef, !!menu, dismiss);
+  const run = (action: () => void) => {
+    setMenu(null);
+    action();
+  };
   const close = (file: FileTab) =>
     files.length > 1 && confirmClose(file.id, file.name) && framed(() => deleteFile(file.id));
   return (
@@ -60,6 +88,10 @@ export function FileTabs() {
               title="Double-click to rename"
               onClick={() => framed(() => switchFile(file.id))}
               onDoubleClick={() => setRenaming(file.id)}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                setMenu({ id: file.id, x: e.clientX, y: e.clientY });
+              }}
               onAuxClick={(e) => e.button === 1 && close(file)}
             >
               {file.name}
@@ -78,6 +110,56 @@ export function FileTabs() {
         </div>
       ))}
       <IconButton icon="filenew" label="New file" onClick={() => framed(addFile)} />
+      {menu && (
+        <div
+          ref={menuRef}
+          className="pop ctxmenu"
+          role="menu"
+          style={{ left: Math.min(menu.x, window.innerWidth - 208), bottom: window.innerHeight - menu.y }}
+        >
+          <button className="layerrow" role="menuitem" onClick={() => run(() => setRenaming(menu.id))}>
+            Rename
+          </button>
+          {files.length > 1 && (
+            <>
+              <button
+                className="layerrow"
+                role="menuitem"
+                onClick={() =>
+                  run(() => {
+                    const file = files.find((f) => f.id === menu.id)!;
+                    close(file);
+                  })
+                }
+              >
+                Close
+              </button>
+              <button
+                className="layerrow"
+                role="menuitem"
+                onClick={() =>
+                  run(() => confirmCloseOthers(menu.id) && framed(() => closeOtherFiles(menu.id)))
+                }
+              >
+                Close other files
+              </button>
+            </>
+          )}
+          <button
+            className="layerrow"
+            role="menuitem"
+            onClick={() =>
+              run(
+                () =>
+                  window.confirm('Close all files and start over with an empty one?') &&
+                  framed(resetWorkspace),
+              )
+            }
+          >
+            Reset workspace
+          </button>
+        </div>
+      )}
     </nav>
   );
 }
