@@ -4,6 +4,8 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.10.2] - 2026-10-13
+
 ### Changed
 
 - README screenshot shows the updated example layout.
