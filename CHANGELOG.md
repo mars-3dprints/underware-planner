@@ -4,6 +4,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Changed
+
+- README screenshot shows the updated example layout.
+
 ### Fixed
 
 - Reset workspace now also resets swatches, tool, colours, layers, see-through and the library settings, as if the app were freshly opened.
