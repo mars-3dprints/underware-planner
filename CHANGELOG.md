@@ -4,6 +4,8 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-13
+
 ### Added
 
 - Files: tabs along the bottom to work on several layouts at once, each with its own view and undo history. Export saves the active file, and Import replaces it after a confirmation. Right-click a tab to rename or close it, close the other files, or reset the workspace.
