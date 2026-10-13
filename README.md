@@ -51,6 +51,7 @@ Mirrored parts are different prints, so they are listed as separate BOM entries.
 - **Colour:** the toolbar colour button recolours the current selection. A default palette is always available, and you can add your own colours.
 - **Undo and redo** select the parts they changed.
 - **Nudge:** arrow keys move the selection by one cell (Shift: five).
+- **Files:** the tabs along the bottom hold several layouts, each with its own view and undo history. Click a tab to open it, double-click to rename, **+** for a new file and **×** to close one. Copy and paste works between files.
 - **Layers:** the layers button (or **1–4**) shows or hides tiles, objects, channels and cables. Hidden layers can't be selected, and placing a part shows its layer again. The bill of materials still counts hidden parts.
 - **See through:** the eye button (or **P**) draws channels at 75 % opacity.
 - **Sidebar:** the toolbar button (or **\\**) hides or shows the bill-of-materials panel.
@@ -77,7 +78,7 @@ Mirrored parts are different prints, so they are listed as separate BOM entries.
 
 ## Saving and sharing
 
-The layout autosaves to `localStorage` (key `underware-planner-v1`), separately for each site: a layout saved locally doesn't appear on the hosted version, so move it with Export and Import. **Export** downloads `underware-layout.json`; **Import** loads one back. **Copy** in the bill of materials puts a plain-text parts list on your clipboard.
+All open files autosave to `localStorage` (key `underware-planner-v1`), separately for each site: a layout saved locally doesn't appear on the hosted version, so move it with Export and Import. **Export** downloads the active file as `<file name>.json`; **Import** replaces the active file with one (after asking, and you can undo it). **Copy** in the bill of materials puts a plain-text parts list on your clipboard.
 
 ## Related projects
 

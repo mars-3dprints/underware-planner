@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { BASE_ZOOM, ZOOM_STEP } from '../domain/constants';
-import { useStore } from '../store/store';
+import { activeFileName, useStore } from '../store/store';
 import { fitToContent, zoomCentered } from '../store/view';
 import { IconButton } from '../ui/IconButton';
 import { Swatches } from '../ui/Swatches';
@@ -75,7 +75,13 @@ function FileButtons() {
   };
   return (
     <>
-      <button className="btn sm" onClick={() => exportLayout(useStore.getState().doc)}>
+      <button
+        className="btn sm"
+        onClick={() => {
+          const s = useStore.getState();
+          exportLayout(s.doc, activeFileName(s) || 'underware-layout');
+        }}
+      >
         Export
       </button>
       <button className="btn sm" onClick={() => fileRef.current?.click()}>
