@@ -1,13 +1,13 @@
 .app {
   height: 100%;
   display: grid;
-  grid-template-rows: 46px 1fr;
+  grid-template-rows: 46px 1fr 36px;
   grid-template-columns: 248px 1fr 316px;
-  grid-template-areas: 'top top top' 'left stage right';
+  grid-template-areas: 'top top top' 'left stage right' 'left tabs right';
 }
 .app.noright {
   grid-template-columns: 248px 1fr;
-  grid-template-areas: 'top top' 'left stage';
+  grid-template-areas: 'top top' 'left stage' 'left tabs';
 }
 .panel {
   background: var(--panel);
@@ -35,4 +35,81 @@
   .app.noright {
     grid-template-columns: 200px 1fr;
   }
+}
+
+/* Spreadsheet-style file tabs: the active one is lifted, with an accent underline. */
+.filetabs {
+  grid-area: tabs;
+  display: flex;
+  align-items: stretch;
+  padding: 0 8px;
+  overflow-x: auto;
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+}
+.filetab {
+  display: flex;
+  align-items: center;
+  flex: none;
+  color: var(--muted);
+}
+.filetab + .filetab {
+  border-left: 1px solid var(--line);
+}
+.filetab:hover {
+  color: var(--text);
+}
+.filetab.on {
+  background: var(--field);
+  color: var(--text);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+.filename {
+  max-width: 160px;
+  height: 100%;
+  padding: 0 4px 0 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.filetab input {
+  width: 120px;
+  height: 24px;
+  margin: 0 6px 0 8px;
+}
+.fileclose {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  visibility: hidden;
+}
+.filetab:hover .fileclose,
+.filetab.on .fileclose {
+  visibility: visible;
+}
+.fileclose:hover {
+  background: color-mix(in srgb, var(--text) 12%, transparent);
+  color: var(--text);
+}
+.filetabs .ibtn {
+  align-self: center;
+  flex: none;
+  margin-left: 6px;
+  color: var(--muted);
+}
+.filetabs .ibtn:hover {
+  color: var(--text);
 }

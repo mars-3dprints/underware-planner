@@ -3,6 +3,7 @@ import { InspectorPanel } from '../features/panels/InspectorPanel';
 import { LibraryPanel } from '../features/panels/LibraryPanel';
 import type { Tool } from '../domain/types';
 import { useStore } from '../store/store';
+import { FileTabs } from './FileTabs';
 import { Toolbar } from './Toolbar';
 import { useShortcuts } from './useShortcuts';
 
@@ -37,6 +38,7 @@ export default function App() {
         <Canvas />
         <Legend />
       </main>
+      <FileTabs />
       {sidebarOpen && <InspectorPanel />}
     </div>
   );

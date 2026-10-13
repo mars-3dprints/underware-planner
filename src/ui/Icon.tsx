@@ -87,6 +87,14 @@ const PATHS = {
       <path d="M12 3.5v13" />
     </>
   ),
+  /** A page with a folded corner and a plus. */
+  filenew: (
+    <>
+      <path d="M11.5 2.5H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+      <path d="M11.5 2.5V8H17M10 10.5v4.5M7.75 12.75h4.5" />
+    </>
+  ),
+  close: <path d="M5.5 5.5l9 9M14.5 5.5l-9 9" />,
   trash: <path d="M4 6h12M8 6V4h4v2M6 6l.8 10.5h6.4L14 6M8.5 9v5M11.5 9v5" />,
   /** Drag handle: two columns of dots (zero-length strokes with round caps). */
   grip: <path d="M7.5 5h0M12.5 5h0M7.5 10h0M12.5 10h0M7.5 15h0M12.5 15h0" strokeWidth={2.6} />,
