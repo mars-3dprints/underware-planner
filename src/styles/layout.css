@@ -77,6 +77,10 @@
   font: inherit;
   cursor: pointer;
 }
+/* Without a close button (a single file), the name keeps its padding on both sides. */
+.filename:last-child {
+  padding-right: 14px;
+}
 .filetab input {
   width: 120px;
   height: 24px;
