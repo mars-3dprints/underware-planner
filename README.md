@@ -47,7 +47,7 @@ Mirrored parts are different prints, so they are listed as separate BOM entries.
 - **Draw a cable:** press **C**, click an object (or an empty cell for a loose end), click empty cells for waypoints, then click another object to finish. Select a cable and drag its line to add waypoints, or drag a handle to move it.
 - **Inspect shared paths:** hover a path to list every cable running there while the rest fade, however many overlap. Hover a cable in the right-hand list to trace its route, or select an object to see the cables connected to it. Each cable is labelled with the objects it connects, such as `Router ↔ NAS`.
 - **Stack cables:** drag cables in the right-hand list to reorder them. Cables lower in the list are drawn on top.
-- **Select:** click, shift-click to add, or drag a box on empty canvas. Move, rotate, flip, copy, duplicate, recolour and delete work on the whole selection, including cables.
+- **Select:** click, shift-click to add, or drag a box on empty canvas. Move, rotate, flip, copy, duplicate, recolour and delete work on the whole selection, including cables. The selection's details float in a card over the canvas (even with the sidebar hidden): drag it by its top bar or title, and double-click to send it back to the top-right corner.
 - **Colour:** the toolbar colour button recolours the current selection. A default palette is always available, and you can add your own colours.
 - **Undo and redo** select the parts they changed.
 - **Nudge:** arrow keys move the selection by one cell (Shift: five).
@@ -132,7 +132,7 @@ Pure logic (no React) is in `domain/`, `routing/` and `bom/`, with unit tests ne
 | `src/bom/` | Bill of materials and overlap detection |
 | `src/store/` | App state (zustand), undo/redo history, autosave, view helpers (fit, zoom) |
 | `src/features/canvas/` | Infinite canvas: part and cable rendering, selection overlay, pointer and keyboard input |
-| `src/features/panels/` | Left panel (parts to place) and right panel (selection, bill of materials, cables) |
+| `src/features/panels/` | Left panel (parts to place) and right panel (bill of materials, cables) and the floating selection card |
 | `src/app/` | App shell, toolbar, layers menu, keyboard shortcuts, import/export |
 | `src/ui/` | Shared components: icons, buttons, part thumbnails, colour swatches |
 | `src/styles/` | Styles and light/dark theme tokens |

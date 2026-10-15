@@ -18,7 +18,6 @@ import { isGroupSelected, selectedCable, selectedPart, selectionInBom, useStore 
 import { plural } from '../../ui/plural';
 import { NumberField } from './NumberField';
 import { PieceButton } from './PieceButton';
-import { Section } from './Section';
 
 function GroupDetails({
   parts,
@@ -186,7 +185,8 @@ export function SelectionSection({ routes }: { routes: Map<string, Route> }) {
   );
   if (!isGroup && !part && !cable) return null;
   return (
-    <Section id="selection" title="Selection">
+    <section>
+      <h3>Selection</h3>
       {isGroup && (
         <GroupDetails
           parts={doc.objects.filter((p) => selectedIds.includes(p.id))}
@@ -197,6 +197,6 @@ export function SelectionSection({ routes }: { routes: Map<string, Route> }) {
       {part && <PartDetails part={part} />}
       {cable && <CableDetails cable={cable} route={routes.get(cable.id)} />}
       <BomToggle />
-    </Section>
+    </section>
   );
 }

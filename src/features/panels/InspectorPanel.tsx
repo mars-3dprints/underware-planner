@@ -8,7 +8,6 @@ import { ColorDot } from '../../ui/ColorDot';
 import { Icon } from '../../ui/Icon';
 import { BillOfMaterialsSection } from './BillOfMaterialsSection';
 import { Section } from './Section';
-import { SelectionSection } from './SelectionSection';
 
 /** A cable being dragged in the list, from index `from` to where it would land, `to`. */
 interface CableDrag {
@@ -88,7 +87,7 @@ function CablesSection({ bom }: { bom: BillOfMaterials }) {
   );
 }
 
-/** Right panel: the selection, bill of materials and cable list. */
+/** Right panel: the bill of materials and cable list. */
 export function InspectorPanel() {
   const doc = useStore((s) => s.doc);
   const routes = routesFor(doc);
@@ -96,7 +95,6 @@ export function InspectorPanel() {
   const overlapCount = overlapsFor(doc).size;
   return (
     <aside className="panel right">
-      <SelectionSection routes={routes} />
       <BillOfMaterialsSection bom={bom} overlapCount={overlapCount} />
       <CablesSection bom={bom} />
     </aside>

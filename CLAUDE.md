@@ -50,7 +50,7 @@ Pure logic (no React) lives in `domain/`, `routing/` and `bom/`; React lives in 
 | `store/store.ts` | zustand store: doc, history, selection, placing state, layers, view |
 | `store/persistence.ts`, `view.ts` | Autosave/load; fit, zoom, pointer cell |
 | `features/canvas/` | `Canvas` plus `PartShape`, `CableShape`, `SelectionOverlay`, input hooks (`usePointerInput`, `useCableDraft`, `useViewportControls`) |
-| `features/panels/` | `LibraryPanel` (left), `InspectorPanel` (right: selection, BOM, cables) |
+| `features/panels/` | `LibraryPanel` (left), `InspectorPanel` (right: BOM, cables), `SelectionCard` (floating, draggable selection details) |
 | `app/` | `App`, `Toolbar`, `SelectionTools`, `LayersMenu`, `useShortcuts`, import/export |
 | `ui/` | Shared components: `Icon`, `IconButton`, `PieceThumb`, `Swatches`, `useDismiss` |
 | `styles/` | `tokens.css` (light/dark theme variables), `base.css` (type scale, fields, buttons), then layout, toolbar, panels and canvas styles; `index.css` imports them in that order |

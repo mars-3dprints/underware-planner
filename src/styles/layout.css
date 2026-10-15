@@ -128,3 +128,55 @@
 .ctxmenu .layerrow {
   display: block;
 }
+/* The selection's details, floating over the top right of the canvas. Drag it by the bar on top or the title. */
+.selcard {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 4;
+  width: 272px;
+  max-height: calc(100% - 24px);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+}
+/* The bar and the title row form one full-width band, with no dead strips between or beside them. */
+.panel.selcard > section {
+  padding-top: 0;
+  border-bottom: 0;
+}
+.selcard h3 {
+  margin: 0 -16px;
+  padding: 0 16px 2px;
+}
+.grabbar,
+.selcard h3 {
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.selcard.dragging .grabbar,
+.selcard.dragging h3 {
+  cursor: grabbing;
+}
+/* A pill marking the bar as a handle. */
+.grabbar {
+  position: sticky;
+  top: 0;
+  display: grid;
+  place-items: center;
+  height: 22px;
+  background: var(--panel);
+}
+.grabbar::after {
+  content: '';
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  transition: background 0.12s;
+}
+.grabbar:hover::after,
+.selcard.dragging .grabbar::after {
+  background: var(--muted);
+}

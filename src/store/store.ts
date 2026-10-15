@@ -96,6 +96,8 @@ export interface EditorState {
   hoverPartIds: string[];
   /** Ids of the collapsed sidebar sections. View-only: not saved or undone. */
   collapsed: string[];
+  /** How far the selection card has been dragged from its corner. View-only: not saved or undone. */
+  selectionCardOffset: { x: number; y: number };
   hidden: Record<Layer, boolean>;
   /** The right-hand panel (selection and bill of materials). */
   sidebarOpen: boolean;
@@ -160,6 +162,7 @@ export interface EditorState {
   setHoverParts(ids: string[]): void;
   toggleSidebar(): void;
   toggleSection(id: string): void;
+  setSelectionCardOffset(offset: { x: number; y: number }): void;
   toggleLayer(layer: Layer): void;
   showLayers(...layers: Layer[]): void;
 }
@@ -333,6 +336,7 @@ const FRESH_SESSION = {
   hoverPartIds: [],
   sidebarOpen: true,
   collapsed: [] as string[],
+  selectionCardOffset: { x: 0, y: 0 },
   hidden: { tiles: false, objects: false, channels: false, cables: false },
 } satisfies Partial<EditorState>;
 
@@ -715,6 +719,7 @@ export const useStore = create<EditorState>((set, get) => ({
         ? s
         : { hoverPartIds: ids },
     ),
+  setSelectionCardOffset: (selectionCardOffset) => set({ selectionCardOffset }),
   toggleSection: (id) =>
     set((s) => ({
       collapsed: s.collapsed.includes(id) ? s.collapsed.filter((x) => x !== id) : [...s.collapsed, id],

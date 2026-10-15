@@ -1,4 +1,5 @@
 import { Canvas } from '../features/canvas/Canvas';
+import { SelectionCard } from '../features/panels/SelectionCard';
 import { InspectorPanel } from '../features/panels/InspectorPanel';
 import { LibraryPanel } from '../features/panels/LibraryPanel';
 import type { Tool } from '../domain/types';
@@ -48,6 +49,7 @@ function Workspace() {
       <main className="stage">
         <Canvas />
         <Legend />
+        <SelectionCard />
       </main>
       <FileTabs />
       {sidebarOpen && <InspectorPanel />}
