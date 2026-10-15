@@ -12,6 +12,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ### Changed
 
+- README screenshot shows the latest interface.
 - The selection's details now float in a draggable card over the canvas instead of the top of the right sidebar, so they show with the sidebar hidden and the sidebar no longer jumps when something is selected.
 - What you're placing, and its keys, now show in the legend on the canvas instead of a box at the top of the left panel, so the panel no longer jumps.
 
