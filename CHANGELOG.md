@@ -4,6 +4,8 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-10-15
+
 ### Added
 
 - Sidebar sections (both sides) can be collapsed by clicking their titles. All start expanded.
