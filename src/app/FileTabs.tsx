@@ -1,24 +1,26 @@
 import { useCallback, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { isEmptyDoc } from '../domain/doc';
-import { type FileTab, useStore } from '../store/store';
+import { fileState, type FileTab, useStore } from '../store/store';
 import { fitToContent } from '../store/view';
 import { Icon } from '../ui/Icon';
 import { IconButton } from '../ui/IconButton';
 import { useDismiss } from '../ui/useDismiss';
 
+/** Width of the right-click menu. */
+const MENU_WIDTH = 200;
+
 /** Asks before closing a file that has something in it. */
 function confirmClose(id: string, name: string) {
   const s = useStore.getState();
-  const doc = id === s.activeFileId ? s.doc : s.parked[id].doc;
-  return isEmptyDoc(doc) || window.confirm(`Close "${name}" and its layout?`);
+  return isEmptyDoc(fileState(s, id).doc) || window.confirm(`Close "${name}" and its layout?`);
 }
 
 /** Asks before closing every file but `keepId`, when any of them has something in it. */
 function confirmCloseOthers(keepId: string) {
   const s = useStore.getState();
   const others = s.files.filter((f) => f.id !== keepId);
-  const filled = others.some((f) => !isEmptyDoc(f.id === s.activeFileId ? s.doc : s.parked[f.id].doc));
+  const filled = others.some((f) => !isEmptyDoc(fileState(s, f.id).doc));
   return !filled || window.confirm(`Close ${others.length} other file(s) and their layouts?`);
 }
 
@@ -62,6 +64,11 @@ export function FileTabs() {
     setMenu(null);
     action();
   };
+  const item = (label: string, action: () => unknown) => (
+    <button className="layerrow" role="menuitem" onClick={() => run(() => void action())}>
+      {label}
+    </button>
+  );
   const close = (file: FileTab) =>
     files.length > 1 && confirmClose(file.id, file.name) && framed(() => deleteFile(file.id));
   return (
@@ -117,56 +124,28 @@ export function FileTabs() {
           ref={menuRef}
           className="pop ctxmenu"
           role="menu"
-          style={{ left: Math.min(menu.x, window.innerWidth - 208), bottom: window.innerHeight - menu.y }}
+          style={{
+            width: MENU_WIDTH,
+            left: Math.min(menu.x, window.innerWidth - MENU_WIDTH - 8),
+            bottom: window.innerHeight - menu.y,
+          }}
         >
-          <button className="layerrow" role="menuitem" onClick={() => run(() => setRenaming(menu.id))}>
-            Rename
-          </button>
-          <button
-            className="layerrow"
-            role="menuitem"
-            onClick={() => run(() => framed(() => duplicateFile(menu.id)))}
-          >
-            Duplicate
-          </button>
+          {item('Rename', () => setRenaming(menu.id))}
+          {item('Duplicate', () => framed(() => duplicateFile(menu.id)))}
           {files.length > 1 && (
             <>
-              <button
-                className="layerrow"
-                role="menuitem"
-                onClick={() =>
-                  run(() => {
-                    const file = files.find((f) => f.id === menu.id)!;
-                    close(file);
-                  })
-                }
-              >
-                Close
-              </button>
-              <button
-                className="layerrow"
-                role="menuitem"
-                onClick={() =>
-                  run(() => confirmCloseOthers(menu.id) && framed(() => closeOtherFiles(menu.id)))
-                }
-              >
-                Close other files
-              </button>
+              {item('Close', () => close(files.find((f) => f.id === menu.id)!))}
+              {item(
+                'Close other files',
+                () => confirmCloseOthers(menu.id) && framed(() => closeOtherFiles(menu.id)),
+              )}
             </>
           )}
-          <button
-            className="layerrow"
-            role="menuitem"
-            onClick={() =>
-              run(
-                () =>
-                  window.confirm('Close all files and start over with an empty one?') &&
-                  framed(resetWorkspace),
-              )
-            }
-          >
-            Reset workspace
-          </button>
+          {item(
+            'Reset workspace',
+            () =>
+              window.confirm('Close all files and start over with an empty one?') && framed(resetWorkspace),
+          )}
         </div>
       )}
     </nav>

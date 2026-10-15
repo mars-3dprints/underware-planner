@@ -84,6 +84,11 @@ export function Canvas() {
     const attached = attachedCables(doc.cables, new Set(selectedIds));
     return attached.length ? new Set([...attached.map((c) => c.id), ...selectedCableIds]) : null;
   }, [doc.cables, selectedIds, selectedCableIds, hoverCableIds]);
+  // Parts hovered in the bill of materials.
+  const hoverParts = useMemo(() => {
+    const ids = new Set(hoverPartIds);
+    return ids.size ? doc.objects.filter((p) => ids.has(p.id)) : [];
+  }, [doc.objects, hoverPartIds]);
   const ghost = useGhost(hover);
 
   useWheelPanZoom(svgRef);
@@ -172,9 +177,7 @@ export function Canvas() {
             {channels.filter((p) => isBridge(p.sub)).map(shape)}
           </g>
 
-          {hoverPartIds.length > 0 && (
-            <HoverOutline parts={doc.objects.filter((p) => hoverPartIds.includes(p.id))} />
-          )}
+          {hoverParts.length > 0 && <HoverOutline parts={hoverParts} />}
           {selectedRoute && <CableOutline route={selectedRoute} />}
           {isGroup && (
             <GroupOutline

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { BASE_ZOOM, ZOOM_STEP } from '../domain/constants';
+import { emptyDoc } from '../domain/doc';
 import { activeFileName, useStore } from '../store/store';
 import { fitToContent, zoomCentered } from '../store/view';
 import { IconButton } from '../ui/IconButton';
@@ -66,7 +67,7 @@ function FileButtons() {
   const [confirming, setConfirming] = useState(false);
   const clear = () => {
     if (confirming) {
-      useStore.getState().replaceDoc({ objects: [], cables: [] });
+      useStore.getState().replaceDoc(emptyDoc());
       setConfirming(false);
     } else {
       setConfirming(true);

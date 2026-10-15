@@ -1,4 +1,4 @@
-import { type PointerEvent, useLayoutEffect, useRef, useState } from 'react';
+import { type PointerEvent, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { routesFor } from '../../routing/route';
 import { isGroupSelected, selectedCable, selectedPart, useStore } from '../../store/store';
 import { SelectionSection } from './SelectionSection';
@@ -19,6 +19,10 @@ export function SelectionCard() {
   const setOffset = useStore((s) => s.setSelectionCardOffset);
   const card = useRef<HTMLElement>(null);
   const [dragging, setDragging] = useState(false);
+  const stopDrag = useRef<(() => void) | null>(null);
+
+  // A drag in progress when the card goes away (a reset remounts everything) would leave its listeners on window.
+  useEffect(() => () => stopDrag.current?.(), []);
 
   // Keeps the card inside the canvas area when its content or the area changes size, as dragging does.
   useLayoutEffect(() => {
@@ -64,11 +68,13 @@ export function SelectionCard() {
       });
     };
     const end = () => {
+      stopDrag.current = null;
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', end);
       window.removeEventListener('pointercancel', end);
       setDragging(false);
     };
+    stopDrag.current = end;
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', end);
     window.addEventListener('pointercancel', end);

@@ -121,7 +121,6 @@
 .pop.ctxmenu {
   position: fixed;
   top: auto;
-  width: 200px;
   gap: 2px;
   padding: 6px;
 }

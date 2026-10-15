@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { type BillOfMaterials, billOfMaterialsText, type PieceLine } from '../../bom/billOfMaterials';
 import { CELL_MM } from '../../domain/constants';
@@ -30,8 +30,9 @@ function useLineFocus() {
       setHoverParts: s.setHoverParts,
     })),
   );
+  const selected = useMemo(() => new Set(selectedIds), [selectedIds]);
   return (ids: string[]) => ({
-    className: 'pick' + (ids.length && ids.every((id) => selectedIds.includes(id)) ? ' on' : ''),
+    className: 'pick' + (ids.length && ids.every((id) => selected.has(id)) ? ' on' : ''),
     onClick: () => {
       const { doc, hidden } = useStore.getState();
       const visible = new Set(doc.objects.filter((p) => !hidden[layerOf(p)]).map((p) => p.id));
@@ -42,8 +43,9 @@ function useLineFocus() {
   });
 }
 
-function PieceTable({ lines }: { lines: PieceLine[] }) {
-  const focus = useLineFocus();
+type LineFocus = ReturnType<typeof useLineFocus>;
+
+function PieceTable({ lines, focus }: { lines: PieceLine[]; focus: LineFocus }) {
   return (
     <table className="tbl">
       <thead>
@@ -148,7 +150,7 @@ export function BillOfMaterialsSection({
         <span className="sub">Channels</span>
         {channels.length ? (
           <>
-            <PieceTable lines={channels} />
+            <PieceTable lines={channels} focus={focus} />
             <KeyValue label="Total channels" value={total(channels)} />
           </>
         ) : (
@@ -158,7 +160,7 @@ export function BillOfMaterialsSection({
       {snaps.length > 0 && (
         <div className="group">
           <span className="sub">Snaps</span>
-          <PieceTable lines={snaps} />
+          <PieceTable lines={snaps} focus={focus} />
           <KeyValue label="Total snaps" value={total(snaps)} />
         </div>
       )}

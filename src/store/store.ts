@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { partsById } from '../domain/anchors';
 import { BASE_ZOOM, DEFAULT_COLORS, PIECE_COLOR } from '../domain/constants';
-import { deleteWaypoint, isBomPart, moveCable, removePart, setInBom } from '../domain/doc';
+import { deleteWaypoint, emptyDoc, isBomPart, moveCable, removePart, setInBom } from '../domain/doc';
 import {
   carriedCables,
   cloneItems,
@@ -99,7 +99,7 @@ export interface EditorState {
   /** How far the selection card has been dragged from its corner. View-only: not saved or undone. */
   selectionCardOffset: { x: number; y: number };
   hidden: Record<Layer, boolean>;
-  /** The right-hand panel (selection and bill of materials). */
+  /** The right-hand panel (bill of materials and cables). */
   sidebarOpen: boolean;
 
   commit(edit: (doc: Doc) => Doc, key?: string): void;
@@ -169,6 +169,13 @@ export interface EditorState {
 
 type SelectionFields = Pick<EditorState, 'selection' | 'selectedIds' | 'selectedCableIds' | 'activeWaypoint'>;
 type SelectionState = Pick<EditorState, 'doc' | 'selection' | 'selectedIds' | 'selectedCableIds'>;
+
+/** A file with nothing in it, not yet viewed. */
+const emptyFile = (): ParkedFile => ({ doc: emptyDoc(), past: [], future: [], view: null });
+
+/** A file's layout and view, whether it is the active file (kept in the store's own fields) or parked. */
+export const fileState = (s: Pick<EditorState, 'activeFileId' | 'doc' | 'view' | 'parked'>, id: string) =>
+  id === s.activeFileId ? { doc: s.doc, view: s.view } : s.parked[id];
 
 /** Name of the active file. */
 export const activeFileName = (s: Pick<EditorState, 'files' | 'activeFileId'>) =>
@@ -423,7 +430,7 @@ export const useStore = create<EditorState>((set, get) => ({
     const id = uid();
     set({
       files: [...s.files, { id, name: nextFileName(s.files.map((f) => f.name)) }],
-      parked: { ...s.parked, [id]: { doc: { objects: [], cables: [] }, past: [], future: [], view: null } },
+      parked: { ...s.parked, [id]: emptyFile() },
     });
     get().switchFile(id);
   },
@@ -431,7 +438,7 @@ export const useStore = create<EditorState>((set, get) => ({
     const s = get();
     const file = s.files.find((f) => f.id === id);
     if (!file) return;
-    const source = id === s.activeFileId ? { doc: s.doc, view: s.view } : s.parked[id];
+    const source = fileState(s, id);
     const copy = uid();
     const at = s.files.indexOf(file) + 1;
     set({
@@ -479,9 +486,8 @@ export const useStore = create<EditorState>((set, get) => ({
   resetWorkspace: () => {
     const s = get();
     const id = uid();
-    const empty: ParkedFile = { doc: { objects: [], cables: [] }, past: [], future: [], view: null };
     set({
-      ...openFile({ ...s, parked: { [id]: empty } }, id, false),
+      ...openFile({ ...s, parked: { [id]: emptyFile() } }, id, false),
       ...FRESH_SESSION,
       files: [{ id, name: nextFileName([]) }],
       parked: {},
@@ -773,8 +779,8 @@ autosave(
   useStore,
   (s) => ({
     files: s.files.map(({ id, name }) => {
-      const file = id === s.activeFileId ? { doc: s.doc, view: s.view } : s.parked[id];
-      return { id, name, doc: file.doc, view: file.view };
+      const { doc, view } = fileState(s, id);
+      return { id, name, doc, view };
     }),
     activeId: s.activeFileId,
     palette: s.palette,
