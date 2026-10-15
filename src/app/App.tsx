@@ -2,8 +2,10 @@ import { Canvas } from '../features/canvas/Canvas';
 import { InspectorPanel } from '../features/panels/InspectorPanel';
 import { LibraryPanel } from '../features/panels/LibraryPanel';
 import type { Tool } from '../domain/types';
+import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '../store/store';
 import { FileTabs } from './FileTabs';
+import { placingStatus } from './placing';
 import { Toolbar } from './Toolbar';
 import { useShortcuts } from './useShortcuts';
 
@@ -17,12 +19,21 @@ const TOOL_HINTS: Partial<Record<Tool, string>> = {
   place: ' · right-click: stop placing',
 };
 
+/** Keys and mouse hints, led by what is being placed while placing. */
 function Legend() {
   const tool = useStore((s) => s.tool);
+  const placing = useStore(useShallow(placingStatus));
   return (
     <div className="legend">
-      {LEGEND}
-      {TOOL_HINTS[tool] ?? ''}
+      {placing && (
+        <div>
+          <b>Placing {placing.label}</b> · {placing.hints}
+        </div>
+      )}
+      <div>
+        {LEGEND}
+        {TOOL_HINTS[tool] ?? ''}
+      </div>
     </div>
   );
 }

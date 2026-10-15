@@ -17,6 +17,10 @@
   border-radius: 6px;
   pointer-events: none;
 }
+/* What is being placed, first line of the legend. */
+.legend b {
+  color: var(--accent);
+}
 /* Parts left out of the bill of materials. */
 .no-bom {
   opacity: 0.45;

@@ -1,15 +1,6 @@
 import { useState } from 'react';
 import { CELL_MM, DEFAULT_COLORS, MAX_TURN_SIZE, TILE_COLOR, TILE_LABEL } from '../../domain/constants';
-import {
-  clampTurnSize,
-  counterpart,
-  SNAP_TYPES,
-  isLinear,
-  isShaped,
-  isSmallTurn,
-  isTurn,
-  pieceLabel,
-} from '../../domain/pieces';
+import { clampTurnSize, SNAP_TYPES, isLinear, isSmallTurn, isTurn } from '../../domain/pieces';
 import type { PieceType } from '../../domain/types';
 import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '../../store/store';
@@ -17,34 +8,6 @@ import { Swatches } from '../../ui/Swatches';
 import { type ChannelGroup, CHANNEL_GROUPS, DEVICE_PRESETS, TURN_SIZES } from './catalog';
 import { NumberField } from './NumberField';
 import { PieceButton } from './PieceButton';
-
-/** What is being placed, with the keys that apply to it. */
-function PlacingStatus() {
-  const { tool, block, stamp } = useStore(
-    useShallow((s) => ({ tool: s.tool, block: s.block, stamp: s.stamp })),
-  );
-  if (tool !== 'place') return null;
-  const label = block
-    ? `${block.name} ${block.h}×${block.w}`
-    : stamp
-      ? pieceLabel(stamp.sub, { size: stamp.len })
-      : '';
-  if (!label) return null;
-  const hints = [
-    'Click to place',
-    'R rotate',
-    stamp && isShaped(stamp.sub) && 'F flip',
-    stamp && counterpart(stamp.sub, stamp.len) && 'T rounded/angled',
-    stamp && SNAP_TYPES.includes(stamp.sub) && 'drag to paint',
-    'Esc stop',
-  ];
-  return (
-    <div className="status">
-      <b>Placing {label}</b>
-      <span>{hints.filter(Boolean).join(' · ')}</span>
-    </div>
-  );
-}
 
 function TileSection() {
   const block = useStore((s) => s.block);
@@ -256,7 +219,6 @@ export function LibraryPanel() {
   const active = tool === 'place' ? placing : undefined;
   return (
     <aside className="panel left">
-      <PlacingStatus />
       {/* Same order as the layers and the bill of materials: tiles, objects, channels, then snaps. */}
       <TileSection />
       <DeviceSection />

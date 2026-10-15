@@ -43,7 +43,7 @@ Mirrored parts are different prints, so they are listed as separate BOM entries.
 
 ## Using it
 
-- **Place a part:** pick it in the left panel, move the cursor to position the ghost, and click to place. Changes to name, size or colour show on the ghost straight away and keep its rotation. Esc or right-click stops placing.
+- **Place a part:** pick it in the left panel, move the cursor to position the ghost, and click to place. Changes to name, size or colour show on the ghost straight away and keep its rotation. Esc or right-click stops placing. The legend at the bottom of the canvas shows what you're placing and its keys.
 - **Draw a cable:** press **C**, click an object (or an empty cell for a loose end), click empty cells for waypoints, then click another object to finish. Select a cable and drag its line to add waypoints, or drag a handle to move it.
 - **Inspect shared paths:** hover a path to list every cable running there while the rest fade, however many overlap. Hover a cable in the right-hand list to trace its route, or select an object to see the cables connected to it. Each cable is labelled with the objects it connects, such as `Router ↔ NAS`.
 - **Stack cables:** drag cables in the right-hand list to reorder them. Cables lower in the list are drawn on top.
