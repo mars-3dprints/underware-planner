@@ -31,6 +31,13 @@ export function nextFileName(names: string[]) {
   return `File ${n}`;
 }
 
+/** "<name> copy", then "<name> copy 2" and so on, for the first one not already taken. */
+export function copyName(name: string, names: string[]) {
+  let candidate = `${name} copy`;
+  for (let n = 2; names.includes(candidate); n++) candidate = `${name} copy ${n}`;
+  return candidate;
+}
+
 /** A saved file, or a pre-files save, which has the same fields apart from `id` and `name`. */
 interface RawFile {
   id?: unknown;

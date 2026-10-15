@@ -4,6 +4,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Files: right-click a tab and choose Duplicate to copy a whole file (layout and view) into a new tab beside it.
+
 ## [0.10.2] - 2026-10-13
 
 ### Changed

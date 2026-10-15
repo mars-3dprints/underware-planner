@@ -27,7 +27,7 @@ import type {
   View,
 } from '../domain/types';
 import { routesFor } from '../routing/route';
-import { autosave, loadSaved, nextFileName } from './persistence';
+import { autosave, copyName, loadSaved, nextFileName } from './persistence';
 
 /** Undo steps kept. */
 const HISTORY_LIMIT = 100;
@@ -108,6 +108,8 @@ export interface EditorState {
   replaceDoc(doc: Doc): void;
 
   addFile(): void;
+  /** Copies a file's layout and view into a new file next to it, and opens that. */
+  duplicateFile(id: string): void;
   switchFile(id: string): void;
   renameFile(id: string, name: string): void;
   /** Closes a file; the last one can't be closed. */
@@ -416,6 +418,29 @@ export const useStore = create<EditorState>((set, get) => ({
       parked: { ...s.parked, [id]: { doc: { objects: [], cables: [] }, past: [], future: [], view: null } },
     });
     get().switchFile(id);
+  },
+  duplicateFile: (id) => {
+    const s = get();
+    const file = s.files.find((f) => f.id === id);
+    if (!file) return;
+    const source = id === s.activeFileId ? { doc: s.doc, view: s.view } : s.parked[id];
+    const copy = uid();
+    const at = s.files.indexOf(file) + 1;
+    set({
+      files: [
+        ...s.files.slice(0, at),
+        {
+          id: copy,
+          name: copyName(
+            file.name,
+            s.files.map((f) => f.name),
+          ),
+        },
+        ...s.files.slice(at),
+      ],
+      parked: { ...s.parked, [copy]: { doc: source.doc, past: [], future: [], view: source.view } },
+    });
+    get().switchFile(copy);
   },
   switchFile: (id) => {
     const s = get();

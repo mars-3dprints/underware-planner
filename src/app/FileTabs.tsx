@@ -36,6 +36,7 @@ export function FileTabs() {
     switchFile,
     addFile,
     renameFile,
+    duplicateFile,
     deleteFile,
     closeOtherFiles,
     resetWorkspace,
@@ -46,6 +47,7 @@ export function FileTabs() {
       switchFile: s.switchFile,
       addFile: s.addFile,
       renameFile: s.renameFile,
+      duplicateFile: s.duplicateFile,
       deleteFile: s.deleteFile,
       closeOtherFiles: s.closeOtherFiles,
       resetWorkspace: s.resetWorkspace,
@@ -119,6 +121,13 @@ export function FileTabs() {
         >
           <button className="layerrow" role="menuitem" onClick={() => run(() => setRenaming(menu.id))}>
             Rename
+          </button>
+          <button
+            className="layerrow"
+            role="menuitem"
+            onClick={() => run(() => framed(() => duplicateFile(menu.id)))}
+          >
+            Duplicate
           </button>
           {files.length > 1 && (
             <>

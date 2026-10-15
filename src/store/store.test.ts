@@ -164,6 +164,26 @@ describe('files', () => {
     expect(s().parked).toEqual({});
   });
 
+  it('duplicates a file next to the original, with its own history', async () => {
+    const { useStore } = await freshStore({ doc: fixture(), view: { x: 1, y: 2, k: 30 }, palette: [] });
+    const s = () => useStore.getState();
+    const first = s().activeFileId;
+    s().addFile();
+    s().switchFile(first);
+    s().duplicateFile(first);
+    expect(s().files.map((f) => f.name)).toEqual(['File 1', 'File 1 copy', 'File 2']);
+    expect(s().activeFileId).toBe(s().files[1].id);
+    expect(s().doc).toEqual(fixture());
+    expect(s().view).toEqual({ x: 1, y: 2, k: 30 });
+    expect(s().past).toEqual([]);
+    s().commit((d) => ({ ...d, cables: [] }));
+    expect(s().parked[first].doc).toEqual(fixture());
+    s().duplicateFile(s().files[2].id);
+    expect(s().files.map((f) => f.name)).toEqual(['File 1', 'File 1 copy', 'File 2', 'File 2 copy']);
+    s().duplicateFile(first);
+    expect(s().files[1].name).toBe('File 1 copy 2');
+  });
+
   it('renames a file, ignoring blank names', async () => {
     const { useStore } = await freshStore();
     const s = () => useStore.getState();
