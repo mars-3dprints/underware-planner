@@ -15,6 +15,8 @@ Browser app for planning openGrid cable management (28 mm tiles) on an infinite 
 
 - Be precise and token-efficient. Use bullets, not paragraphs. Don't call tools unnecessarily.
 - **Before every commit, update `CHANGELOG.md` (add to `## [Unreleased]`) and `README.md` when the change affects what it describes.**
+  - A `commit-msg` hook (`.githooks/`, switched on by `npm install`) enforces it: `feat`, `fix` and `perf` commits are blocked without a staged `CHANGELOG.md` (`SKIP_CHANGELOG_CHECK=1` to skip) and get a reminder about `README.md`.
+- **Before every release bump, retake `docs/screenshot.png` if the UI or anything visual changed.** The hook blocks `chore: bump version to …` when `src/**/*.tsx` or `.css` changed since the last bump and the screenshot didn't (`SKIP_SCREENSHOT_CHECK=1` when nothing visible changed). Take it in light mode with the `Wall` file active and an `Underdesk` file beside it.
 - Changelog entries are concise: one line each where possible, saying what changed for the user. No implementation detail, file lists or how it was verified.
 - Commits: Conventional Commits (commitlint), one short line subject, several small commits rather than one big one. Trailer: `Co-Authored-By: Claude <noreply@anthropic.com>` only. **Never add a `Claude-Session` line.**
 - `CONTRIBUTING.md` and `.github/pull_request_template.md` restate these rules for human contributors: keep them in sync when the workflow changes.

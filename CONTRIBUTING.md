@@ -24,7 +24,7 @@ The README's [Development](README.md#development) section lists the other script
 3. Add or update tests for behaviour you change. Snapshot tests pin routing, channel centerlines and the bill of materials, so an unexpected snapshot change means behaviour changed. Update a snapshot (`npx vitest run -u`) only when the change is intended.
 4. For UI changes, check the app in the browser in both light and dark themes.
 5. Run `npm run check` (typecheck, lint, format check and tests) and `npm run build`. Both must pass.
-6. Add a line to `## [Unreleased]` in `CHANGELOG.md` if users will notice the change. Keep it to one concise line about what changed for them.
+6. Add a line to `## [Unreleased]` in `CHANGELOG.md` if users will notice the change. Keep it to one concise line about what changed for them. A commit hook (set up by `npm install`) blocks `feat`, `fix` and `perf` commits without a staged `CHANGELOG.md` entry; set `SKIP_CHANGELOG_CHECK=1` if users won't notice the change.
 7. Don't change the saved layout format (`doc`, `objects`, `cables` and their fields) without a migration in `src/domain/migrate.ts`. People's autosaves and exported files depend on it.
 
 ## Commits and pull requests
@@ -35,7 +35,7 @@ The README's [Development](README.md#development) section lists the other script
 
 ## Releases
 
-Releases are done by the maintainer: a version bump on `main` publishes the GitHub Release and deploys the site (see [Releases](README.md#releases)). Please don't bump the version or move changelog entries out of `[Unreleased]` in a pull request.
+Releases are done by the maintainer: a version bump on `main` publishes the GitHub Release and deploys the site (see [Releases](README.md#releases)). Please don't bump the version or move changelog entries out of `[Unreleased]` in a pull request. Before a bump the maintainer retakes the README screenshot (`docs/screenshot.png`) when the UI changed; the commit hook checks for it.
 
 ## License
 
