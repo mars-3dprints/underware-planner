@@ -94,6 +94,8 @@ export interface EditorState {
   hoverCableIds: string[];
   /** Parts hovered in the bill of materials. View-only: not saved or undone. */
   hoverPartIds: string[];
+  /** Ids of the collapsed sidebar sections. View-only: not saved or undone. */
+  collapsed: string[];
   hidden: Record<Layer, boolean>;
   /** The right-hand panel (selection and bill of materials). */
   sidebarOpen: boolean;
@@ -157,6 +159,7 @@ export interface EditorState {
   setHoverCables(ids: string[]): void;
   setHoverParts(ids: string[]): void;
   toggleSidebar(): void;
+  toggleSection(id: string): void;
   toggleLayer(layer: Layer): void;
   showLayers(...layers: Layer[]): void;
 }
@@ -329,6 +332,7 @@ const FRESH_SESSION = {
   hoverCableIds: [],
   hoverPartIds: [],
   sidebarOpen: true,
+  collapsed: [] as string[],
   hidden: { tiles: false, objects: false, channels: false, cables: false },
 } satisfies Partial<EditorState>;
 
@@ -711,6 +715,10 @@ export const useStore = create<EditorState>((set, get) => ({
         ? s
         : { hoverPartIds: ids },
     ),
+  toggleSection: (id) =>
+    set((s) => ({
+      collapsed: s.collapsed.includes(id) ? s.collapsed.filter((x) => x !== id) : [...s.collapsed, id],
+    })),
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
   toggleLayer: (layer) =>
     set((s) => {

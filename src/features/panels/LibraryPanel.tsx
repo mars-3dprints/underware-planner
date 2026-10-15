@@ -8,6 +8,7 @@ import { Swatches } from '../../ui/Swatches';
 import { type ChannelGroup, CHANNEL_GROUPS, DEVICE_PRESETS, TURN_SIZES } from './catalog';
 import { NumberField } from './NumberField';
 import { PieceButton } from './PieceButton';
+import { Section } from './Section';
 
 function TileSection() {
   const block = useStore((s) => s.block);
@@ -16,8 +17,7 @@ function TileSection() {
   const [rows, setRows] = useState(4);
   const [cols, setCols] = useState(4);
   return (
-    <section>
-      <h3>Tiles</h3>
+    <Section id="tiles" title="Tiles">
       <div className="row2">
         <NumberField
           label="Rows"
@@ -45,22 +45,21 @@ function TileSection() {
       >
         Add tile
       </button>
-    </section>
+    </Section>
   );
 }
 
 function SnapSection({ active }: { active?: PieceType }) {
   const setStamp = useStore((s) => s.setStamp);
   return (
-    <section>
-      <h3>Snaps</h3>
+    <Section id="snaps" title="Snaps">
       <div className="tiles">
         {SNAP_TYPES.map((sub) => (
           <PieceButton key={sub} sub={sub} active={active === sub} onClick={() => setStamp(sub, 1)} />
         ))}
       </div>
       <p className="hint">Tile holes stay open until a snap is placed.</p>
-    </section>
+    </Section>
   );
 }
 
@@ -100,8 +99,7 @@ function ChannelSection({ active }: { active?: PieceType }) {
     );
 
   return (
-    <section>
-      <h3>Channels</h3>
+    <Section id="channels" title="Channels">
       {CHANNEL_GROUPS.map((group) => (
         <div className="group" key={group.title}>
           <span className="sub">{group.title}</span>
@@ -136,7 +134,7 @@ function ChannelSection({ active }: { active?: PieceType }) {
           )}
         </div>
       ))}
-    </section>
+    </Section>
   );
 }
 
@@ -149,8 +147,7 @@ function DeviceSection() {
   const [h, setH] = useState(1);
   const [color, setColor] = useState(DEFAULT_COLORS[4]);
   return (
-    <section>
-      <h3>Custom objects</h3>
+    <Section id="objects" title="Custom objects">
       <label className="field">
         <span>Name</span>
         <input
@@ -208,7 +205,7 @@ function DeviceSection() {
       >
         Add object
       </button>
-    </section>
+    </Section>
   );
 }
 

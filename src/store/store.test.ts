@@ -184,6 +184,19 @@ describe('files', () => {
     expect(s().files[1].name).toBe('File 1 copy 2');
   });
 
+  it('collapses sidebar sections, expanded again after a reset', async () => {
+    const { useStore } = await freshStore();
+    const s = () => useStore.getState();
+    expect(s().collapsed).toEqual([]);
+    s().toggleSection('bom');
+    s().toggleSection('tiles');
+    expect(s().collapsed).toEqual(['bom', 'tiles']);
+    s().toggleSection('bom');
+    expect(s().collapsed).toEqual(['tiles']);
+    s().resetWorkspace();
+    expect(s().collapsed).toEqual([]);
+  });
+
   it('renames a file, ignoring blank names', async () => {
     const { useStore } = await freshStore();
     const s = () => useStore.getState();

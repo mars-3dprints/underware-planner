@@ -7,6 +7,7 @@ import { useStore } from '../../store/store';
 import { ColorDot } from '../../ui/ColorDot';
 import { Icon } from '../../ui/Icon';
 import { BillOfMaterialsSection } from './BillOfMaterialsSection';
+import { Section } from './Section';
 import { SelectionSection } from './SelectionSection';
 
 /** A cable being dragged in the list, from index `from` to where it would land, `to`. */
@@ -38,10 +39,7 @@ function CablesSection({ bom }: { bom: BillOfMaterials }) {
   );
   const [drag, setDrag] = useState<CableDrag | null>(null);
   return (
-    <section>
-      <h3>
-        Cables <small>{(bom.cableMm / 1000).toFixed(2)} m total</small>
-      </h3>
+    <Section id="cables" title="Cables" aside={<small>{(bom.cableMm / 1000).toFixed(2)} m total</small>}>
       {bom.cables.length ? (
         <ul className="list">
           {bom.cables.map((cable, i) => (
@@ -86,7 +84,7 @@ function CablesSection({ bom }: { bom: BillOfMaterials }) {
       ) : (
         <p className="hint">No cables yet.</p>
       )}
-    </section>
+    </Section>
   );
 }
 

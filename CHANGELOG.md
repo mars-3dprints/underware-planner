@@ -4,17 +4,15 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Sidebar sections (both sides) can be collapsed by clicking their titles. All start expanded.
+- Half bridge: rises over other channels like a bridge but stays up, open at its high end to join another half bridge or anything raised. 2 cells or longer; turn it to choose its low end.
+- Files: right-click a tab and choose Duplicate to copy a whole file (layout and view) into a new tab beside it.
+
 ### Changed
 
 - What you're placing, and its keys, now show in the legend on the canvas instead of a box at the top of the left panel, so the panel no longer jumps.
-
-### Added
-
-- Half bridge: rises over other channels like a bridge but stays up, open at its high end to join another half bridge or anything raised. 2 cells or longer; turn it to choose its low end.
-
-### Added
-
-- Files: right-click a tab and choose Duplicate to copy a whole file (layout and view) into a new tab beside it.
 
 ## [0.10.2] - 2026-10-13
 

@@ -94,6 +94,7 @@ const PATHS = {
       <path d="M11.5 2.5V8H17M10 10.5v4.5M7.75 12.75h4.5" />
     </>
   ),
+  chevron: <path d="M6 8l4 4 4-4" />,
   close: <path d="M5.5 5.5l9 9M14.5 5.5l-9 9" />,
   trash: <path d="M4 6h12M8 6V4h4v2M6 6l.8 10.5h6.4L14 6M8.5 9v5M11.5 9v5" />,
   /** Drag handle: two columns of dots (zero-length strokes with round caps). */

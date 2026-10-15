@@ -8,6 +8,7 @@ import { useStore } from '../../store/store';
 import { ColorDot } from '../../ui/ColorDot';
 import { PieceThumb } from '../../ui/PieceThumb';
 import { plural } from '../../ui/plural';
+import { Section } from './Section';
 
 const COPIED_MS = 1500;
 
@@ -103,10 +104,7 @@ export function BillOfMaterialsSection({
   const { channels, snaps } = bom;
   const focus = useLineFocus();
   return (
-    <section>
-      <h3>
-        Bill of materials <CopyButton bom={bom} />
-      </h3>
+    <Section id="bom" title="Bill of materials" aside={<CopyButton bom={bom} />}>
       {overlapCount > 0 && (
         <p className="warn">{overlapCount} overlapping item(s), shown with a dashed red outline.</p>
       )}
@@ -167,6 +165,6 @@ export function BillOfMaterialsSection({
       {bom.excluded > 0 && (
         <p className="hint">{plural(bom.excluded, 'excluded part')} (shown faded) not counted.</p>
       )}
-    </section>
+    </Section>
   );
 }
