@@ -63,7 +63,10 @@ export const PIECE_SHAPES: Partial<Record<PieceType, PieceShape>> = {
 
 /** Channels by family, in the order the library and the bill of materials list them. */
 export const CHANNEL_FAMILIES: { title: string; types: PieceType[] }[] = [
-  { title: 'Straight', types: ['straight', 'bridge', 'open', 'open_side', 'end_round', 'end_angled'] },
+  {
+    title: 'Straight',
+    types: ['straight', 'bridge', 'half_bridge', 'open', 'open_side', 'end_round', 'end_angled'],
+  },
   { title: 'Turns', types: ['turn', 'angled', 'cap'] },
   { title: 'Merge and branch', types: ['y_round', 'y_angled'] },
   {
@@ -129,6 +132,7 @@ export const PIECE_ORDER: PieceType[] = [...CHANNEL_TYPES, ...SNAP_TYPES];
 export const PIECE_LABELS = {
   straight: 'Channel, straight',
   bridge: 'Channel, bridge',
+  half_bridge: 'Channel, half bridge',
   open: 'Open channel',
   open_side: 'Open channel (one side)',
   end_round: 'End channel (rounded)',
@@ -163,7 +167,20 @@ export const isEndChannel = (type?: PieceType) => type === 'end_round' || type =
 export const isOpenChannel = (type?: PieceType) => type === 'open' || type === 'open_side';
 /** Straights, bridges, open and end channels: sized by length, orientation from their footprint. */
 export const isLinear = (type?: PieceType) =>
-  type === 'straight' || type === 'bridge' || isEndChannel(type) || isOpenChannel(type);
+  type === 'straight' || isBridge(type) || isEndChannel(type) || isOpenChannel(type);
+
+/** Bridges pass over other channels: a full one rises and comes back down, a half one stays up at its far end. */
+export const isBridge = (type?: PieceType) => type === 'bridge' || type === 'half_bridge';
+
+/**
+ * A bridge's raised span along its length, in its own frame (`[start, end)`, low end at 0): between the ramps
+ * of a bridge, or from a half bridge's ramp to its far end. Null for anything else.
+ */
+export function raisedSpan(type: PieceType | undefined, length: number): [number, number] | null {
+  if (type === 'bridge') return [1, length - 1];
+  if (type === 'half_bridge') return [1, length];
+  return null;
+}
 /** Pieces drawn from a shape (turns and fixed-size pieces), which can be flipped. */
 export const isShaped = (type?: PieceType) => isTurn(type) || (!!type && !!PIECE_SHAPES[type]);
 /**
@@ -176,7 +193,7 @@ export const flipped = ({ rot = 0, flip = false }: { rot?: number; flip?: boolea
 });
 /** Turn size kept within 1 to `MAX_TURN_SIZE` cells. */
 export const clampTurnSize = (n: number) => Math.max(1, Math.min(MAX_TURN_SIZE, n));
-export const minLength = (type: PieceType) => (type === 'bridge' ? 3 : 1);
+export const minLength = (type: PieceType) => (type === 'bridge' ? 3 : type === 'half_bridge' ? 2 : 1);
 
 /** Rounded <-> angled counterpart with the same size and openings, if there is one. A 1×1 turn has none. */
 export const counterpart = (type?: PieceType, size = 2): PieceType | undefined =>
@@ -194,10 +211,10 @@ function endChannelPath(n: number, angled: boolean) {
     : `M${r} 0H${n}V1H${r}A${r} ${r} 0 0 1 0 ${1 - r}V${r}A${r} ${r} 0 0 1 ${r} 0Z`;
 }
 
-/** Shape of a piece; turns are `size` × `size` cells, open and end channels `size` long, others a fixed size. */
+/** Shape of a piece; turns are `size` × `size` cells, bridges, open and end channels `size` long, others fixed. */
 export function pieceShape(type: PieceType, size = 2): PieceShape | undefined {
-  if (isEndChannel(type) || isOpenChannel(type)) {
-    const n = Math.max(1, size);
+  if (isEndChannel(type) || isOpenChannel(type) || isBridge(type)) {
+    const n = Math.max(minLength(type), size);
     const d = isEndChannel(type) ? endChannelPath(n, type === 'end_angled') : `M0 0H${n}V1H0Z`;
     return { label: PIECE_LABELS[type], w: n, h: 1, d };
   }

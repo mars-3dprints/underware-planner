@@ -11,6 +11,7 @@ export type PartKind = 'plate' | 'object' | 'raceway' | 'snap';
 export type PieceType =
   | 'straight'
   | 'bridge'
+  | 'half_bridge'
   | 'turn'
   | 'angled'
   | 'y_round'

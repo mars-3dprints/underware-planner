@@ -404,6 +404,19 @@
         "rot": 0,
         "flip": false
       },
+      {
+        "id": "n8",
+        "kind": "raceway",
+        "sub": "half_bridge",
+        "name": "Channel, half bridge",
+        "x": 30,
+        "y": 24,
+        "w": 3,
+        "h": 1,
+        "color": "#343a40",
+        "rot": 0,
+        "flip": false
+      },
       { "id": "o1", "kind": "object", "name": "Router", "x": 1, "y": 1, "w": 2, "h": 1, "color": "#4361ee" },
       { "id": "o2", "kind": "object", "name": "Switch", "x": 7, "y": 1, "w": 2, "h": 1, "color": "#2a9d8f" },
       { "id": "o3", "kind": "object", "name": "NAS", "x": 14, "y": 5, "w": 1, "h": 2, "color": "#343a40" },

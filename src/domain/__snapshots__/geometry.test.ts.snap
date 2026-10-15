@@ -77,21 +77,36 @@ exports[`places every channel shape with its matrix and openings 1`] = `
   [
     "b1",
     {
-      "d": "M8 4H12V5H8Z",
-      "m": null,
+      "d": "M0 0H4V1H0Z",
+      "m": [
+        1,
+        0,
+        0,
+        1,
+        8,
+        4,
+      ],
+      "sep": undefined,
     },
     {
-      "m": null,
+      "m": [
+        1,
+        0,
+        0,
+        1,
+        8,
+        4,
+      ],
       "ports": [
         [
-          8,
-          4.5,
+          0,
+          0.5,
           -1,
           0,
         ],
         [
-          12,
-          4.5,
+          4,
+          0.5,
           1,
           0,
         ],
@@ -991,6 +1006,45 @@ exports[`places every channel shape with its matrix and openings 1`] = `
       "ports": [
         [
           2,
+          0.5,
+          1,
+          0,
+        ],
+      ],
+    },
+  ],
+  [
+    "n8",
+    {
+      "d": "M0 0H3V1H0Z",
+      "m": [
+        1,
+        0,
+        0,
+        1,
+        30,
+        24,
+      ],
+      "sep": undefined,
+    },
+    {
+      "m": [
+        1,
+        0,
+        0,
+        1,
+        30,
+        24,
+      ],
+      "ports": [
+        [
+          0,
+          0.5,
+          -1,
+          0,
+        ],
+        [
+          3,
           0.5,
           1,
           0,

@@ -1,5 +1,5 @@
 import { channelGeometry } from '../domain/geometry';
-import { isVertical } from '../domain/pieces';
+import { isBridge, raisedSpan } from '../domain/pieces';
 import type { Doc, Part } from '../domain/types';
 
 /** Samples per cell side when testing which cells a channel shape really covers. */
@@ -25,7 +25,7 @@ function coveredSamples(part: Part) {
     const S = SAMPLES;
     const { d, m } = channelGeometry(part);
     const path = new Path2D(d);
-    const length = Math.max(part.w, part.h);
+    const span = raisedSpan(part.sub, Math.max(part.w, part.h));
     if (m) context.setTransform(S * m[0], S * m[1], S * m[2], S * m[3], S * m[4], S * m[5]);
     else context.setTransform(S, 0, 0, S, 0, 0);
     for (let j = 0; j < part.h * S; j++) {
@@ -33,8 +33,14 @@ function coveredSamples(part: Part) {
         const X = part.x * S + i;
         const Y = part.y * S + j;
         if (!context.isPointInPath(path, X + 0.37, Y + 0.61)) continue;
-        const cellAlong = Math.floor((isVertical(part) ? j : i) / S);
-        out.set(`${X},${Y}`, part.sub === 'bridge' && cellAlong > 0 && cellAlong < length - 1);
+        // Raised where the sample, taken back into the bridge's own frame, falls within its raised span.
+        let raised = false;
+        if (span && m) {
+          const [wx, wy] = [(X + 0.37) / S, (Y + 0.61) / S];
+          const along = (m[3] * (wx - m[4]) - m[2] * (wy - m[5])) / (m[0] * m[3] - m[1] * m[2]);
+          raised = along >= span[0] && along < span[1];
+        }
+        out.set(`${X},${Y}`, raised);
       }
     }
   }
@@ -54,7 +60,7 @@ function channelsOverlap(a: Part, b: Part) {
   for (const [key, aOver] of samplesA) {
     if (!samplesB.has(key)) continue;
     const bOver = samplesB.get(key)!;
-    const bridged = (aOver && b.sub !== 'bridge') || (bOver && a.sub !== 'bridge');
+    const bridged = (aOver && !isBridge(b.sub)) || (bOver && !isBridge(a.sub));
     if (!bridged) shared++;
   }
   return shared >= 3;

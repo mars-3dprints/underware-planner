@@ -13,8 +13,8 @@ export const applyMatrix = (m: Matrix, x: number, y: number): Cell => ({
 
 /**
  * Outline of a channel in its own frame, plus the matrix (rotation, mirror, position) that places it on the canvas.
- * Straights and bridges have no shape: their outline is their rectangle in world cells and `m` is null. Open and
- * end channels are sized like straights but have a shape, so `rot` picks their open side or end.
+ * Straights have no shape: their outline is their rectangle in world cells and `m` is null. Bridges, open and
+ * end channels are sized like straights but have a shape, so `rot` picks their low end, open side or end.
  */
 export function channelGeometry(part: Part): { d: string; m: Matrix | null; sep?: string } {
   const shape = part.sub ? pieceShape(part.sub, Math.max(part.w, part.h)) : undefined;
@@ -39,7 +39,7 @@ export function channelPorts(part: Part): { ports: Port[]; m: Matrix | null } {
   const shape = part.sub ? pieceShape(part.sub, Math.max(part.w, part.h)) : undefined;
   if (shape) return { ports: piecePorts(part.sub!, shape.w), m: channelGeometry(part).m };
   if (!isLinear(part.sub)) return { ports: [], m: null };
-  // Straights and bridges: open at both ends, in world cells.
+  // Straights: open at both ends, in world cells.
   const { x, y } = part;
   const length = Math.max(part.w, part.h);
   const ports: Port[] = isVertical(part)

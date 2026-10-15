@@ -6,6 +6,10 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ### Added
 
+- Half bridge: rises over other channels like a bridge but stays up, open at its high end to join another half bridge or anything raised. 2 cells or longer; turn it to choose its low end.
+
+### Added
+
 - Files: right-click a tab and choose Duplicate to copy a whole file (layout and view) into a new tab beside it.
 
 ## [0.10.2] - 2026-10-13

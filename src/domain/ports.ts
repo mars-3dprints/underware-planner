@@ -4,6 +4,12 @@ import type { PieceType } from './types';
 /** An opening of a channel: position on its edge and outward direction, in the piece's own frame. */
 export type Port = [x: number, y: number, dx: number, dy: number];
 
+/** Both ends of a straight run `n` cells long. */
+const ends = (n: number): Port[] => [
+  [0, 0.5, -1, 0],
+  [n, 0.5, 1, 0],
+];
+
 /** Openings of a shaped piece of size `n` (turns), in the piece's own frame. */
 export function piecePorts(type: PieceType, n: number): Port[] {
   if (isTurn(type)) {
@@ -13,6 +19,10 @@ export function piecePorts(type: PieceType, n: number): Port[] {
     ];
   }
   switch (type) {
+    // Open at both ends; a half bridge's far end is in the air.
+    case 'bridge':
+    case 'half_bridge':
+      return ends(n);
     // Open only at its far end, whatever its length `n`.
     case 'end_round':
     case 'end_angled':
@@ -20,14 +30,10 @@ export function piecePorts(type: PieceType, n: number): Port[] {
     // Open at both ends and along both sides of every cell (`open`), or along its top side only.
     case 'open':
     case 'open_side': {
-      const ends: Port[] = [
-        [0, 0.5, -1, 0],
-        [n, 0.5, 1, 0],
-      ];
       const cells = Array.from({ length: n }, (_, i) => i + 0.5);
       const top = cells.map((x): Port => [x, 0, 0, -1]);
       const bottom = cells.map((x): Port => [x, 1, 0, 1]);
-      return [...ends, ...top, ...(type === 'open' ? bottom : [])];
+      return [...ends(n), ...top, ...(type === 'open' ? bottom : [])];
     }
     case 'y_round':
     case 'y_angled':

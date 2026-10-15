@@ -3,6 +3,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { overlapsFor } from '../../bom/overlaps';
 import { deviceAt } from '../../domain/anchors';
 import { blockPart, makePiece } from '../../domain/doc';
+import { isBridge } from '../../domain/pieces';
 import { attachedCables } from '../../domain/group';
 import type { Cell, Part } from '../../domain/types';
 import { cellPath } from '../../routing/paths';
@@ -167,8 +168,8 @@ export function Canvas() {
 
           {/* Channels sit above cables and hide them; bridges sit above other channels. */}
           <g opacity={peek ? 0.75 : 1} display={hidden.channels ? 'none' : undefined}>
-            {channels.filter((p) => p.sub !== 'bridge').map(shape)}
-            {channels.filter((p) => p.sub === 'bridge').map(shape)}
+            {channels.filter((p) => !isBridge(p.sub)).map(shape)}
+            {channels.filter((p) => isBridge(p.sub)).map(shape)}
           </g>
 
           {hoverPartIds.length > 0 && (

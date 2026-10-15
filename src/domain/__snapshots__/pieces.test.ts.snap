@@ -11,8 +11,50 @@ exports[`part catalogue > has a shape and openings for every channel 1`] = `
   [
     "bridge",
     "Channel, bridge",
-    undefined,
-    [],
+    {
+      "d": "M0 0H3V1H0Z",
+      "h": 1,
+      "label": "Channel, bridge",
+      "w": 3,
+    },
+    [
+      [
+        0,
+        0.5,
+        -1,
+        0,
+      ],
+      [
+        3,
+        0.5,
+        1,
+        0,
+      ],
+    ],
+  ],
+  [
+    "half_bridge",
+    "Channel, half bridge",
+    {
+      "d": "M0 0H3V1H0Z",
+      "h": 1,
+      "label": "Channel, half bridge",
+      "w": 3,
+    },
+    [
+      [
+        0,
+        0.5,
+        -1,
+        0,
+      ],
+      [
+        3,
+        0.5,
+        1,
+        0,
+      ],
+    ],
   ],
   [
     "open",

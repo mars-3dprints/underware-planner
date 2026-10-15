@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  raisedSpan,
   channelLabel,
   counterpart,
   flipped,
@@ -59,6 +60,14 @@ describe('part catalogue', () => {
     expect(isVertical({ w: 1, h: 3 })).toBe(true);
     expect(lengthPatch({ w: 1, h: 3, rot: 0 }, 5)).toEqual({ w: 1, h: 5, rot: 1 });
     expect(lengthPatch({ w: 4, h: 1, rot: 2 }, 1)).toEqual({ w: 1, h: 1, rot: 2 });
+  });
+});
+
+describe('bridges', () => {
+  it("raises the span between the ramps, or from a half bridge's ramp to its far end", () => {
+    expect(raisedSpan('bridge', 4)).toEqual([1, 3]);
+    expect(raisedSpan('half_bridge', 4)).toEqual([1, 4]);
+    expect(raisedSpan('straight', 4)).toBeNull();
   });
 });
 

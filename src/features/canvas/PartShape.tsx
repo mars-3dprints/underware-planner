@@ -1,7 +1,7 @@
 import { memo, type SVGProps } from 'react';
 import { TILE_LABEL } from '../../domain/constants';
 import { channelGeometry, channelPorts, matrixAttr } from '../../domain/geometry';
-import { isVertical } from '../../domain/pieces';
+import { isBridge, raisedSpan } from '../../domain/pieces';
 import type { Part } from '../../domain/types';
 import { readableTextColor } from '../../ui/color';
 import { InsetMask } from '../../ui/InsetMask';
@@ -12,6 +12,21 @@ import { wrapText } from './wrapText';
 const CHANNEL_INSET = 0.06;
 const LINE_HEIGHT = 0.34;
 const SIZE_LINE = 0.28;
+
+/** How a bridge's raised span is drawn, inset this much from its sides. */
+const RAISED_INSET = 0.1;
+const RAISED = {
+  fill: 'rgba(255,255,255,.3)',
+  stroke: 'rgba(0,0,0,.5)',
+  strokeWidth: 1.5,
+  vectorEffect: 'non-scaling-stroke',
+} as const;
+
+/** Shadow under a bridge, offset a little down and to the right. */
+function BridgeShadow({ part }: { part: Part }) {
+  const { d, m } = channelGeometry({ ...part, x: part.x + 0.05, y: part.y + 0.07 });
+  return <path d={d} transform={m ? matrixAttr(m) : undefined} fill="rgba(0,0,0,.28)" />;
+}
 
 const noPointer = { pointerEvents: 'none', userSelect: 'none' } as const;
 const outline = (overlapping: boolean, color: string) => (overlapping ? 'var(--danger)' : color);
@@ -90,6 +105,7 @@ function ChannelShape({ part: p, overlapping, zoom, props }: ShapeProps) {
   const { d, m, sep } = channelGeometry(p);
   const transform = m ? matrixAttr(m) : undefined;
   const length = Math.max(p.w, p.h);
+  const span = raisedSpan(p.sub, length);
   const openings = channelPorts(p);
   const border = (overlapping ? 3 : 1.6) / zoom;
   const insetMask = (id: string, inset: number) => (
@@ -108,9 +124,7 @@ function ChannelShape({ part: p, overlapping, zoom, props }: ShapeProps) {
   );
   return (
     <g {...props}>
-      {p.sub === 'bridge' && (
-        <path d={channelGeometry({ ...p, x: p.x + 0.05, y: p.y + 0.07 }).d} fill="rgba(0,0,0,.28)" />
-      )}
+      {isBridge(p.sub) && <BridgeShadow part={p} />}
       <defs>
         {insetMask(`cm1-${p.id}`, CHANNEL_INSET)}
         {insetMask(`cm2-${p.id}`, CHANNEL_INSET + border)}
@@ -132,15 +146,14 @@ function ChannelShape({ part: p, overlapping, zoom, props }: ShapeProps) {
           vectorEffect="non-scaling-stroke"
         />
       )}
-      {p.sub === 'bridge' && length >= 3 && (
+      {span && span[1] > span[0] && (
         <rect
-          {...(isVertical(p)
-            ? { x: p.x + 0.1, y: p.y + 1, width: 0.8, height: length - 2 }
-            : { x: p.x + 1, y: p.y + 0.1, width: length - 2, height: 0.8 })}
-          fill="rgba(255,255,255,.3)"
-          stroke="rgba(0,0,0,.5)"
-          strokeWidth={1.5}
-          vectorEffect="non-scaling-stroke"
+          x={span[0]}
+          y={RAISED_INSET}
+          width={span[1] - span[0]}
+          height={1 - 2 * RAISED_INSET}
+          transform={transform}
+          {...RAISED}
         />
       )}
     </g>
