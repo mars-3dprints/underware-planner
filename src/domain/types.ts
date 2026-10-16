@@ -4,8 +4,8 @@ export interface Cell {
   y: number;
 }
 
-/** Stored as `kind`: `plate` is an openGrid tile, `object` a custom device, `raceway` a channel. */
-export type PartKind = 'plate' | 'object' | 'raceway' | 'snap';
+/** Stored as `kind`: `plate` is an openGrid tile, `object` a custom device, `raceway` a channel, `screw` a screw. */
+export type PartKind = 'plate' | 'object' | 'raceway' | 'snap' | 'screw';
 
 /** Stored as `sub`: the type of a channel (raceway) or snap piece. */
 export type PieceType =
@@ -54,6 +54,8 @@ export interface Part {
   rot?: number;
   /** Pieces only: mirrored. */
   flip?: boolean;
+  /** Screws only: sits on the intersection at (x, y), where tiles meet, and is a point (w and h are 0), instead of the centre of cell (x, y). */
+  corner?: boolean;
   /** Left out of the bill of materials (for example, parts already printed). Never set on custom objects. */
   noBom?: boolean;
 }

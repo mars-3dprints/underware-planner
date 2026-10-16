@@ -5,9 +5,11 @@ import { CELL_MM } from '../../domain/constants';
 import { layerOf } from '../../domain/layers';
 import { channelLabel } from '../../domain/pieces';
 import { useStore } from '../../store/store';
+import { SCREW_LABEL } from '../../domain/screws';
 import { ColorDot } from '../../ui/ColorDot';
 import { PieceThumb } from '../../ui/PieceThumb';
 import { plural } from '../../ui/plural';
+import { ScrewGlyph } from '../../ui/ScrewGlyph';
 import { Section } from './Section';
 
 const COPIED_MS = 1500;
@@ -76,7 +78,7 @@ function PieceTable({ lines, focus }: { lines: PieceLine[]; focus: LineFocus }) 
   );
 }
 
-const total = (lines: PieceLine[]) => lines.reduce((n, line) => n + line.qty, 0);
+const total = (lines: { qty: number }[]) => lines.reduce((n, line) => n + line.qty, 0);
 
 function CopyButton({ bom }: { bom: BillOfMaterials }) {
   const [copied, setCopied] = useState(false);
@@ -162,6 +164,35 @@ export function BillOfMaterialsSection({
           <span className="sub">Snaps</span>
           <PieceTable lines={snaps} focus={focus} />
           <KeyValue label="Total snaps" value={total(snaps)} />
+        </div>
+      )}
+      {bom.screws.length > 0 && (
+        <div className="group">
+          <span className="sub">Screws</span>
+          <table className="tbl">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Item</th>
+                <th className="r">Qty</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bom.screws.map((line) => (
+                <tr key={line.key} {...focus(line.ids)}>
+                  <td className="thumbcell">
+                    <div>
+                      <ColorDot color={line.color} />
+                      <ScrewGlyph color={line.color} />
+                    </div>
+                  </td>
+                  <td>{SCREW_LABEL}</td>
+                  <td className="r">{line.qty}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <KeyValue label="Total screws" value={total(bom.screws)} />
         </div>
       )}
       {bom.excluded > 0 && (

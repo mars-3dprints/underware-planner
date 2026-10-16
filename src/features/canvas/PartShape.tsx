@@ -2,6 +2,7 @@ import { memo, type SVGProps } from 'react';
 import { TILE_LABEL } from '../../domain/constants';
 import { channelGeometry, channelPorts, matrixAttr } from '../../domain/geometry';
 import { isBridge, raisedSpan } from '../../domain/pieces';
+import { screwPoint } from '../../domain/screws';
 import type { Part } from '../../domain/types';
 import { readableTextColor } from '../../ui/color';
 import { InsetMask } from '../../ui/InsetMask';
@@ -224,7 +225,41 @@ function DeviceShape({ part: p, overlapping, showLabel, props }: ShapeProps) {
   );
 }
 
-const SHAPES = { plate: TileShape, snap: SnapShape, raceway: ChannelShape, object: DeviceShape };
+/** A screw: a small round head with a cross, at a tile centre or intersection. Its wider invisible disc is the click target. */
+function ScrewShape({ part: p, overlapping, props }: ShapeProps) {
+  const { x, y } = screwPoint(p);
+  return (
+    <g {...props}>
+      <circle cx={x} cy={y} r={0.28} fill="rgba(0,0,0,0)" />
+      <circle
+        cx={x}
+        cy={y}
+        r={0.15}
+        fill={p.color}
+        stroke={outline(overlapping, 'rgba(0,0,0,.55)')}
+        strokeWidth={overlapping ? 2.5 : 1.25}
+        vectorEffect="non-scaling-stroke"
+      />
+      <path
+        d={`M${x - 0.075} ${y}H${x + 0.075}M${x} ${y - 0.075}V${y + 0.075}`}
+        fill="none"
+        stroke="rgba(0,0,0,.55)"
+        strokeWidth={1.25}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+        pointerEvents="none"
+      />
+    </g>
+  );
+}
+
+const SHAPES = {
+  plate: TileShape,
+  snap: SnapShape,
+  raceway: ChannelShape,
+  object: DeviceShape,
+  screw: ScrewShape,
+};
 
 /** Any part. Interactive parts carry `data-k="obj"` and `data-id` for pointer handling. */
 export const PartShape = memo(function PartShape({ part, ghost = false, ...rest }: PartShapeProps) {

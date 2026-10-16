@@ -26,6 +26,14 @@ interface TileSize {
   ids: string[];
 }
 
+/** Screws of one colour; `ids` are the parts, for finding them on the canvas. */
+export interface ScrewLine {
+  key: string;
+  color: string;
+  qty: number;
+  ids: string[];
+}
+
 export interface PieceLine {
   key: string;
   sub: PieceType;
@@ -98,6 +106,7 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
   const tileSizes = new Map<string, TileSize>();
   const pieceLines = new Map<string, PieceLine>();
   const tiles: Part[] = [];
+  const screwLines = new Map<string, ScrewLine>();
   const allTiles: Part[] = [];
   let cells = 0;
   let excluded = 0;
@@ -115,6 +124,14 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
       entry.qty++;
       entry.ids.push(part.id);
       pieceLines.set(key, entry);
+      continue;
+    }
+    if (part.kind === 'screw') {
+      // A line per colour, like tiles and pieces.
+      const line = screwLines.get(part.color) ?? { key: part.color, color: part.color, qty: 0, ids: [] };
+      line.qty++;
+      line.ids.push(part.id);
+      screwLines.set(part.color, line);
       continue;
     }
     if (part.kind !== 'plate') continue;
@@ -149,6 +166,7 @@ export function billOfMaterials(doc: Doc, routes: Map<string, Route>) {
     connectors: countConnectors(allTiles),
     channels: pieces.filter((line) => !SNAP_TYPES.includes(line.sub)),
     snaps: pieces.filter((line) => SNAP_TYPES.includes(line.sub)),
+    screws: [...screwLines.values()].sort((a, b) => a.color.localeCompare(b.color)),
     bboxMm: tiles.length ? { w: footprint.w * CELL_MM, h: footprint.h * CELL_MM } : null,
     excluded,
     cables,
@@ -171,6 +189,9 @@ export function billOfMaterialsText(bom: BillOfMaterials) {
     'Channels:',
     ...(bom.channels.length ? bom.channels.map(line) : ['  none']),
     ...(bom.snaps.length ? ['', 'Snaps:', ...bom.snaps.map(line)] : []),
+    ...(bom.screws.length
+      ? ['', 'Screws:', ...bom.screws.map((l) => `  Screw (${l.color}) × ${l.qty}`)]
+      : []),
     '',
     ...(bom.excluded ? [`Excluded parts: ${bom.excluded}`] : []),
     `Cables: ${bom.cables.length}, ${(bom.cableMm / 1000).toFixed(2)} m total`,

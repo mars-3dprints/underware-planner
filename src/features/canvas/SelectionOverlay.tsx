@@ -1,5 +1,6 @@
 import { drawnBounds } from '../../domain/group';
 import { isLinear, isTurn } from '../../domain/pieces';
+import { screwPoint } from '../../domain/screws';
 import type { Cable, Part } from '../../domain/types';
 import { waypointHandle } from '../../routing/paths';
 import { type Route, routePath } from '../../routing/route';
@@ -9,6 +10,23 @@ type Px = (pixels: number) => number;
 /** Tiles, custom objects, straights and turns can be resized by dragging their corner. */
 const canResize = (part: Part) =>
   part.kind === 'plate' || part.kind === 'object' || isLinear(part.sub) || isTurn(part.sub);
+
+/** A ring around a selected screw. */
+function ScrewRing({ part, width }: { part: Part; width: number }) {
+  const { x, y } = screwPoint(part);
+  return (
+    <circle
+      cx={x}
+      cy={y}
+      r={0.27}
+      fill="none"
+      stroke="var(--accent)"
+      strokeWidth={width}
+      vectorEffect="non-scaling-stroke"
+      pointerEvents="none"
+    />
+  );
+}
 
 /** Outline of each selected part and a dashed box around the whole group. */
 export function GroupOutline({
@@ -23,19 +41,23 @@ export function GroupOutline({
   const box = drawnBounds(parts, cables, routes);
   return (
     <g pointerEvents="none">
-      {parts.map((p) => (
-        <rect
-          key={p.id}
-          x={p.x}
-          y={p.y}
-          width={p.w}
-          height={p.h}
-          fill="none"
-          stroke="var(--accent)"
-          strokeWidth={1.5}
-          vectorEffect="non-scaling-stroke"
-        />
-      ))}
+      {parts.map((p) =>
+        p.kind === 'screw' ? (
+          <ScrewRing key={p.id} part={p} width={1.5} />
+        ) : (
+          <rect
+            key={p.id}
+            x={p.x}
+            y={p.y}
+            width={p.w}
+            height={p.h}
+            fill="none"
+            stroke="var(--accent)"
+            strokeWidth={1.5}
+            vectorEffect="non-scaling-stroke"
+          />
+        ),
+      )}
       <rect
         x={box.x - 0.08}
         y={box.y - 0.08}
@@ -53,6 +75,7 @@ export function GroupOutline({
 
 /** Outline of the selected part, with a resize handle where it applies. */
 export function PartOutline({ part, px }: { part: Part; px: Px }) {
+  if (part.kind === 'screw') return <ScrewRing part={part} width={2} />;
   return (
     <g>
       <rect

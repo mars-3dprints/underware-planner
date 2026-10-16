@@ -51,6 +51,7 @@ function migratePart(part: Part): Part {
 const isKnownPart = (part: Part) =>
   part.kind === 'plate' ||
   part.kind === 'object' ||
+  part.kind === 'screw' ||
   ((part.kind === 'raceway' || part.kind === 'snap') && !!part.sub && part.sub in PIECE_LABELS);
 
 /** Brings a layout from an older save up to date. */

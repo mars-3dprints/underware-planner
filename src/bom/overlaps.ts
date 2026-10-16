@@ -1,5 +1,6 @@
 import { channelGeometry } from '../domain/geometry';
 import { isBridge, raisedSpan } from '../domain/pieces';
+import { sameSpot } from '../domain/screws';
 import type { Doc, Part } from '../domain/types';
 
 /** Samples per cell side when testing which cells a channel shape really covers. */
@@ -66,7 +67,19 @@ function channelsOverlap(a: Part, b: Part) {
   return shared >= 3;
 }
 
-/** Ids of parts that overlap another part of the same kind. */
+/** Screws that share a spot with an earlier screw (a paste or copy can put one on top of another). */
+function doubledScrews(doc: Doc): string[] {
+  const seen: Part[] = [];
+  const doubled: string[] = [];
+  for (const p of doc.objects) {
+    if (p.kind !== 'screw') continue;
+    if (seen.some((q) => sameSpot(p, q))) doubled.push(p.id);
+    seen.push(p);
+  }
+  return doubled;
+}
+
+/** Ids of parts that overlap another part of the same kind, and of screws doubled up on one spot. */
 export function findOverlaps(doc: Doc): Set<string> {
   const overlapping = new Set<string>();
   const parts = doc.objects;
@@ -74,12 +87,14 @@ export function findOverlaps(doc: Doc): Set<string> {
     for (let j = i + 1; j < parts.length; j++) {
       const a = parts[i];
       const b = parts[j];
-      if (a.kind !== b.kind || !boxesOverlap(a, b)) continue;
+      // Screws sit on other parts by design; they're checked on their own below.
+      if (a.kind === 'screw' || a.kind !== b.kind || !boxesOverlap(a, b)) continue;
       if (a.kind === 'raceway' && !channelsOverlap(a, b)) continue;
       overlapping.add(a.id);
       overlapping.add(b.id);
     }
   }
+  for (const id of doubledScrews(doc)) overlapping.add(id);
   return overlapping;
 }
 

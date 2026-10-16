@@ -1,6 +1,6 @@
 import type { PartKind } from './types';
 
-/** View layers that can be shown or hidden. Snaps belong to `tiles`. */
+/** View layers that can be shown or hidden. Snaps and screws belong to `tiles`. */
 export type Layer = 'tiles' | 'objects' | 'channels' | 'cables';
 
 export const LAYERS: { id: Layer; label: string }[] = [

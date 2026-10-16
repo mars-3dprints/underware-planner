@@ -1,3 +1,4 @@
+import { SCREW_LABEL } from '../../domain/screws';
 import { CELL_MM, MAX_TURN_SIZE, TILE_LABEL } from '../../domain/constants';
 import { isNamed, patchCable, patchPart } from '../../domain/doc';
 import { drawnBounds } from '../../domain/group';
@@ -52,6 +53,14 @@ function GroupDetails({
 function PartDetails({ part }: { part: Part }) {
   const commit = useStore((s) => s.commit);
   const edit = (patch: Partial<Part>, key?: string) => commit((d) => patchPart(d, part.id, patch), key);
+  if (part.kind === 'screw') {
+    return (
+      <div>
+        <div className="title">{SCREW_LABEL}</div>
+        <p className="caption">{part.corner ? 'At a tile intersection' : 'At the centre of a tile'}</p>
+      </div>
+    );
+  }
   const isPiece = part.kind === 'raceway' || part.kind === 'snap';
   const title =
     part.kind === 'plate'

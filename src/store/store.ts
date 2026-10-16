@@ -35,6 +35,7 @@ import type {
   View,
 } from '../domain/types';
 import { routesFor } from '../routing/route';
+import { sameSpot, type ScrewSpot } from '../domain/screws';
 import { autosave, copyName, loadSaved, nextFileName } from './persistence';
 
 /** Undo steps kept. */
@@ -89,6 +90,10 @@ export interface EditorState {
   tool: Tool;
   stamp: Stamp | null;
   block: Block | null;
+  /** Placing screws: the place tool puts a screw down at the nearest cell centre or intersection. */
+  placingScrew: boolean;
+  /** Where the next screw would go, under the pointer. View-only. */
+  screwGhost: ScrewSpot | null;
   pieceColor: string;
   cableColor: string;
   /** Custom swatches. */
@@ -162,6 +167,8 @@ export interface EditorState {
   rotateStamp(counterClockwise?: boolean): void;
   flipStamp(): void;
   setBlock(block: Block): void;
+  startPlacingScrew(): void;
+  setScrewGhost(spot: ScrewSpot | null): void;
   patchBlock(kind: Block['kind'], patch: Partial<Block>): void;
   setPieceColor(color: string): void;
   setCableColor(color: string): void;
@@ -351,6 +358,8 @@ const FRESH_SESSION = {
   tool: 'select',
   stamp: null,
   block: null,
+  placingScrew: false,
+  screwGhost: null,
   pieceColor: PIECE_COLOR,
   cableColor: DEFAULT_COLORS[0],
   peek: false,
@@ -682,6 +691,8 @@ export const useStore = create<EditorState>((set, get) => ({
       ...(tool === 'cable' && s.hidden.cables ? { hidden: { ...s.hidden, cables: false } } : {}),
       stamp: tool === 'place' ? s.stamp : null,
       block: tool === 'place' ? s.block : null,
+      placingScrew: tool === 'place' && s.placingScrew,
+      screwGhost: null,
     })),
   setStamp: (sub, len = 3, flip = false) =>
     set((s) => ({
@@ -689,6 +700,7 @@ export const useStore = create<EditorState>((set, get) => ({
       hidden: { ...s.hidden, [layerOf({ kind: kindOfPiece(sub) })]: false },
       stamp: { sub, len, rot: 0, flip, color: s.pieceColor },
       block: null,
+      placingScrew: false,
       tool: 'place',
     })),
   resizeStamp: (len) => set((s) => (s.stamp ? { stamp: { ...s.stamp, len } } : {})),
@@ -705,8 +717,23 @@ export const useStore = create<EditorState>((set, get) => ({
       hidden: { ...s.hidden, [layerOf(block)]: false },
       block,
       stamp: null,
+      placingScrew: false,
       tool: 'place',
     })),
+  startPlacingScrew: () =>
+    set((s) => ({
+      ...NO_SELECTION,
+      hidden: { ...s.hidden, tiles: false },
+      stamp: null,
+      block: null,
+      placingScrew: true,
+      tool: 'place',
+    })),
+  setScrewGhost: (spot) =>
+    set((s) => {
+      const now = s.screwGhost;
+      return now === spot || (now && spot && sameSpot(now, spot)) ? s : { screwGhost: spot };
+    }),
   patchBlock: (kind, patch) =>
     set((s) => {
       if (!s.block || s.block.kind !== kind) return {};

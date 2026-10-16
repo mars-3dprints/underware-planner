@@ -427,6 +427,7 @@ exports[`builds the bill of materials 1`] = `
   "connectors": 14,
   "excluded": 0,
   "plates": 3,
+  "screws": [],
   "sizes": [
     {
       "color": "#b8c4bd",

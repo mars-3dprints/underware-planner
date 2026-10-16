@@ -4,6 +4,7 @@ import { clampTurnSize, SNAP_TYPES, isLinear, isSmallTurn, isTurn } from '../../
 import type { PieceType } from '../../domain/types';
 import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '../../store/store';
+import { ScrewGlyph } from '../../ui/ScrewGlyph';
 import { Swatches } from '../../ui/Swatches';
 import { type ChannelGroup, CHANNEL_GROUPS, DEVICE_PRESETS, TURN_SIZES } from './catalog';
 import { NumberField } from './NumberField';
@@ -59,6 +60,30 @@ function SnapSection({ active }: { active?: PieceType }) {
         ))}
       </div>
       <p className="hint">Tile holes stay open until a snap is placed.</p>
+    </Section>
+  );
+}
+
+function ScrewSection() {
+  const { placing, startPlacingScrew } = useStore(
+    useShallow((s) => ({
+      placing: s.tool === 'place' && s.placingScrew,
+      startPlacingScrew: s.startPlacingScrew,
+    })),
+  );
+  return (
+    <Section id="screws" title="Screws">
+      <div className="tiles">
+        <button
+          className={'tile' + (placing ? ' on' : '')}
+          onClick={startPlacingScrew}
+          title="Screw"
+          aria-label="Screw"
+        >
+          <ScrewGlyph />
+        </button>
+      </div>
+      <p className="hint">Click the centre of a cell or an intersection to put a screw there.</p>
     </Section>
   );
 }
@@ -221,6 +246,7 @@ export function LibraryPanel() {
       <DeviceSection />
       <ChannelSection active={active} />
       <SnapSection active={active} />
+      <ScrewSection />
     </aside>
   );
 }

@@ -4,6 +4,7 @@ import { overlapsFor } from '../../bom/overlaps';
 import { deviceAt } from '../../domain/anchors';
 import { blockPart, makePiece } from '../../domain/doc';
 import { isBridge } from '../../domain/pieces';
+import { canPlaceScrew, makeScrew, screwMount } from '../../domain/screws';
 import { attachedCables } from '../../domain/group';
 import type { Cell, Part } from '../../domain/types';
 import { cellPath } from '../../routing/paths';
@@ -50,6 +51,7 @@ export function Canvas() {
     peek,
     hoverCableIds,
     hoverPartIds,
+    screwGhost,
     hidden,
     isGroup,
     part,
@@ -65,6 +67,7 @@ export function Canvas() {
       peek: s.peek,
       hoverCableIds: s.hoverCableIds,
       hoverPartIds: s.hoverPartIds,
+      screwGhost: s.screwGhost,
       hidden: s.hidden,
       isGroup: isGroupSelected(s),
       part: selectedPart(s),
@@ -90,6 +93,9 @@ export function Canvas() {
     return ids.size ? doc.objects.filter((p) => ids.has(p.id)) : [];
   }, [doc.objects, hoverPartIds]);
   const ghost = useGhost(hover);
+  // The wall mount snap that goes in with a screw at the centre of a tile, shown under the screw ghost.
+  const screwFree = !!screwGhost && canPlaceScrew(doc, screwGhost);
+  const mount = screwGhost && screwFree ? screwMount(doc, screwGhost) : null;
 
   useWheelPanZoom(svgRef);
   const spaceHeld = useCanvasKeys({ onCancel: draft.cancel, onFinish: draft.finishAtHover });
@@ -150,6 +156,7 @@ export function Canvas() {
         <g transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
           {!hidden.tiles && ofKind('plate').map(shape)}
           {!hidden.tiles && ofKind('snap').map(shape)}
+          {!hidden.tiles && ofKind('screw').map(shape)}
           {!hidden.objects && ofKind('object').map(shape)}
 
           {!hidden.cables &&
@@ -192,6 +199,24 @@ export function Canvas() {
           )}
 
           {ghost && <PartShape part={ghost} ghost overlapping={false} showLabel={showLabels} zoom={view.k} />}
+          {mount && (
+            <PartShape
+              part={{ ...mount, id: `${GHOST_ID}-mount` }}
+              ghost
+              overlapping={false}
+              showLabel={false}
+              zoom={view.k}
+            />
+          )}
+          {screwGhost && (
+            <PartShape
+              part={makeScrew(screwGhost, GHOST_ID)}
+              ghost
+              overlapping={!screwFree}
+              showLabel={false}
+              zoom={view.k}
+            />
+          )}
           {marquee && (
             <rect
               x={marquee.x0}

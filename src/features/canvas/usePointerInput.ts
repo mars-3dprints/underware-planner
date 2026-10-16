@@ -17,6 +17,7 @@ import { cellCenter } from '../../routing/paths';
 import { nearestLeg, type Route } from '../../routing/route';
 import { type EditorState, isGroupSelected, useStore } from '../../store/store';
 import { pointer } from '../../store/view';
+import { moveScrew, placeScrew, sameSpot, type ScrewSpot, screwPoint, snapScrew } from '../../domain/screws';
 import type { CableDraftApi } from './useCableDraft';
 
 /** Two clicks on the same item within this time are a double-click. */
@@ -50,6 +51,8 @@ type Drag =
       moved: boolean;
       /** A click (no move) on an item of a group selects just that item. */
       collapse?: Selection;
+      /** A lone screw follows the pointer to the nearest centre or intersection, not in whole cells. */
+      screw?: { id: string; ox: number; oy: number; last: ScrewSpot };
     }
   | {
       t: 'marquee';
@@ -137,6 +140,8 @@ export function usePointerInput(options: PointerInputOptions) {
       drag.current = { t: 'pan', sx: e.clientX, sy: e.clientY, vx: s.view.x, vy: s.view.y, moved: false };
     };
     const startMove = (ids: string[], cids: string[], collapse?: Selection) => {
+      const lone = ids.length === 1 && !cids.length ? s.doc.objects.find((p) => p.id === ids[0]) : undefined;
+      const at = lone?.kind === 'screw' ? screwPoint(lone) : undefined;
       s.beginLive();
       drag.current = {
         t: 'move',
@@ -151,6 +156,7 @@ export function usePointerInput(options: PointerInputOptions) {
         dy: 0,
         moved: false,
         collapse,
+        screw: lone && at && { id: lone.id, ox: w.x - at.x, oy: w.y - at.y, last: lone },
       };
     };
 
@@ -171,6 +177,8 @@ export function usePointerInput(options: PointerInputOptions) {
         s.beginLive();
         s.live(placeStamp(s.stamp, cell));
         drag.current = { t: 'paint', last: cellKey(cell) };
+      } else if (s.placingScrew) {
+        s.commit(placeScrew(snapScrew(w)));
       }
       return;
     }
@@ -273,6 +281,7 @@ export function usePointerInput(options: PointerInputOptions) {
     const w = toWorld(e.clientX, e.clientY);
     const cell = cellAt(w);
     pointer.cell = cell;
+    s.setScrewGhost(s.tool === 'place' && s.placingScrew ? snapScrew(w) : null);
     if (s.tool !== 'select') setHover((hover) => (sameCell(hover, cell) ? hover : cell));
     const d = drag.current;
     if (!d) return;
@@ -285,6 +294,15 @@ export function usePointerInput(options: PointerInputOptions) {
         break;
       }
       case 'move': {
+        if (d.screw) {
+          const spot = snapScrew({ x: w.x - d.screw.ox, y: w.y - d.screw.oy });
+          if (sameSpot(spot, d.screw.last)) break;
+          d.screw.last = spot;
+          d.moved = true;
+          const { id } = d.screw;
+          s.live(() => moveScrew(id, spot)(d.base));
+          break;
+        }
         const dx = Math.round(w.x - d.fx);
         const dy = Math.round(w.y - d.fy);
         if (dx || dy) d.moved = true;
@@ -364,6 +382,7 @@ export function usePointerInput(options: PointerInputOptions) {
 
   const onPointerLeave = () => {
     pointer.cell = null;
+    useStore.getState().setScrewGhost(null);
   };
 
   const onContextMenu = (e: MouseEvent) => {
