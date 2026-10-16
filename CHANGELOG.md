@@ -4,6 +4,8 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-10-16
+
 ### Added
 
 - Right-click the canvas for the selection's actions, or for paste, select all and fit when nothing is selected.
