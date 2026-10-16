@@ -7,6 +7,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 ### Added
 
 - Right-click the canvas for the selection's actions, or for paste, select all and fit when nothing is selected.
+- The selection toolbar Delete icon is red, like the menu.
 - Counter-clockwise rotate button in the selection toolbar, as well as clockwise.
 
 ## [0.11.0] - 2026-10-15

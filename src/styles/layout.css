@@ -194,6 +194,9 @@
 .ctxmenu .ctxrow.danger {
   color: var(--danger);
 }
+.ctxmenu .ctxrow.danger .ctxicon {
+  color: inherit;
+}
 .ctxmenu .ctxicon {
   display: inline-flex;
   color: var(--muted);

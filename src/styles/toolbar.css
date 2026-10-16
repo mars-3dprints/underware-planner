@@ -104,6 +104,9 @@
   background: color-mix(in srgb, var(--accent) 16%, transparent);
   color: var(--accent);
 }
+.ibtn.danger {
+  color: var(--danger);
+}
 .ibtn.danger:hover:not(:disabled) {
   color: var(--danger);
 }
