@@ -1,5 +1,11 @@
 <p align="center"><img src="public/logo.svg" alt="Underware Planner logo" width="128" /></p>
 
+<p align="center">
+  <a href="https://github.com/mars-3dprints/underware-planner/releases/latest"><img src="https://img.shields.io/github/v/release/mars-3dprints/underware-planner" alt="Latest release" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/mars-3dprints/underware-planner" alt="MIT license" /></a>
+  <a href="https://mars-3dprints.github.io/underware-planner/"><img src="https://img.shields.io/badge/demo-live-2563eb" alt="Live demo" /></a>
+</p>
+
 # Underware Planner
 
 A browser-based planner for cable management on openGrid — the 28 mm tile system for wall and desk organisation. Lay out your tiles, devices, channels and cables on an infinite canvas, and get a bill of materials of every part you need to print or buy.
