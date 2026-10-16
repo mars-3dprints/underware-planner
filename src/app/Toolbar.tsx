@@ -54,9 +54,7 @@ function ZoomControls() {
       <button className="btn sm" onClick={() => zoomCentered(ZOOM_STEP)}>
         +
       </button>
-      <button className="btn sm" onClick={fitToContent} title="Fit (0)">
-        Fit
-      </button>
+      <IconButton icon="fit" label="Fit to content (0)" onClick={fitToContent} />
     </>
   );
 }

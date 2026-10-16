@@ -1,7 +1,15 @@
 import { create } from 'zustand';
 import { partsById } from '../domain/anchors';
 import { BASE_ZOOM, DEFAULT_COLORS, PIECE_COLOR } from '../domain/constants';
-import { deleteWaypoint, emptyDoc, isBomPart, moveCable, removePart, setInBom } from '../domain/doc';
+import {
+  deleteWaypoint,
+  emptyDoc,
+  isBomPart,
+  moveCable,
+  patchCable,
+  removePart,
+  setInBom,
+} from '../domain/doc';
 import {
   carriedCables,
   cloneItems,
@@ -94,6 +102,8 @@ export interface EditorState {
   hoverCableIds: string[];
   /** Parts hovered in the bill of materials. View-only: not saved or undone. */
   hoverPartIds: string[];
+  /** Where the right-click menu is open, in screen pixels, or null. View-only. */
+  selectionMenu: { x: number; y: number } | null;
   /** Ids of the collapsed sidebar sections. View-only: not saved or undone. */
   collapsed: string[];
   /** How far the selection card has been dragged from its corner. View-only: not saved or undone. */
@@ -131,6 +141,8 @@ export interface EditorState {
   setActiveWaypoint(index: number | null): void;
 
   deleteSelection(): void;
+  /** Removes all the route's points from a cable. */
+  resetCableRoute(id: string): void;
   duplicateSelection(): void;
   rotateSelection(counterClockwise?: boolean): void;
   flipSelection(): void;
@@ -162,6 +174,8 @@ export interface EditorState {
   setHoverParts(ids: string[]): void;
   toggleSidebar(): void;
   toggleSection(id: string): void;
+  openSelectionMenu(x: number, y: number): void;
+  closeSelectionMenu(): void;
   setSelectionCardOffset(offset: { x: number; y: number }): void;
   toggleLayer(layer: Layer): void;
   showLayers(...layers: Layer[]): void;
@@ -325,6 +339,7 @@ function openFile(s: EditorState, id: string, park = true): Partial<EditorState>
 
 /** Everything that isn't saved or per file, as it is when the app is first opened. */
 const FRESH_SESSION = {
+  selectionMenu: null,
   past: [],
   future: [],
   coalesceKey: '',
@@ -529,6 +544,7 @@ export const useStore = create<EditorState>((set, get) => ({
 
   // ---- editing the selection ----
 
+  resetCableRoute: (id) => get().commit((d) => patchCable(d, id, { waypoints: [] })),
   deleteSelection: () => {
     const s = get();
     const { selection, activeWaypoint } = s;
@@ -726,6 +742,8 @@ export const useStore = create<EditorState>((set, get) => ({
         : { hoverPartIds: ids },
     ),
   setSelectionCardOffset: (selectionCardOffset) => set({ selectionCardOffset }),
+  openSelectionMenu: (x, y) => set({ selectionMenu: { x, y } }),
+  closeSelectionMenu: () => set({ selectionMenu: null }),
   toggleSection: (id) =>
     set((s) => ({
       collapsed: s.collapsed.includes(id) ? s.collapsed.filter((x) => x !== id) : [...s.collapsed, id],

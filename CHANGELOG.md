@@ -4,6 +4,11 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+### Added
+
+- Right-click the canvas for the selection's actions, or for paste, select all and fit when nothing is selected.
+- Counter-clockwise rotate button in the selection toolbar, as well as clockwise.
+
 ## [0.11.0] - 2026-10-15
 
 ### Added

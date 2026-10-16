@@ -377,7 +377,18 @@ export function usePointerInput(options: PointerInputOptions) {
       s.select({ type: 'cable', id: waypoint.getAttribute('data-id')! });
       s.setActiveWaypoint(+waypoint.getAttribute('data-i')!);
       s.deleteSelection();
+      return;
     }
+    if (s.tool !== 'select') return;
+    // Right-clicking an unselected part or cable selects just it, as in most editors; the menu acts on the selection.
+    // Looked up at the point: the pointer is captured for the press, which retargets this event to the canvas itself.
+    const target = document.elementFromPoint(e.clientX, e.clientY)?.closest('[data-k]');
+    const id = target?.getAttribute('data-id') ?? '';
+    if (target?.getAttribute('data-k') === 'obj' && !s.selectedIds.includes(id))
+      s.select({ type: 'obj', id });
+    if (target?.getAttribute('data-k') === 'cable' && !s.selectedCableIds.includes(id))
+      s.select({ type: 'cable', id });
+    s.openSelectionMenu(e.clientX, e.clientY);
   };
 
   return { drag, onPointerDown, onPointerMove, onPointerUp, onPointerLeave, onContextMenu };

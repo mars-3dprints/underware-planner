@@ -52,6 +52,7 @@ Mirrored parts are different prints, so they are listed as separate BOM entries.
 - **Undo and redo** select the parts they changed.
 - **Nudge:** arrow keys move the selection by one cell (Shift: five).
 - **Files:** the tabs along the bottom hold several layouts, each with its own view and undo history. Click a tab to open it, double-click to rename, the new-file button to add one and **×** to close one. Right-click a tab to rename, duplicate or close it, close the other files, or reset the workspace to one empty file. Copy and paste works between files.
+- **Right-click menu:** right-click a part or cable to select it and open its actions (rotate both ways, flip, copy, duplicate, bill-of-materials toggle, delete). With nothing selected it offers paste, select all and fit.
 - **Collapse sections:** click a section title in either sidebar to fold it away; they all start expanded.
 - **Layers:** the layers button (or **1–4**) shows or hides tiles, objects, channels and cables. Hidden layers can't be selected, and placing a part shows its layer again. The bill of materials still counts hidden parts.
 - **See through:** the eye button (or **P**) draws channels at 75 % opacity.

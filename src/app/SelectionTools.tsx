@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { TILE_COLOR } from '../domain/constants';
-import { patchCable } from '../domain/doc';
 import type { Cable, Part } from '../domain/types';
 import { canFlip, canSwapStyle, pointEditableCable, targets, useStore } from '../store/store';
 import { IconButton } from '../ui/IconButton';
+import { selectionActions } from './selectionActions';
 import { Swatches } from '../ui/Swatches';
 import { useDismiss } from '../ui/useDismiss';
 
@@ -87,40 +87,24 @@ export function SelectionTools() {
       activeWaypoint: s.activeWaypoint,
     })),
   );
-  const s = useStore.getState;
   return (
     <>
       <i className="vsep" hidden={!hasSelection} />
       <div className="tools ctx" role="toolbar" aria-label="Selection" hidden={!hasSelection}>
         <SelectionColor />
-        <IconButton
-          icon="rotate"
-          label="Rotate (R, Shift+R reverses)"
-          onClick={() => s().rotateSelection()}
-        />
-        {swappable && (
-          <IconButton icon="style" label="Switch rounded / angled (T)" onClick={() => s().swapStyle()} />
-        )}
-        {flippable && <IconButton icon="flip" label="Flip (F)" onClick={() => s().flipSelection()} />}
-        <IconButton icon="copy" label="Copy (Ctrl+C)" onClick={() => s().copySelection()} />
-        <IconButton icon="duplicate" label="Duplicate (Ctrl+D)" onClick={() => s().duplicateSelection()} />
-        {cable && (
-          <>
+        {selectionActions({ flippable, swappable, cable, activeWaypoint })
+          .filter((a) => a.visible)
+          .map((a) => (
             <IconButton
-              icon="delpoint"
-              label="Delete point"
-              disabled={activeWaypoint === null}
-              onClick={() => s().deleteSelection()}
+              key={a.id}
+              icon={a.icon}
+              label={a.shortcut ? `${a.label} (${a.shortcut})` : a.label}
+              mirrored={a.mirrored}
+              danger={a.danger}
+              disabled={!a.enabled}
+              onClick={a.run}
             />
-            <IconButton
-              icon="reset"
-              label="Reset route (remove all points)"
-              disabled={!cable.waypoints.length}
-              onClick={() => s().commit((d) => patchCable(d, cable.id, { waypoints: [] }))}
-            />
-          </>
-        )}
-        <IconButton icon="trash" label="Delete (Del)" danger onClick={() => s().deleteSelection()} />
+          ))}
       </div>
     </>
   );

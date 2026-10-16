@@ -121,6 +121,7 @@
 .pop.ctxmenu {
   position: fixed;
   top: auto;
+  width: 280px;
   gap: 2px;
   padding: 6px;
 }
@@ -178,4 +179,27 @@
 .grabbar:hover::after,
 .selcard.dragging .grabbar::after {
   background: var(--muted);
+}
+/* Canvas right-click menu rows: the icon, label and shortcut sit in columns; an empty shortcut takes no column. */
+.ctxmenu .ctxrow {
+  display: grid;
+  grid-template-columns: 16px 1fr auto;
+  column-gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+.ctxmenu .ctxrow kbd:empty {
+  display: none;
+}
+.ctxmenu .ctxrow.danger {
+  color: var(--danger);
+}
+.ctxmenu .ctxicon {
+  display: inline-flex;
+  color: var(--muted);
+}
+.ctxsep {
+  height: 1px;
+  margin: 4px 2px;
+  background: var(--line);
 }

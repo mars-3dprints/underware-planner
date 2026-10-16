@@ -6,10 +6,12 @@ interface IconButtonProps {
   on?: boolean;
   danger?: boolean;
   disabled?: boolean;
+  /** Flips the icon horizontally, for the opposite direction of a rotation. */
+  mirrored?: boolean;
   onClick: () => void;
 }
 
-export function IconButton({ icon, label, on, danger, disabled, onClick }: IconButtonProps) {
+export function IconButton({ icon, label, on, danger, disabled, mirrored, onClick }: IconButtonProps) {
   return (
     <button
       className={'ibtn' + (on ? ' on' : '') + (danger ? ' danger' : '')}
@@ -19,7 +21,7 @@ export function IconButton({ icon, label, on, danger, disabled, onClick }: IconB
       disabled={disabled}
       onClick={onClick}
     >
-      <Icon name={icon} />
+      <Icon name={icon} mirrored={mirrored} />
     </button>
   );
 }

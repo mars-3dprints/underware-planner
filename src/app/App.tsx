@@ -7,6 +7,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '../store/store';
 import { FileTabs } from './FileTabs';
 import { placingStatus } from './placing';
+import { SelectionMenu } from './SelectionMenu';
 import { Toolbar } from './Toolbar';
 import { useShortcuts } from './useShortcuts';
 
@@ -50,6 +51,7 @@ function Workspace() {
         <Canvas />
         <Legend />
         <SelectionCard />
+        <SelectionMenu />
       </main>
       <FileTabs />
       {sidebarOpen && <InspectorPanel />}

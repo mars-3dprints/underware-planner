@@ -95,6 +95,22 @@ const PATHS = {
     </>
   ),
   chevron: <path d="M6 8l4 4 4-4" />,
+  selectall: (
+    <>
+      <rect x="3.5" y="3.5" width="13" height="13" rx="1.5" strokeDasharray="2.2 2.2" />
+      <path d="M7 10h6" />
+    </>
+  ),
+  paste: (
+    <>
+      <rect x="5" y="4" width="10" height="13.5" rx="2" />
+      <path d="M8 4V3h4v1" />
+      <path d="M8 9h4M8 12.5h4" />
+    </>
+  ),
+  fit: (
+    <path d="M3 7V4.5A1.5 1.5 0 0 1 4.5 3H7M13 3h2.5A1.5 1.5 0 0 1 17 4.5V7M17 13v2.5a1.5 1.5 0 0 1-1.5 1.5H13M7 17H4.5A1.5 1.5 0 0 1 3 15.5V13" />
+  ),
   close: <path d="M5.5 5.5l9 9M14.5 5.5l-9 9" />,
   trash: <path d="M4 6h12M8 6V4h4v2M6 6l.8 10.5h6.4L14 6M8.5 9v5M11.5 9v5" />,
   /** Drag handle: two columns of dots (zero-length strokes with round caps). */
@@ -103,7 +119,8 @@ const PATHS = {
 
 export type IconName = keyof typeof PATHS;
 
-export function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
+/** `mirrored` flips the glyph horizontally, for the opposite direction of a rotation. */
+export function Icon({ name, size = 18, mirrored }: { name: IconName; size?: number; mirrored?: boolean }) {
   return (
     <svg
       width={size}
@@ -115,6 +132,7 @@ export function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
+      style={mirrored ? { transform: 'scaleX(-1)' } : undefined}
     >
       {PATHS[name]}
     </svg>
