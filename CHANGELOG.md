@@ -6,7 +6,7 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ### Added
 
-- Screws: place them on the centre of a cell or an intersection, anywhere. A screw at the centre of a tile cell also puts in a wall mount snap. They show with the tiles layer, drag between centres and intersections, and have a line in the bill of materials.
+- Screws: place them on the centre of a cell or an intersection, anywhere. They show with the tiles layer, drag between centres and intersections, and have a line in the bill of materials.
 
 ## [0.12.0] - 2026-10-16
 

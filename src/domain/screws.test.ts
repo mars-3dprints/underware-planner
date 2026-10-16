@@ -63,29 +63,6 @@ describe('placing screws', () => {
   });
 });
 
-describe('wall mount snap', () => {
-  const tiles = doc(tile(0, 0, 2, 2));
-
-  it('comes with a screw at the centre of a tile cell, not at an intersection or off the tiles', () => {
-    const centre = placeScrew({ x: 1, y: 1, corner: false })(tiles);
-    expect(centre.objects.filter((p) => p.kind === 'snap')).toMatchObject([{ sub: 'wall', x: 1, y: 1 }]);
-    expect(placeScrew({ x: 1, y: 1, corner: true })(tiles).objects.some((p) => p.kind === 'snap')).toBe(
-      false,
-    );
-    expect(placeScrew({ x: 9, y: 9, corner: false })(tiles).objects.some((p) => p.kind === 'snap')).toBe(
-      false,
-    );
-  });
-
-  it('leaves a snap already in the hole alone, and adds nothing when the screw is refused', () => {
-    const snap = { ...tile(1, 1, 1, 1), id: 's', kind: 'snap' as const, sub: 'channel_grip' as const };
-    const d = placeScrew({ x: 1, y: 1, corner: false })(doc(tile(0, 0, 2, 2), snap));
-    expect(d.objects.filter((p) => p.kind === 'snap')).toEqual([snap]);
-    const once = placeScrew({ x: 0, y: 0, corner: false })(tiles);
-    expect(placeScrew({ x: 0, y: 0, corner: false })(once)).toBe(once);
-  });
-});
-
 describe('moving a screw', () => {
   it('re-snaps between a centre and an intersection, in both directions', () => {
     const screw = makeScrew({ x: 1, y: 1, corner: false });
@@ -102,6 +79,16 @@ describe('moving a screw', () => {
     const centre = back.objects.find((p) => p.id === screw.id)!;
     expect(centre).toMatchObject({ x: 0, y: 1, w: 1, h: 1 });
     expect(centre.corner).toBeUndefined();
+  });
+
+  it('keeps its colour and bill-of-materials flag when it moves', () => {
+    const screw = { ...makeScrew({ x: 1, y: 1, corner: false }), color: '#e76f51', noBom: true };
+    const d = moveScrew(screw.id, { x: 2, y: 1, corner: true })(doc(tile(0, 0, 2, 2), screw));
+    expect(d.objects.find((p) => p.id === screw.id)).toMatchObject({
+      color: '#e76f51',
+      noBom: true,
+      corner: true,
+    });
   });
 
   it('refuses a spot another screw holds', () => {

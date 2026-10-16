@@ -1,5 +1,3 @@
-import { PIECE_COLOR } from './constants';
-import { makePiece } from './doc';
 import { uid } from './id';
 import type { Cell, Doc, Part } from './types';
 
@@ -54,27 +52,11 @@ export const makeScrew = (spot: ScrewSpot, id = uid()): Part => ({
   ...(spot.corner ? { corner: true } : {}),
 });
 
-/**
- * The wall mount snap that goes in the hole under a screw at the centre of a tile cell, or null: none for an
- * intersection, none where there is no tile, and an existing snap in that hole is left as it is.
- */
-export function screwMount(doc: Doc, spot: ScrewSpot): Part | null {
-  if (spot.corner) return null;
-  const tiled = doc.objects.some(
-    (p) => p.kind === 'plate' && p.x <= spot.x && spot.x < p.x + p.w && p.y <= spot.y && spot.y < p.y + p.h,
-  );
-  const taken = doc.objects.some((p) => p.kind === 'snap' && p.x === spot.x && p.y === spot.y);
-  return tiled && !taken ? makePiece('wall', spot.x, spot.y, 1, 0, false, PIECE_COLOR) : null;
-}
-
-/** Puts a screw on `spot`, with its wall mount snap where one goes; nothing happens where it can't go. */
+/** Puts a screw on `spot`; nothing happens where there is one already. */
 export const placeScrew =
   (spot: ScrewSpot) =>
-  (doc: Doc): Doc => {
-    if (!canPlaceScrew(doc, spot)) return doc;
-    const mount = screwMount(doc, spot);
-    return { ...doc, objects: [...doc.objects, ...(mount ? [mount] : []), makeScrew(spot)] };
-  };
+  (doc: Doc): Doc =>
+    canPlaceScrew(doc, spot) ? { ...doc, objects: [...doc.objects, makeScrew(spot)] } : doc;
 
 /** Moves a screw to `spot` (a centre or an intersection), unless another screw is already there. */
 export const moveScrew =
@@ -83,6 +65,15 @@ export const moveScrew =
     const screw = doc.objects.find((p) => p.id === id);
     if (!screw || sameSpot(screw, spot)) return doc;
     if (doc.objects.some((p) => p.kind === 'screw' && p.id !== id && sameSpot(p, spot))) return doc;
-    const moved = { ...makeScrew(spot, id), noBom: screw.noBom };
+    // Only the position changes: colour, name and the bill-of-materials flag stay as they were.
+    const { corner: _, ...kept } = screw;
+    const moved: Part = {
+      ...kept,
+      x: spot.x,
+      y: spot.y,
+      w: spot.corner ? 0 : 1,
+      h: spot.corner ? 0 : 1,
+      ...(spot.corner ? { corner: true } : {}),
+    };
     return { ...doc, objects: doc.objects.map((p) => (p === screw ? moved : p)) };
   };
