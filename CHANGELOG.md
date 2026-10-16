@@ -4,6 +4,8 @@ All notable changes to Underware Planner. Dates are YYYY-MM-DD.
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-10-16
+
 ### Added
 
 - Screws: place them on the centre of a cell or an intersection, anywhere. They show with the tiles layer, drag between centres and intersections, and have a line in the bill of materials.
